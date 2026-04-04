@@ -12,45 +12,30 @@
             theme: {
                 extend: {
                     colors: { 
-                        bgDark: '#020202', 
-                        accentPurple: '#A855F7', 
-                        accentBlue: '#3B82F6', 
-                        accentYellow: '#FBBF24',
-                        accentTeal: '#66FCF1'
+                        bgDark: '#020202', accentPurple: '#A855F7', accentBlue: '#3B82F6', 
+                        accentYellow: '#FBBF24', accentTeal: '#66FCF1', accentRed: '#FF4C4C'
                     }
                 }
             }
         }
     </script>
     <style>
-        /* UNIVERSAL MOBILE SCROLL LOCK */
-        body, html { 
-            background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; 
-            margin: 0; height: 100%; height: 100dvh; overflow: hidden; position: fixed; width: 100%;
-        }
+        body, html { background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; margin: 0; height: 100%; height: 100dvh; overflow: hidden; position: fixed; width: 100%; }
+        .mobile-viewport { width: 100%; max-width: 430px; height: 100dvh; margin: 0 auto; position: relative; background-color: #020202; display: flex; flex-direction: column; overflow: hidden; }
 
-        .mobile-viewport { 
-            width: 100%; max-width: 430px; height: 100dvh; margin: 0 auto;
-            position: relative; background-color: #020202; display: flex; flex-direction: column; overflow: hidden;
-        }
-
-        /* BACKGROUND */
-        .health-bg { 
-            background-image: url('https://images.unsplash.com/photo-1530497610245-94d3c16cda28?auto=format&fit=crop&q=80&w=1000'); 
-            background-size: cover; background-position: center; position: absolute; inset: 0; opacity: 0.15; z-index: 1; filter: grayscale(100%);
-        }
+        .health-bg { background-image: url('https://images.unsplash.com/photo-1530497610245-94d3c16cda28?auto=format&fit=crop&q=80&w=1000'); background-size: cover; background-position: center; position: absolute; inset: 0; opacity: 0.15; z-index: 1; filter: grayscale(100%); }
         .vignette { background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.98) 80%, #000 100%); position: absolute; inset: 0; z-index: 2; }
         .content-layer { position: relative; z-index: 10; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* SCROLLABLE AREA */
         main { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; padding: 1.25rem; }
         main::-webkit-scrollbar { display: none; }
 
         .glass-panel { background: rgba(13, 17, 23, 0.75); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .input-dark { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 12px; color: white; outline: none; transition: 0.3s; font-size: 14px; }
+        .input-dark { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 12px; color: white; outline: none; transition: 0.3s; font-size: 14px; width: 100%; text-align: center;}
+        .input-dark:focus { border-color: white; }
         
-        .btn-ctrl { width: 32px; height: 32px; border-radius: 8px; display: flex; justify-content: center; align-items: center; background: rgba(255,255,255,0.1); transition: 0.1s; cursor: pointer; }
-        .btn-ctrl:active { transform: scale(0.9); }
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
     </style>
 </head>
 <body>
@@ -67,65 +52,84 @@
                     <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
                     <h1 class="text-xl font-black text-white tracking-widest uppercase">Health</h1>
                 </div>
-                <div class="text-[9px] font-black text-accentPurple border border-accentPurple/20 bg-accentPurple/5 px-3 py-1 rounded-full uppercase">Bio-Metrics</div>
+                <div class="text-[9px] font-black text-accentRed border border-accentRed/20 bg-accentRed/5 px-3 py-1 rounded-full uppercase">Bio-Metrics</div>
             </header>
 
             <main>
                 <div class="grid grid-cols-2 gap-4 mb-6">
                     
-                    <div class="glass-panel p-5 rounded-[2rem] border-t-2 border-t-accentBlue flex flex-col items-center justify-between">
-                        <i class="ph-fill ph-drop text-accentBlue text-2xl mb-2 opacity-80"></i>
-                        <h3 class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Hydration</h3>
-                        <div class="flex items-center gap-3 w-full justify-center">
-                            <div class="btn-ctrl active:bg-accentBlue/20" onclick="updateDaily('water', -1)"><i class="ph-bold ph-minus"></i></div>
-                            <span id="val-water" class="text-2xl font-black text-white w-6 text-center">0</span>
-                            <div class="btn-ctrl active:bg-accentBlue/20" onclick="updateDaily('water', 1)"><i class="ph-bold ph-plus"></i></div>
+                    <div class="glass-panel p-5 rounded-[2rem] border-t-2 border-t-accentBlue flex flex-col justify-between">
+                        <div class="flex justify-between items-center mb-2">
+                            <i class="ph-fill ph-drop text-accentBlue text-xl opacity-80"></i>
+                            <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest">Hydration</span>
                         </div>
-                        <span class="text-[8px] font-bold text-gray-600 mt-2">GLASSES</span>
-                    </div>
-
-                    <div class="glass-panel p-5 rounded-[2rem] border-t-2 border-t-accentYellow flex flex-col items-center justify-between">
-                        <i class="ph-fill ph-coffee text-accentYellow text-2xl mb-2 opacity-80"></i>
-                        <h3 class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Stimulants</h3>
-                        <div class="flex items-center gap-3 w-full justify-center">
-                            <div class="btn-ctrl active:bg-accentYellow/20" onclick="updateDaily('caffeine', -1)"><i class="ph-bold ph-minus"></i></div>
-                            <span id="val-caffeine" class="text-2xl font-black text-white w-6 text-center">0</span>
-                            <div class="btn-ctrl active:bg-accentYellow/20" onclick="updateDaily('caffeine', 1)"><i class="ph-bold ph-plus"></i></div>
-                        </div>
-                        <span class="text-[8px] font-bold text-gray-600 mt-2">DOSES</span>
-                    </div>
-
-                    <div class="glass-panel p-5 rounded-[2rem] border-t-2 border-t-accentPurple col-span-2 space-y-3">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-2">
-                                <i class="ph-fill ph-moon text-accentPurple text-lg"></i>
-                                <h3 class="text-[10px] font-black text-white uppercase tracking-widest">Core Sleep Recovery</h3>
-                            </div>
-                            <span class="text-[8px] text-gray-500 uppercase font-black">Manual Log</span>
+                        <div class="text-center my-3">
+                            <span id="val-water" class="text-3xl font-black text-white">0</span>
+                            <span class="text-[7px] font-bold text-gray-600 block mt-1 uppercase tracking-widest">Glasses Today</span>
                         </div>
                         <div class="flex gap-2">
-                            <input type="number" id="sleep-input" placeholder="Hours slept (e.g. 7.5)" step="0.5" class="flex-1 input-dark text-sm">
-                            <button onclick="logSleep()" class="bg-accentPurple/20 text-accentPurple font-black px-4 rounded-xl active:scale-95 transition">
-                                <i class="ph-bold ph-check text-lg"></i>
-                            </button>
+                            <input type="number" id="input-water" value="1" min="1" class="w-1/3 input-dark !p-2">
+                            <button onclick="logProgress('water', 'Hydration', 'ph-drop', 'text-accentBlue', 'Glass')" class="flex-1 bg-accentBlue/20 text-accentBlue border border-accentBlue/30 font-black rounded-xl uppercase text-[9px] tracking-widest active:scale-95 transition">Add</button>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-5 rounded-[2rem] border-t-2 border-t-accentYellow flex flex-col justify-between">
+                        <div class="flex justify-between items-center mb-2">
+                            <i class="ph-fill ph-coffee text-accentYellow text-xl opacity-80"></i>
+                            <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest">Stimulants</span>
+                        </div>
+                        <div class="text-center my-3">
+                            <span id="val-caffeine" class="text-3xl font-black text-white">0</span>
+                            <span class="text-[7px] font-bold text-gray-600 block mt-1 uppercase tracking-widest">Doses Today</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="number" id="input-caffeine" value="1" min="1" class="w-1/3 input-dark !p-2">
+                            <button onclick="logProgress('caffeine', 'Stimulants', 'ph-coffee', 'text-accentYellow', 'Dose')" class="flex-1 bg-accentYellow/20 text-accentYellow border border-accentYellow/30 font-black rounded-xl uppercase text-[9px] tracking-widest active:scale-95 transition">Add</button>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-5 rounded-[2rem] border-t-2 border-t-accentTeal col-span-2">
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="flex items-center gap-2">
+                                <i class="ph-fill ph-flower-lotus text-accentTeal text-xl opacity-80"></i>
+                                <span class="text-[10px] font-black text-white uppercase tracking-widest">Meditation & Focus</span>
+                            </div>
+                            <div class="text-right">
+                                <span id="val-meditation" class="text-xl font-black text-white">0</span>
+                                <span class="text-[7px] font-bold text-gray-500 ml-1 uppercase tracking-widest">Mins</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 mt-3">
+                            <input type="number" id="input-meditation" value="10" min="1" class="w-1/4 input-dark !p-2">
+                            <button onclick="logProgress('meditation', 'Meditation', 'ph-flower-lotus', 'text-accentTeal', 'Mins')" class="flex-1 bg-accentTeal/20 text-accentTeal border border-accentTeal/30 font-black rounded-xl uppercase text-[10px] tracking-widest active:scale-95 transition">Log Session</button>
                         </div>
                     </div>
                 </div>
 
-                <div class="space-y-4">
-                    <div class="glass-panel p-5 rounded-[2.5rem] space-y-4 border-t-2 border-t-accentTeal">
-                        <div class="flex items-center gap-2">
-                            <i class="ph-fill ph-activity text-accentTeal text-lg"></i>
-                            <h3 class="text-[10px] font-black text-white uppercase tracking-widest">Medical Ledger</h3>
+                <div class="space-y-4 mb-6">
+                    <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em] px-2 flex justify-between">
+                        Daily Log 
+                        <span id="ledger-date" class="text-gray-500 font-bold"></span>
+                    </h3>
+                    <div id="progress-ledger" class="space-y-2">
                         </div>
-                        <div class="flex gap-2">
-                            <input type="text" id="health-issue" placeholder="Symptom, pill, note..." class="flex-1 input-dark text-sm">
-                            <button onclick="addHealthLog()" class="bg-accentTeal/20 text-accentTeal font-black px-4 rounded-xl active:scale-95 transition"><i class="ph-bold ph-plus text-lg"></i></button>
-                        </div>
-                    </div>
+                </div>
 
-                    <div id="health-log-list" class="space-y-2">
+                <div class="glass-panel p-6 rounded-[2.5rem] space-y-4 border-t-2 border-t-white">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <i class="ph-fill ph-quotes text-white text-lg opacity-80"></i>
+                            <h3 class="text-[10px] font-black text-white uppercase tracking-widest">Daily Mantra</h3>
                         </div>
+                        <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest" id="quote-status">Pending</span>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <textarea id="daily-quote-input" rows="2" placeholder="Type a quote, intention, or gratitude for today..." class="w-full input-dark resize-none text-sm italic !text-left"></textarea>
+                        <button onclick="saveDailyQuote()" class="w-full bg-white text-black font-black py-3.5 rounded-xl uppercase text-[10px] tracking-widest active:scale-95 transition flex justify-center items-center gap-2">
+                            <i class="ph-bold ph-push-pin text-lg"></i> Lock In Mantra
+                        </button>
+                    </div>
                 </div>
 
                 <div class="h-32"></div>
@@ -136,104 +140,141 @@
     <script src="js/sidebar.js"></script>
 
     <script>
-        // --- 1. DAILY STATS (Water & Caffeine) ---
-        // Resets automatically at midnight
         const todayStr = new Date().toISOString().split('T')[0];
-        let dailyStats = JSON.parse(localStorage.getItem('sys_daily_health')) || { date: todayStr, water: 0, caffeine: 0 };
         
+        // --- 1. DATA STATE ---
+        let dailyStats = JSON.parse(localStorage.getItem('sys_daily_health')) || { date: todayStr, water: 0, caffeine: 0, meditation: 0 };
+        let progressLogs = JSON.parse(localStorage.getItem('sys_health_progress_logs')) || [];
+
+        // Midnight Reset
         if (dailyStats.date !== todayStr) {
-            dailyStats = { date: todayStr, water: 0, caffeine: 0 }; // Reset for new day
+            dailyStats = { date: todayStr, water: 0, caffeine: 0, meditation: 0 }; 
+            // Optional: Filter out yesterday's logs to keep the ledger clean for today
+            progressLogs = progressLogs.filter(log => log.date === todayStr);
+            localStorage.setItem('sys_health_progress_logs', JSON.stringify(progressLogs));
         }
 
-        function updateDaily(type, amount) {
+        document.getElementById('ledger-date').innerText = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+
+        // --- 2. LOGGING ENGINE ---
+        function logProgress(type, label, icon, colorClass, unit) {
+            const inputField = document.getElementById(`input-${type}`);
+            let amount = parseInt(inputField.value);
+            
+            if (isNaN(amount) || amount <= 0) return;
+
+            // Update Total
             dailyStats[type] += amount;
-            if (dailyStats[type] < 0) dailyStats[type] = 0; // Prevent negative values
-            
             localStorage.setItem('sys_daily_health', JSON.stringify(dailyStats));
-            document.getElementById(`val-${type}`).innerText = dailyStats[type];
-        }
+            updateUI();
 
-        // --- 2. SLEEP LOGGER (Syncs to Analytics) ---
-        function logSleep() {
-            const input = document.getElementById('sleep-input');
-            const hours = parseFloat(input.value);
-            if (!hours || hours <= 0) return;
-
-            let sleepData = JSON.parse(localStorage.getItem('sys_sleep_logs')) || [7, 6.5, 8, 7.2, 6, 7.5, 8];
-            sleepData.push(hours);
+            // Create Log Entry
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             
-            // Keep only the last 7 days for the graph
-            if (sleepData.length > 7) sleepData.shift(); 
+            progressLogs.unshift({
+                id: Date.now(),
+                date: todayStr,
+                time: timeStr,
+                type: type,
+                label: label,
+                amount: amount,
+                unit: unit,
+                icon: icon,
+                colorClass: colorClass
+            });
             
-            localStorage.setItem('sys_sleep_logs', JSON.stringify(sleepData));
+            localStorage.setItem('sys_health_progress_logs', JSON.stringify(progressLogs));
             
-            input.value = '';
+            // Reset input to default 1 (or 10 for meditation)
+            inputField.value = type === 'meditation' ? 10 : 1;
+            renderLedger();
+        }
+
+        function deleteLog(id, type, amount) {
+            progressLogs = progressLogs.filter(log => log.id !== id);
+            localStorage.setItem('sys_health_progress_logs', JSON.stringify(progressLogs));
             
-            // Visual feedback
-            const btn = input.nextElementSibling;
-            const originalHTML = btn.innerHTML;
-            btn.innerHTML = '<i class="ph-bold ph-check-circle text-lg"></i>';
-            setTimeout(() => btn.innerHTML = originalHTML, 1000);
+            // Deduct from total
+            dailyStats[type] -= amount;
+            if(dailyStats[type] < 0) dailyStats[type] = 0;
+            localStorage.setItem('sys_daily_health', JSON.stringify(dailyStats));
+            
+            updateUI();
+            renderLedger();
         }
 
-        // --- 3. MEDICAL LEDGER ---
-        let healthLogs = JSON.parse(localStorage.getItem('sys_health_logs')) || [];
-
-        function addHealthLog() {
-            const issueInput = document.getElementById('health-issue');
-            const issueText = issueInput.value.trim();
-            if (!issueText) return;
-
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-            const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-
-            healthLogs.push({ id: Date.now(), text: issueText, date: dateStr, time: timeStr });
-            issueInput.value = '';
-            syncHealth();
+        // --- 3. UI RENDERERS ---
+        function updateUI() {
+            document.getElementById('val-water').innerText = dailyStats.water;
+            document.getElementById('val-caffeine').innerText = dailyStats.caffeine;
+            document.getElementById('val-meditation').innerText = dailyStats.meditation;
         }
 
-        function deleteHealthLog(id) {
-            healthLogs = healthLogs.filter(log => log.id !== id);
-            syncHealth();
-        }
-
-        function syncHealth() {
-            localStorage.setItem('sys_health_logs', JSON.stringify(healthLogs));
-            renderHealth();
-        }
-
-        function renderHealth() {
-            const container = document.getElementById('health-log-list');
+        function renderLedger() {
+            const container = document.getElementById('progress-ledger');
             container.innerHTML = '';
             
-            const sortedLogs = [...healthLogs].sort((a, b) => b.id - a.id);
+            // Only show today's logs
+            const todaysLogs = progressLogs.filter(log => log.date === todayStr);
 
-            sortedLogs.forEach(log => {
+            todaysLogs.forEach(log => {
                 const card = document.createElement('div');
-                card.className = "glass-panel p-3.5 rounded-2xl flex justify-between items-center gap-3";
+                card.className = "glass-panel p-3.5 rounded-2xl flex justify-between items-center gap-3 border-l-2 border-l-white/10";
                 card.innerHTML = `
-                    <div class="flex-1 overflow-hidden">
-                        <p class="text-xs font-bold text-white truncate">${log.text}</p>
-                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mt-0.5">${log.date} • ${log.time}</p>
+                    <div class="flex items-center gap-3">
+                        <i class="ph-fill ${log.icon} ${log.colorClass} text-lg opacity-80"></i>
+                        <div>
+                            <p class="text-xs font-bold text-white leading-none">
+                                +${log.amount} ${log.unit} <span class="text-gray-500 font-normal ml-1">(${log.label})</span>
+                            </p>
+                        </div>
                     </div>
-                    <button onclick="deleteHealthLog(${log.id})" class="text-gray-600 active:text-red-500 transition p-1">
-                        <i class="ph ph-trash text-lg"></i>
-                    </button>
+                    <div class="flex items-center gap-3">
+                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest">${log.time}</p>
+                        <button onclick="deleteLog(${log.id}, '${log.type}', ${log.amount})" class="text-gray-600 active:text-red-500 transition">
+                            <i class="ph ph-trash text-lg"></i>
+                        </button>
+                    </div>
                 `;
                 container.appendChild(card);
             });
 
-            if(healthLogs.length === 0) {
-                container.innerHTML = '<p class="text-[10px] text-gray-700 italic text-center py-6 uppercase tracking-tighter">No Medical Events Logged</p>';
+            if(todaysLogs.length === 0) {
+                container.innerHTML = '<p class="text-[10px] text-gray-700 italic text-center py-6 uppercase tracking-tighter">No Activity Logged Today</p>';
             }
         }
 
-        // Initialize on load
+        // --- 4. DAILY MANTRA ENGINE ---
+        let quoteData = JSON.parse(localStorage.getItem('sys_daily_quote')) || { date: '', text: '' };
+
+        function loadDailyQuote() {
+            if (quoteData.date === todayStr) {
+                document.getElementById('daily-quote-input').value = quoteData.text;
+                document.getElementById('quote-status').innerText = "Locked";
+                document.getElementById('quote-status').classList.add('text-accentTeal');
+            } else {
+                document.getElementById('daily-quote-input').value = "";
+                document.getElementById('quote-status').innerText = "Requires Input";
+                document.getElementById('quote-status').classList.add('text-accentYellow');
+            }
+        }
+
+        function saveDailyQuote() {
+            const text = document.getElementById('daily-quote-input').value.trim();
+            if (!text) return;
+
+            quoteData = { date: todayStr, text: text };
+            localStorage.setItem('sys_daily_quote', JSON.stringify(quoteData));
+            
+            document.getElementById('quote-status').innerText = "Locked";
+            document.getElementById('quote-status').classList.replace('text-accentYellow', 'text-accentTeal');
+        }
+
+        // Initialize
         window.onload = () => {
-            document.getElementById('val-water').innerText = dailyStats.water;
-            document.getElementById('val-caffeine').innerText = dailyStats.caffeine;
-            renderHealth();
+            updateUI();
+            renderLedger();
+            loadDailyQuote();
         };
     </script>
 </body>

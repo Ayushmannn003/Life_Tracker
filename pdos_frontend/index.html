@@ -91,6 +91,16 @@
         <main>
             <div class="grid grid-cols-2 gap-4">
                 
+                <div class="module-card col-span-2 border-l-2 border-l-white bg-black/40 backdrop-blur-md p-5 flex flex-col justify-center min-h-[100px]" id="dashboard-quote-card">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="ph-fill ph-quotes text-white/50 text-sm"></i>
+                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest">Protocol Intention</p>
+                    </div>
+                    <p id="dashboard-quote-text" class="text-sm font-bold text-white italic leading-relaxed">
+                        "Awaiting daily input. Access Health Matrix to initialize protocol."
+                    </p>
+                </div>
+
                 <a href="calendar.html" class="module-card h-40 border-t-2 border-t-white">
                     <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&q=80&w=800');"></div>
                     <div class="absolute inset-0 vignette-bottom"></div>
@@ -159,11 +169,11 @@
                     </div>
                 </a>
 
-                <a href="health.html" class="module-card h-40 border-t-2 border-t-accentPurple">
+                <a href="health.html" class="module-card h-40 border-t-2 border-t-accentRed">
                     <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1530497610245-94d3c16cda28?auto=format&fit=crop&q=80&w=800');"></div>
                     <div class="absolute inset-0 vignette-bottom"></div>
                     <div class="relative h-full p-4 flex flex-col justify-between">
-                        <i class="ph-fill ph-heartbeat text-accentPurple text-3xl opacity-80"></i>
+                        <i class="ph-fill ph-heartbeat text-accentRed text-3xl opacity-80"></i>
                         <div>
                             <h2 class="text-sm font-black text-white uppercase tracking-widest">Health</h2>
                             <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Bio-Metrics</p>
@@ -171,15 +181,25 @@
                     </div>
                 </a>
 
-                <a href="analyzer.html" class="module-card h-40 border-t-2 border-t-white/30">
-                    <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1543286386-713bdd548da4?auto=format&fit=crop&q=80&w=800');"></div>
+                <a href="sleep.html" class="module-card h-40 border-t-2 border-t-accentPurple">
+                    <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&fit=crop&q=80&w=800');"></div>
                     <div class="absolute inset-0 vignette-bottom"></div>
                     <div class="relative h-full p-4 flex flex-col justify-between">
-                        <i class="ph-fill ph-chart-line-up text-white/70 text-3xl opacity-80"></i>
+                        <i class="ph-fill ph-moon-stars text-accentPurple text-3xl opacity-80"></i>
                         <div>
-                            <h2 class="text-sm font-black text-white uppercase tracking-widest">Analytics</h2>
-                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Overview</p>
+                            <h2 class="text-sm font-black text-white uppercase tracking-widest">Recovery</h2>
+                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Sleep Arc</p>
                         </div>
+                    </div>
+                </a>
+
+                <a href="analyzer.html" class="module-card h-32 col-span-2 border-l-2 border-l-white">
+                    <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1543286386-713bdd548da4?auto=format&fit=crop&q=80&w=800'); opacity: 0.4;"></div>
+                    <div class="absolute inset-0 vignette-side"></div>
+                    <div class="relative h-full p-6 flex flex-col justify-center">
+                        <i class="ph-fill ph-chart-line-up text-white text-3xl mb-1 opacity-80"></i>
+                        <h2 class="text-xl font-black text-white uppercase tracking-widest">Analytics</h2>
+                        <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em]">Core Overview</p>
                     </div>
                 </a>
 
@@ -189,13 +209,34 @@
     </div>
 
     <script src="js/sidebar.js"></script>
+    
     <script>
+        // 1. LIVE CLOCK ENGINE
         function updateClock() {
             const now = new Date();
             document.getElementById('live-clock').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
         setInterval(updateClock, 1000);
         updateClock();
+
+        // 2. DAILY QUOTE ENGINE
+        function loadDashboardQuote() {
+            const todayStr = new Date().toISOString().split('T')[0];
+            const quoteData = JSON.parse(localStorage.getItem('sys_daily_quote'));
+            
+            const quoteTextEl = document.getElementById('dashboard-quote-text');
+            const quoteCardEl = document.getElementById('dashboard-quote-card');
+
+            if (quoteData && quoteData.date === todayStr && quoteData.text.trim() !== '') {
+                quoteTextEl.innerText = `"${quoteData.text}"`;
+                quoteCardEl.classList.add('border-l-accentTeal'); 
+            } else {
+                quoteTextEl.innerText = "Awaiting daily intention. Access Health to initialize.";
+                quoteCardEl.classList.remove('border-l-accentTeal');
+                quoteCardEl.classList.add('border-l-accentYellow'); 
+            }
+        }
+        loadDashboardQuote();
     </script>
 </body>
 </html>

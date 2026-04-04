@@ -49,6 +49,10 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <i class="ph ph-heartbeat text-2xl text-accentPurple"></i>
                                 <span class="text-[10px] font-black uppercase tracking-[0.2em]">Health</span>
                             </a>
+                            <a href="sleep.html" class="flex items-center gap-4 text-gray-400 hover:text-white hover:bg-white/5 p-4 rounded-2xl transition-all active:scale-95">
+    <i class="ph ph-moon-stars text-2xl text-accentPurple"></i>
+    <span class="text-[10px] font-black uppercase tracking-[0.2em]">Recovery</span>
+</a>
                             <a href="analyzer.html" class="flex items-center gap-4 text-gray-400 hover:text-white hover:bg-white/5 p-4 rounded-2xl transition-all active:scale-95">
                                 <i class="ph ph-chart-line-up text-2xl"></i>
                                 <span class="text-[10px] font-black uppercase tracking-[0.2em]">Analytics</span>

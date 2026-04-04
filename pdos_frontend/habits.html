@@ -1,231 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>System OS | Habit Engine</title>
+    <title>System OS | Habit Forge</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        bgDark: '#020202',
-                        accentTeal: '#66FCF1',
-                        glassPanel: 'rgba(15, 23, 42, 0.6)'
-                    }
+                    colors: { bgDark: '#020202', accentTeal: '#66FCF1', accentRed: '#FF4C4C' }
                 }
             }
         }
     </script>
-
     <style>
-        /* Base Reset */
-        body {
-            background-color: #000;
-            color: #C5C6C7;
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-        }
+        /* VIEWPORT LOCK */
+        body, html { background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; margin: 0; height: 100dvh; overflow: hidden; position: fixed; width: 100%; }
+        .mobile-viewport { width: 100%; max-width: 430px; height: 100dvh; margin: 0 auto; position: relative; background-color: #020202; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* Mobile Container Lock */
-        .mobile-viewport {
-            width: 100%;
-            max-width: 430px;
-            /* Standard iPhone 15 Pro Max Width */
-            height: 100dvh;
-            position: relative;
-            background-color: #020202;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 0 50px rgba(0, 0, 0, 1);
-        }
+        /* SCROLLABLE AREA */
+        main { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 1.25rem; }
+        main::-webkit-scrollbar { display: none; }
 
-        /* Background Layering */
-        .habit-bg {
-            background-image: url('https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&q=80&w=1000');
-            background-size: cover;
-            background-position: center;
-            position: absolute;
-            inset: 0;
-            opacity: 0.25;
-            z-index: 1;
+        .glass-panel { background: rgba(13, 17, 23, 0.8); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        
+        /* 21-DAY GRID STYLING */
+        .day-grid { 
+            display: flex; 
+            gap: 8px; 
+            overflow-x: auto; 
+            padding-bottom: 10px; 
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
         }
+        .day-grid::-webkit-scrollbar { height: 2px; }
+        .day-grid::-webkit-scrollbar-thumb { background: rgba(102, 252, 241, 0.2); border-radius: 10px; }
 
-        .vignette {
-            background: linear-gradient(180deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.95) 70%, #000 100%);
-            position: absolute;
-            inset: 0;
-            z-index: 2;
+        .day-bubble { 
+            flex: 0 0 35px; 
+            height: 35px; 
+            border-radius: 10px; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 10px; 
+            font-weight: 900; 
+            transition: 0.2s; 
+            scroll-snap-align: start;
+            background: rgba(0,0,0,0.3);
         }
-
-        /* Content Layer */
-        .content-layer {
-            position: relative;
-            z-index: 10;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* UI Elements */
-        .glass-card {
-            background: rgba(13, 17, 23, 0.7);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        ::-webkit-scrollbar {
-            display: none;
-        }
-
-        /* 21-Day Matrix Grid */
-        .habit-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
-            /* Increased for mobile touch precision */
-        }
-
-        .day-box {
-            aspect-ratio: 1;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 900;
-            cursor: pointer;
-            transition: transform 0.1s ease, background 0.3s ease;
-            background: rgba(0, 0, 0, 0.5);
-        }
-
-        .day-box:active {
-            transform: scale(0.9);
-        }
-
-        .day-box.completed {
-            background: #66FCF1;
-            border-color: #66FCF1;
-            color: #000;
-            box-shadow: 0 0 15px rgba(102, 252, 241, 0.3);
-        }
-
-        .progress-bar {
-            height: 6px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: #66FCF1;
-            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(1);
-            opacity: 0.5;
-        }
+        .day-bubble.active { background: #66FCF1; color: #000; border-color: #66FCF1; box-shadow: 0 0 15px rgba(102, 252, 241, 0.3); }
+        
+        .input-dark { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 12px; color: white; outline: none; font-size: 14px; }
     </style>
 </head>
-
 <body>
 
     <div class="mobile-viewport">
-        <div class="habit-bg"></div>
-        <div class="vignette"></div>
+        <header class="p-6 pb-2 flex justify-between items-center z-50 bg-black/20 backdrop-blur-md border-b border-white/5">
+            <div class="flex items-center gap-4">
+                <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
+                <h1 class="text-xl font-black text-white tracking-widest uppercase">Forge</h1>
+            </div>
+            <div class="text-[9px] font-black text-accentTeal border border-accentTeal/20 bg-accentTeal/5 px-3 py-1 rounded-full uppercase">21-Day Loop</div>
+        </header>
 
-        <div class="content-layer">
-            <div id="sidebar-injector"></div>
-
-            <header class="p-6 pb-2 flex justify-between items-center">
-                <div class="flex items-center gap-4">
-                    <i id="menu-btn"
-                        class="ph ph-list text-2xl text-white cursor-pointer active:text-accentTeal transition"></i>
-                    <h1 class="text-xl font-bold text-white tracking-widest uppercase">Habit Engine</h1>
+        <main>
+            <div class="glass-panel p-4 rounded-3xl mb-8">
+                <div class="flex gap-2">
+                    <input type="text" id="habit-name" placeholder="Protocol Name..." class="flex-1 input-dark">
+                    <button onclick="addHabit()" class="bg-accentTeal text-black font-black px-5 rounded-xl active:scale-95 transition">
+                        <i class="ph-bold ph-plus text-lg"></i>
+                    </button>
                 </div>
-                <div
-                    class="text-[9px] font-black text-accentTeal bg-accentTeal/5 border border-accentTeal/20 px-3 py-1 rounded-full uppercase">
-                    21D Sync</div>
-            </header>
+            </div>
 
-            <main class="flex-1 overflow-y-auto p-5 space-y-6 pb-24">
-
-                <div class="glass-card p-6 rounded-[2.5rem] space-y-4">
-                    <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em]">Deploy Habit</h3>
-                    <div class="space-y-3">
-                        <input type="text" id="habit-name" placeholder="Name (e.g. 10k Steps)"
-                            class="w-full bg-black/60 border border-white/5 rounded-xl px-4 py-4 text-xs text-white outline-none focus:border-accentTeal">
-                        <div class="relative">
-                            <label class="text-[8px] text-gray-500 uppercase font-black absolute left-4 top-1.5">Start
-                                Date</label>
-                            <input type="date" id="habit-start"
-                                class="w-full bg-black/60 border border-white/5 rounded-xl px-4 pt-6 pb-2 text-xs text-white outline-none">
-                        </div>
-                        <button onclick="addNewHabit()"
-                            class="w-full bg-accentTeal text-black font-black py-4 rounded-xl uppercase text-[11px] tracking-widest active:scale-95 transition-all shadow-xl">Initialize</button>
-                    </div>
+            <div id="habit-list" class="space-y-6">
                 </div>
 
-                <div id="habit-list" class="space-y-6">
-                </div>
-
-            </main>
-        </div>
+            <div class="h-32"></div>
+        </main>
     </div>
 
-    <script src="js/api.js"></script>
     <script src="js/sidebar.js"></script>
     <script>
-        // Set default date
-        document.getElementById('habit-start').value = "2026-04-04";
+        let habits = JSON.parse(localStorage.getItem('user_habits_21day')) || [];
 
-        let habitData = JSON.parse(localStorage.getItem('user_habits_mobile')) || [];
+        function addHabit() {
+            const nameInput = document.getElementById('habit-name');
+            const name = nameInput.value.trim();
+            if (!name) return;
 
-        function addNewHabit() {
-            const name = document.getElementById('habit-name').value;
-            const start = document.getElementById('habit-start').value;
-            if (!name || !start) return;
+            // Capture the exact date of creation
+            const startDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
-            habitData.push({
-                id: Date.now(),
-                name: name,
-                start: start,
-                days: new Array(21).fill(false)
+            habits.push({ 
+                id: Date.now(), 
+                name: name, 
+                createdOn: startDate,
+                days: Array(21).fill(false) // Create an array of 21 "false" slots
             });
-
-            syncAndRender();
-            document.getElementById('habit-name').value = '';
+            
+            nameInput.value = '';
+            sync();
         }
 
-        function toggleDay(hId, dIdx) {
-            const habit = habitData.find(h => h.id === hId);
-            if (habit) {
-                habit.days[dIdx] = !habit.days[dIdx];
-                syncAndRender();
-            }
+        function toggleDay(habitId, dayIndex) {
+            const habit = habits.find(h => h.id === habitId);
+            habit.days[dayIndex] = !habit.days[dayIndex];
+            sync();
         }
 
         function deleteHabit(id) {
-            if (confirm("Discard this habit data?")) {
-                habitData = habitData.filter(h => h.id !== id);
-                syncAndRender();
+            if(confirm("Permanently delete this 21-day protocol?")) {
+                habits = habits.filter(h => h.id !== id);
+                sync();
             }
         }
 
-        function syncAndRender() {
-            localStorage.setItem('user_habits_mobile', JSON.stringify(habitData));
+        function sync() {
+            localStorage.setItem('user_habits_21day', JSON.stringify(habits));
             render();
         }
 
@@ -233,49 +131,45 @@
             const container = document.getElementById('habit-list');
             container.innerHTML = '';
 
-            habitData.forEach(h => {
-                const count = h.days.filter(d => d).length;
-                const percent = Math.round((count / 21) * 100);
-
+            habits.forEach(habit => {
                 const card = document.createElement('div');
-                card.className = "glass-card p-6 rounded-[2.5rem] space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500";
+                card.className = "glass-panel p-5 rounded-[2.5rem] space-y-4 border-l-2 border-l-accentTeal";
+                
+                // Build the 21-day scrollable grid
+                let gridHTML = `<div class="day-grid">`;
+                habit.days.forEach((done, index) => {
+                    gridHTML += `
+                        <div onclick="toggleDay(${habit.id}, ${index})" class="day-bubble ${done ? 'active' : ''}">
+                            ${index + 1}
+                        </div>`;
+                });
+                gridHTML += `</div>`;
 
                 card.innerHTML = `
                     <div class="flex justify-between items-start">
                         <div>
-                            <h4 class="text-md font-black text-white leading-tight">${h.name}</h4>
-                            <p class="text-[9px] text-gray-500 uppercase font-bold mt-1 tracking-widest">${h.start}</p>
+                            <h3 class="text-sm font-black text-white uppercase tracking-widest">${habit.name}</h3>
+                            <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mt-1">Initiated: ${habit.createdOn}</p>
                         </div>
-                        <button onclick="deleteHabit(${h.id})" class="text-gray-700 hover:text-red-500 transition-colors p-1">
-                            <i class="ph ph-trash text-lg"></i>
-                        </button>
+                        <i onclick="deleteHabit(${habit.id})" class="ph ph-trash text-gray-600 active:text-red-500 transition text-lg cursor-pointer"></i>
                     </div>
-
-                    <div class="space-y-1.5">
-                        <div class="flex justify-between text-[8px] font-black uppercase">
-                            <span class="text-accentTeal">${percent}% Consistant</span>
-                            <span class="text-gray-600">${count} / 21 Days</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${percent}%"></div>
-                        </div>
-                    </div>
-
-                    <div class="habit-grid pt-2">
-                        ${h.days.map((done, i) => `
-                            <div onclick="toggleDay(${h.id}, ${i})" 
-                                 class="day-box ${done ? 'completed' : ''}">
-                                ${i + 1}
-                            </div>
-                        `).join('')}
+                    ${gridHTML}
+                    <div class="flex justify-between items-center px-1">
+                        <p class="text-[7px] font-black text-gray-600 uppercase tracking-widest">Swipe for full duration →</p>
+                        <p class="text-[9px] font-black text-accentTeal uppercase tracking-widest">
+                            ${habit.days.filter(d => d).length}/21 Complete
+                        </p>
                     </div>
                 `;
                 container.appendChild(card);
             });
+
+            if(habits.length === 0) {
+                container.innerHTML = `<p class="text-[10px] text-gray-700 italic text-center py-10 uppercase tracking-widest">No 21-Day Protocols Initialized</p>`;
+            }
         }
 
         window.onload = render;
     </script>
 </body>
-
 </html>

@@ -37,7 +37,6 @@
         .glass-panel { background: rgba(13, 17, 23, 0.85); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.05); }
         .progress-track { height: 4px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
         .progress-fill { height: 100%; transition: width 1s ease-in-out; }
-        .chart-line { fill: none; stroke-width: 3; stroke-linecap: round; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
     </style>
 </head>
 <body>
@@ -86,24 +85,54 @@
                         <div class="progress-track"><div id="focus-bar" class="progress-fill bg-accentYellow" style="width: 0%"></div></div>
                     </div>
 
-                    <div class="glass-panel p-6 rounded-[2.5rem] border-t-2 border-t-accentPurple space-y-6">
-                        <div class="flex justify-between items-center">
+                    <div class="glass-panel p-6 rounded-[2.5rem] border-t-2 border-t-accentPurple">
+                        <div class="flex justify-between items-center mb-4">
                             <div class="flex items-center gap-2">
-                                <i class="ph-fill ph-moon text-accentPurple text-lg"></i>
-                                <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em]">Recovery Arc</h3>
+                                <i class="ph-fill ph-moon-stars text-accentPurple text-lg"></i>
+                                <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em]">Core Sleep Yield</h3>
                             </div>
-                            <span class="text-[9px] font-black text-gray-500 uppercase">Last 7 Days</span>
+                            <span class="text-[9px] font-black text-gray-500 uppercase">Last 7 Logs</span>
                         </div>
-
-                        <div class="space-y-2">
-                            <div class="flex justify-between items-center px-1">
-                                <span class="text-[8px] font-bold text-gray-400 uppercase tracking-tighter">Core Sleep (Hours)</span>
-                                <span id="avg-sleep" class="text-[10px] font-black text-accentPurple">Avg: 0h</span>
+                        
+                        <div class="h-32 w-full flex items-end justify-between gap-2 relative pb-6 border-b border-white/10" id="graph-core">
                             </div>
-                            <div class="h-16 w-full bg-white/5 rounded-xl p-2 relative overflow-hidden">
-                                <svg viewBox="0 0 100 30" class="w-full h-full">
-                                    <path id="sleep-path" d="M0,30 L20,30 L40,30 L60,30 L80,30 L100,30" class="chart-line stroke-accentPurple" fill="none" />
-                                </svg>
+                    </div>
+
+                    <div class="glass-panel p-6 rounded-[2.5rem] border-t-2 border-t-accentYellow">
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="flex items-center gap-2">
+                                <i class="ph-fill ph-battery-charging text-accentYellow text-lg"></i>
+                                <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em]">Power Nap Yield</h3>
+                            </div>
+                            <span class="text-[9px] font-black text-gray-500 uppercase">Last 7 Logs</span>
+                        </div>
+                        
+                        <div class="h-32 w-full flex items-end justify-between gap-2 relative pb-6 border-b border-white/10" id="graph-nap">
+                            </div>
+                    </div>
+
+                    <div class="glass-panel p-6 rounded-[2.5rem] border-t-2 border-t-accentRed space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em] flex items-center gap-2">
+                                <i class="ph-fill ph-heartbeat text-accentRed text-lg"></i> Daily Bio-Metrics
+                            </h3>
+                            <span class="text-[9px] font-black text-gray-500 uppercase">Today's Log</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 text-center">
+                            <div class="bg-black/30 p-3 rounded-xl border border-white/5 flex flex-col items-center">
+                                <i class="ph-fill ph-drop text-accentBlue mb-2 text-xl opacity-80"></i>
+                                <p id="stat-water" class="text-lg font-black text-white leading-none">0</p>
+                                <p class="text-[7px] text-gray-500 uppercase font-bold mt-1">Water</p>
+                            </div>
+                            <div class="bg-black/30 p-3 rounded-xl border border-white/5 flex flex-col items-center">
+                                <i class="ph-fill ph-coffee text-accentYellow mb-2 text-xl opacity-80"></i>
+                                <p id="stat-caffeine" class="text-lg font-black text-white leading-none">0</p>
+                                <p class="text-[7px] text-gray-500 uppercase font-bold mt-1">Caffeine</p>
+                            </div>
+                            <div class="bg-black/30 p-3 rounded-xl border border-white/5 flex flex-col items-center">
+                                <i class="ph-fill ph-flower-lotus text-accentTeal mb-2 text-xl opacity-80"></i>
+                                <p id="stat-meditation" class="text-lg font-black text-white leading-none">0<span class="text-[10px] text-gray-500 ml-0.5">m</span></p>
+                                <p class="text-[7px] text-gray-500 uppercase font-bold mt-1">Meditation</p>
                             </div>
                         </div>
                     </div>
@@ -179,17 +208,53 @@
             document.getElementById('focus-sessions').innerText = `${todaysLogs.length} Sessions`;
             document.getElementById('focus-bar').style.width = `${Math.min((totalMins/240)*100, 100)}%`;
 
-            // -- RECOVERY ARCHITECTURE --
-            const sleepData = JSON.parse(localStorage.getItem('sys_sleep_logs')) || [7, 6.5, 8, 7.2, 6, 7.5, 8]; 
-            const avgSleep = sleepData.length > 0 ? (sleepData.reduce((a,b) => a+b, 0) / sleepData.length).toFixed(1) : 0;
-            document.getElementById('avg-sleep').innerText = `Avg: ${avgSleep}h`;
+            // -- RECOVERY & NAP GRAPHS --
+            const sleepLedger = JSON.parse(localStorage.getItem('sys_sleep_ledger')) || [];
+            
+            function drawBarGraph(containerId, data, colorClass, isNap) {
+                const container = document.getElementById(containerId);
+                container.innerHTML = '';
+                
+                if (data.length === 0) {
+                    container.innerHTML = '<div class="w-full text-center text-[10px] text-gray-600 mb-4 uppercase tracking-widest">No Data Logged</div>';
+                    return;
+                }
 
-            const generatePath = (data, max) => {
-                if(data.length === 0) return "M0,30 L100,30";
-                let points = data.map((val, i) => `${i * (100 / Math.max(1, data.length - 1))},${30 - (val / max * 25)}`).join(' L');
-                return `M${points}`;
-            };
-            document.getElementById('sleep-path').setAttribute('d', generatePath(sleepData, 10));
+                const recent = data.slice(0, 7).reverse();
+                let maxVal = isNap ? 60 : 8; 
+                recent.forEach(log => {
+                    let val = parseFloat(log.duration);
+                    if (val > maxVal) maxVal = val;
+                });
+
+                recent.forEach(log => {
+                    let val = parseFloat(log.duration);
+                    let pct = (val / maxVal) * 100;
+                    let unit = isNap ? 'm' : 'h';
+                    let dateArr = log.date.split(', ');
+                    let dateLabel = dateArr.length > 1 ? dateArr[1] : log.date;
+
+                    container.innerHTML += `
+                        <div class="flex flex-col items-center justify-end h-full w-full group relative">
+                            <span class="text-[8px] font-bold text-white mb-1 absolute -top-5 opacity-70">${val}${unit}</span>
+                            <div class="w-full max-w-[14px] ${colorClass} rounded-t-sm transition-all shadow-[0_0_10px_rgba(0,0,0,0.5)]" style="height: ${pct}%"></div>
+                            <span class="text-[7px] font-black text-gray-500 mt-2 absolute -bottom-5 text-center whitespace-nowrap">${dateLabel}</span>
+                        </div>
+                    `;
+                });
+            }
+
+            const coreLogs = sleepLedger.filter(l => l.type === 'Core');
+            const napLogs = sleepLedger.filter(l => l.type === 'Nap');
+            
+            drawBarGraph('graph-core', coreLogs, 'bg-accentPurple', false);
+            drawBarGraph('graph-nap', napLogs, 'bg-accentYellow', true);
+
+            // -- NEW: DAILY BIO-METRICS --
+            const dailyHealth = JSON.parse(localStorage.getItem('sys_daily_health')) || { water: 0, caffeine: 0, meditation: 0 };
+            document.getElementById('stat-water').innerText = dailyHealth.water || 0;
+            document.getElementById('stat-caffeine').innerText = dailyHealth.caffeine || 0;
+            document.getElementById('stat-meditation').innerHTML = `${dailyHealth.meditation || 0}<span class="text-[10px] text-gray-500 ml-0.5">m</span>`;
 
             // -- REGULAR HABITS (MONTHLY) --
             const regHabits = JSON.parse(localStorage.getItem('sys_reg_habits')) || [];
@@ -241,7 +306,19 @@
             report += `Focus Time (Today): ${document.getElementById('focus-hours').innerText}h ${document.getElementById('focus-mins').innerText}m\n\n`;
             
             report += `[ HEALTH & RECOVERY ]\n`;
-            report += `7-Day Sleep Avg: ${document.getElementById('avg-sleep').innerText}\n\n`;
+            const sleepLedger = JSON.parse(localStorage.getItem('sys_sleep_ledger')) || [];
+            const cLogs = sleepLedger.filter(l => l.type === 'Core');
+            const nLogs = sleepLedger.filter(l => l.type === 'Nap');
+            const cAvg = cLogs.length > 0 ? (cLogs.reduce((s, l) => s + parseFloat(l.duration), 0) / cLogs.length).toFixed(1) : 0;
+            const nTotal = nLogs.reduce((s, l) => s + parseFloat(l.duration), 0);
+            report += `Core Sleep Avg (Lifetime): ${cAvg}h\n`;
+            report += `Total Nap Time (Lifetime): ${nTotal}m\n\n`;
+
+            report += `[ DAILY BIO-METRICS (TODAY) ]\n`;
+            const dailyHealth = JSON.parse(localStorage.getItem('sys_daily_health')) || { water: 0, caffeine: 0, meditation: 0 };
+            report += `Hydration: ${dailyHealth.water || 0} Glasses\n`;
+            report += `Stimulants: ${dailyHealth.caffeine || 0} Doses\n`;
+            report += `Meditation & Focus: ${dailyHealth.meditation || 0} Minutes\n\n`;
 
             report += `[ ROUTINE ADHERENCE ]\n`;
             report += `Active Routines: ${document.getElementById('habit-active').innerText}\n`;
@@ -269,10 +346,9 @@
             
             const contentToCapture = document.getElementById('analytics-content');
             
-            // Generate canvas using the external library
             html2canvas(contentToCapture, {
-                backgroundColor: '#020202', // Force dark background
-                scale: 2, // High DPI for retina displays
+                backgroundColor: '#020202',
+                scale: 2, 
                 useCORS: true
             }).then(canvas => {
                 const url = canvas.toDataURL('image/png');
@@ -281,7 +357,6 @@
                 a.download = `SystemOS_Dashboard_${new Date().toISOString().split('T')[0]}.png`;
                 a.click();
                 
-                // Reset Button
                 btn.innerHTML = originalHTML;
             }).catch(err => {
                 console.error("Screenshot failed:", err);
@@ -290,7 +365,6 @@
             });
         }
 
-        // Initialize and poll
         window.onload = syncAnalytics;
         setInterval(syncAnalytics, 5000);
     </script>
