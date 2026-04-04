@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>System OS | Health Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { 
+                        bgDark: '#020202', 
+                        accentTeal: '#66FCF1', 
+                        accentRed: '#FF4C4C',
+                        accentYellow: '#FBBF24',
+                        accentPurple: '#A855F7'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; display: flex; justify-content: center; min-height: 100vh; }
+        ::-webkit-scrollbar { display: none; }
+        .mobile-viewport { width: 100%; max-width: 430px; height: 100dvh; position: relative; background-color: #020202; overflow: hidden; display: flex; flex-direction: column; }
+        
+        /* CLINICAL OBSIDIAN BACKGROUND */
+        .health-bg { 
+            background-image: url('https://images.unsplash.com/photo-1530497610245-94d3c16cda28?auto=format&fit=crop&q=80&w=1000'); 
+            background-size: cover; background-position: center; position: absolute; inset: 0; opacity: 0.15; z-index: 1; filter: grayscale(100%) contrast(120%);
+        }
+        .vignette { background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.95) 70%, #000 100%); position: absolute; inset: 0; z-index: 2; }
+        .content-layer { position: relative; z-index: 10; flex: 1; display: flex; flex-direction: column; }
+        
+        .glass-panel { background: rgba(13, 17, 23, 0.85); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .input-dark { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 12px; color: white; outline: none; font-size: 13px; transition: border 0.3s; }
+        .input-dark:focus { border-color: #66FCF1; }
+        input[type="time"]::-webkit-calendar-picker-indicator, input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.5; }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-viewport">
+        <div class="health-bg"></div>
+        <div class="vignette"></div>
+
+        <div class="content-layer">
+            <div id="sidebar-injector"></div>
+
+            <header class="p-6 pb-2 flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:text-accentTeal transition"></i>
+                    <h1 class="text-xl font-bold text-white tracking-widest uppercase">Health Hub</h1>
+                </div>
+                <div class="text-[9px] font-black text-accentRed border border-accentRed/20 bg-accentRed/5 px-3 py-1 rounded-full uppercase">Medical Log</div>
+            </header>
+
+            <main class="flex-1 overflow-y-auto p-5 space-y-5 pb-24">
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="glass-panel p-5 rounded-[2rem] space-y-2">
+                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest">Weight Log</p>
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-2xl font-black text-white" id="display-weight">72.4</h2>
+                            <span class="text-xs text-gray-600 font-bold">kg</span>
+                        </div>
+                        <input type="number" id="input-weight" placeholder="Update..." class="w-full bg-black/50 border border-white/10 rounded-lg px-2 py-1 text-[10px] text-white mt-1" onchange="updateWeight(this.value)">
+                    </div>
+                    <div class="glass-panel p-5 rounded-[2rem] space-y-2">
+                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest">Hydration</p>
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-2xl font-black text-white" id="display-water">2.4</h2>
+                            <span class="text-xs text-gray-600 font-bold">L</span>
+                        </div>
+                        <button onclick="addWater()" class="w-full bg-accentTeal/10 text-accentTeal text-[10px] font-black uppercase py-1.5 rounded-lg border border-accentTeal/20 hover:bg-accentTeal/20 transition">+200ml</button>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-6 rounded-[2.5rem] space-y-4 border-t-2 border-t-accentRed">
+                    <div class="flex items-center gap-2">
+                        <i class="ph-fill ph-warning-circle text-accentRed text-lg"></i>
+                        <h3 class="text-[10px] font-black text-white uppercase tracking-widest">Report Anomaly</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <input type="text" id="issue-desc" placeholder="Symptom or issue..." class="w-full input-dark">
+                        <div class="grid grid-cols-2 gap-3">
+                            <select id="issue-severity" class="input-dark text-xs text-gray-300">
+                                <option value="Minor">Minor</option>
+                                <option value="Moderate">Moderate</option>
+                                <option value="Severe">Severe</option>
+                            </select>
+                            <div class="relative">
+                                <label class="text-[8px] text-gray-500 uppercase font-black absolute left-3 top-1">Onset</label>
+                                <input type="date" id="issue-date" class="w-full input-dark pt-5 pb-2 text-xs">
+                            </div>
+                        </div>
+                        <button onclick="logIssue()" class="w-full bg-white/5 border border-white/10 text-white font-black py-4 rounded-xl uppercase text-[10px] tracking-widest hover:bg-white/10 active:scale-95 transition-all">Log Issue</button>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-6 rounded-[2.5rem] space-y-4 border-t-2 border-t-accentPurple">
+                    <div class="flex items-center gap-2">
+                        <i class="ph-fill ph-alarm text-accentPurple text-lg"></i>
+                        <h3 class="text-[10px] font-black text-white uppercase tracking-widest">Schedule Reminder</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <input type="text" id="rem-desc" placeholder="Medication, Doctor Appt..." class="w-full input-dark">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="relative">
+                                <label class="text-[8px] text-gray-500 uppercase font-black absolute left-3 top-1">Date</label>
+                                <input type="date" id="rem-date" class="w-full input-dark pt-5 pb-2 text-xs">
+                            </div>
+                            <div class="relative">
+                                <label class="text-[8px] text-gray-500 uppercase font-black absolute left-3 top-1">Time (Opt)</label>
+                                <input type="time" id="rem-time" class="w-full input-dark pt-5 pb-2 text-xs">
+                            </div>
+                        </div>
+                        <button onclick="addReminder()" class="w-full bg-white/5 border border-white/10 text-white font-black py-4 rounded-xl uppercase text-[10px] tracking-widest hover:bg-white/10 active:scale-95 transition-all">Set Reminder</button>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em] px-2">Clinical Ledger</h3>
+                    
+                    <div id="reminder-list" class="space-y-3"></div>
+                    
+                    <div id="issue-list" class="space-y-3 pt-2 border-t border-white/10"></div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="js/sidebar.js"></script>
+    <script>
+        // Set Default Dates to Today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('issue-date').value = today;
+        document.getElementById('rem-date').value = today;
+
+        // --- VITALS ---
+        let weight = localStorage.getItem('sys_weight') || '72.4';
+        let water = parseFloat(localStorage.getItem('sys_water')) || 2.4;
+        document.getElementById('display-weight').innerText = weight;
+        document.getElementById('display-water').innerText = water.toFixed(1);
+
+        function updateWeight(val) {
+            if(!val) return;
+            weight = parseFloat(val).toFixed(1);
+            document.getElementById('display-weight').innerText = weight;
+            localStorage.setItem('sys_weight', weight);
+            document.getElementById('input-weight').value = '';
+        }
+
+        function addWater() {
+            water = Math.min(water + 0.2, 5.0); 
+            document.getElementById('display-water').innerText = water.toFixed(1);
+            localStorage.setItem('sys_water', water);
+        }
+
+        // --- HEALTH ANOMALIES ---
+        let issues = JSON.parse(localStorage.getItem('sys_health_issues')) || [];
+
+        function logIssue() {
+            const desc = document.getElementById('issue-desc').value.trim();
+            if (!desc) return;
+            issues.push({
+                id: Date.now(), desc: desc,
+                severity: document.getElementById('issue-severity').value,
+                date: document.getElementById('issue-date').value,
+                resolved: false
+            });
+            saveAndRenderIssues();
+            document.getElementById('issue-desc').value = '';
+        }
+
+        function toggleResolve(id) {
+            const issue = issues.find(i => i.id === id);
+            if (issue) { issue.resolved = !issue.resolved; saveAndRenderIssues(); }
+        }
+
+        function deleteIssue(id) {
+            issues = issues.filter(i => i.id !== id);
+            saveAndRenderIssues();
+        }
+
+        function saveAndRenderIssues() {
+            localStorage.setItem('sys_health_issues', JSON.stringify(issues));
+            renderIssues();
+        }
+
+        function renderIssues() {
+            const container = document.getElementById('issue-list');
+            container.innerHTML = '';
+            
+            if(issues.length === 0) {
+                container.innerHTML = '<p class="text-[10px] text-gray-600 italic px-2 tracking-widest uppercase">No anomalies recorded.</p>';
+                return;
+            }
+
+            issues.sort((a,b) => b.id - a.id).forEach(issue => {
+                let color = 'accentTeal';
+                if (issue.severity === 'Moderate') color = 'accentYellow';
+                if (issue.severity === 'Severe') color = 'accentRed';
+
+                const card = document.createElement('div');
+                card.className = `glass-panel p-4 rounded-2xl flex justify-between items-center transition-all ${issue.resolved ? 'opacity-40 grayscale' : ''}`;
+                card.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <div class="w-1.5 h-10 rounded-full bg-${color}"></div>
+                        <div>
+                            <h4 class="text-sm font-bold text-white ${issue.resolved ? 'line-through' : ''}">${issue.desc}</h4>
+                            <div class="flex gap-2 mt-1">
+                                <span class="text-[8px] font-black text-${color} uppercase tracking-widest border border-${color}/20 px-2 py-0.5 rounded">${issue.severity}</span>
+                                <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest py-0.5">${issue.date}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="toggleResolve(${issue.id})" class="text-gray-500 hover:text-accentTeal transition"><i class="ph-bold ph-check-circle text-xl"></i></button>
+                        <button onclick="deleteIssue(${issue.id})" class="text-gray-600 hover:text-red-500 transition"><i class="ph ph-trash text-xl"></i></button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // --- MEDICAL REMINDERS ---
+        let reminders = JSON.parse(localStorage.getItem('sys_med_reminders')) || [];
+
+        function addReminder() {
+            const desc = document.getElementById('rem-desc').value.trim();
+            const date = document.getElementById('rem-date').value;
+            const time = document.getElementById('rem-time').value;
+
+            if (!desc || !date) return;
+            reminders.push({ id: Date.now(), desc, date, time });
+            saveAndRenderReminders();
+            document.getElementById('rem-desc').value = '';
+            document.getElementById('rem-time').value = '';
+        }
+
+        function deleteReminder(id) {
+            reminders = reminders.filter(r => r.id !== id);
+            saveAndRenderReminders();
+        }
+
+        function saveAndRenderReminders() {
+            localStorage.setItem('sys_med_reminders', JSON.stringify(reminders));
+            renderReminders();
+        }
+
+        function renderReminders() {
+            const container = document.getElementById('reminder-list');
+            container.innerHTML = '';
+            
+            if(reminders.length === 0) {
+                container.innerHTML = '<p class="text-[10px] text-gray-600 italic px-2 tracking-widest uppercase">No upcoming appointments.</p>';
+                return;
+            }
+
+            const sorted = reminders.sort((a,b) => new Date(a.date) - new Date(b.date));
+
+            sorted.forEach(rem => {
+                const card = document.createElement('div');
+                card.className = "glass-panel p-4 rounded-2xl flex justify-between items-center bg-black/40";
+                card.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <div class="w-1.5 h-10 rounded-full bg-accentPurple"></div>
+                        <div>
+                            <h4 class="text-sm font-bold text-white">${rem.desc}</h4>
+                            <div class="flex gap-2 mt-1">
+                                <span class="text-[8px] font-black text-accentPurple uppercase tracking-widest border border-accentPurple/20 px-2 py-0.5 rounded">${rem.date}</span>
+                                ${rem.time ? `<span class="text-[8px] font-black text-gray-400 uppercase tracking-widest py-0.5">${rem.time}</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="deleteReminder(${rem.id})" class="text-gray-600 hover:text-red-500 transition"><i class="ph ph-trash text-xl"></i></button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        window.onload = () => {
+            renderIssues();
+            renderReminders();
+        };
+    </script>
+</body>
+</html>

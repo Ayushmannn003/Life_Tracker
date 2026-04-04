@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Personal OS | Sleep</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        darkStart: '#0B0C10', 
+                        darkEnd: '#1F2833',
+                        accentTeal: '#66FCF1',
+                        accentBlue: '#45A29E',
+                        textMain: '#C5C6C7',
+                        accentPurple: '#9d8cfa'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { 
+            background-color: #050505; 
+            color: #C5C6C7; 
+            font-family: 'Inter', sans-serif; 
+            min-height: 100vh;
+        }
+        ::-webkit-scrollbar { display: none; }
+        .glass-card {
+            background: rgba(31, 40, 51, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        input[type="date"]::-webkit-calendar-picker-indicator { 
+            filter: invert(1); opacity: 0.6; cursor: pointer; 
+        }
+    </style>
+</head>
+<body class="flex justify-center min-h-screen">
+
+    <div class="w-full max-w-md bg-gradient-to-br from-[#0B0C10] to-[#1F2833] relative shadow-2xl overflow-x-hidden min-h-[100dvh] flex flex-col">
+        
+        <div id="sidebar-injector" class="z-50"></div>
+
+        <header class="flex justify-between items-center p-6 pb-2">
+            <div class="flex items-center gap-4">
+                <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer hover:text-accentTeal transition"></i>
+                <h1 class="text-xl font-bold text-white tracking-wide">Sleep</h1>
+            </div>
+            <div class="glass-card px-3 py-1.5 rounded-lg flex items-center gap-2 font-bold text-white text-sm">
+                April '26
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-6 space-y-6 pb-12">
+            
+            <div>
+                <h2 class="text-3xl font-bold text-white mb-1">Recovery</h2>
+                <p class="text-textMain text-sm">Track your nightly rest and daytime naps.</p>
+            </div>
+
+            <div class="glass-card p-5 rounded-2xl border-t-2 border-t-accentPurple flex flex-col justify-between">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-white">Today's Report</h3>
+                    <i class="ph-fill ph-moon-stars text-accentPurple text-xl"></i>
+                </div>
+                
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center bg-black/20 p-3 rounded-lg border border-surfaceBorder/50">
+                        <span class="text-sm">Sleep:</span>
+                        <span class="text-white font-bold" id="today-sleep-display">-- <span class="text-[10px] text-textMain font-normal">hrs</span></span>
+                    </div>
+                    <div class="flex justify-between items-center bg-black/20 p-3 rounded-lg border border-surfaceBorder/50">
+                        <span class="text-sm">Nap:</span>
+                        <span class="text-white font-bold" id="today-nap-display">-- <span class="text-[10px] text-textMain font-normal">mins</span></span>
+                    </div>
+                    <div class="flex justify-between items-center bg-black/20 p-3 rounded-lg border border-surfaceBorder/50">
+                        <span class="text-sm">My Rating:</span>
+                        <span class="text-white font-bold" id="today-rating-display">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card p-5 rounded-2xl">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-surfaceBorder pb-3">
+                    Log Session
+                </h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Type</label>
+                        <select id="sleep-type" class="w-full bg-[#1F2833] border border-surfaceBorder rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
+                            <option value="Sleep">Night Sleep</option>
+                            <option value="Nap">Power Nap</option>
+                        </select>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Hours</label>
+                            <input type="number" id="sleep-hours" placeholder="0" min="0" class="w-full bg-black/20 border border-surfaceBorder rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Minutes</label>
+                            <input type="number" id="sleep-minutes" placeholder="0" min="0" max="59" class="w-full bg-black/20 border border-surfaceBorder rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Date</label>
+                            <input type="date" id="sleep-date" class="w-full bg-black/20 border border-surfaceBorder rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Rating</label>
+                            <select id="sleep-rating" class="w-full bg-[#1F2833] border border-surfaceBorder rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
+                                <option value="Good">Good</option>
+                                <option value="Neutral">Neutral</option>
+                                <option value="Bad">Bad</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button onclick="addSleepLog()" class="w-full bg-accentTeal/20 hover:bg-accentTeal/30 text-accentTeal border border-accentTeal/30 font-bold py-3 rounded-lg transition mt-2 flex justify-center items-center gap-2">
+                        <i class="ph-bold ph-plus"></i> Save Record
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-sm font-bold text-textMain uppercase tracking-wider">Log History</h3>
+                    <span class="text-[10px] text-textMain py-1 px-2.5 bg-black/40 rounded-full" id="log-counter">0 Logs</span>
+                </div>
+
+                <div class="space-y-3" id="sleep-list">
+                    </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/sidebar.js"></script>
+    
+    <script>
+        // Set today's date automatically
+        document.getElementById('sleep-date').valueAsDate = new Date();
+        const todayString = new Date().toISOString().split('T')[0];
+
+        // Storage & State
+        let sleepLogs = [];
+
+        function loadFromDevice() {
+            const saved = localStorage.getItem('pdos_sleep_data');
+            if (saved) {
+                sleepLogs = JSON.parse(saved);
+            } else {
+                // Initialize with dummy data matching wireframe context if empty
+                sleepLogs = [
+                    { id: 1, type: "Sleep", hours: 7, minutes: 0, rating: "Good", date: todayString },
+                    { id: 2, type: "Nap", hours: 2, minutes: 0, rating: "Bad", date: todayString }
+                ];
+                saveToDevice();
+            }
+        }
+
+        function saveToDevice() {
+            localStorage.setItem('pdos_sleep_data', JSON.stringify(sleepLogs));
+        }
+
+        // Render Logic
+        function renderSleepData() {
+            const list = document.getElementById('sleep-list');
+            list.innerHTML = '';
+            
+            document.getElementById('log-counter').innerText = `${sleepLogs.length} Logs`;
+
+            // Variables for "Today's Report"
+            let todaySleepStr = "--";
+            let todayNapStr = "--";
+            let todayRating = "--";
+            let sleepRatingColor = "text-white";
+
+            if (sleepLogs.length === 0) {
+                list.innerHTML = `<div class="text-center text-textMain text-xs py-6 glass-card rounded-xl">No sleep records found.</div>`;
+            } else {
+                // Render List (Newest first) formatted for Mobile
+                [...sleepLogs].reverse().forEach(log => {
+                    const isNap = log.type === 'Nap';
+                    
+                    let iconHTML = `<i class="ph-fill ph-moon-stars text-accentPurple text-xl"></i>`;
+                    let bgIcon = "bg-accentPurple/10 border-accentPurple/30";
+                    
+                    if (isNap) {
+                        iconHTML = `<i class="ph-fill ph-sun text-yellow-400 text-xl"></i>`;
+                        bgIcon = "bg-yellow-400/10 border-yellow-400/30";
+                    }
+                    
+                    let ratingColor = "text-textMain";
+                    if (log.rating === "Good") ratingColor = "text-accentTeal";
+                    if (log.rating === "Bad") ratingColor = "text-red-400";
+
+                    // If this log is from today, update the summary widget
+                    if (log.date === todayString) {
+                        const timeStr = `${log.hours > 0 ? log.hours + 'h ' : ''}${log.minutes > 0 ? log.minutes + 'm' : (log.hours === 0 ? '0m' : '')}`;
+                        if (isNap) {
+                            todayNapStr = timeStr;
+                        } else {
+                            todaySleepStr = timeStr;
+                            todayRating = log.rating;
+                            if (log.rating === "Good") sleepRatingColor = "text-accentTeal";
+                            if (log.rating === "Bad") sleepRatingColor = "text-red-400";
+                            if (log.rating === "Neutral") sleepRatingColor = "text-textMain";
+                        }
+                    }
+
+                    list.innerHTML += `
+                        <div class="flex items-center justify-between p-3 bg-black/20 rounded-xl border border-surfaceBorder hover:border-surfaceBorder/80 transition relative overflow-hidden group">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg ${bgIcon} flex items-center justify-center border shrink-0">
+                                    ${iconHTML}
+                                </div>
+                                <div class="pr-2">
+                                    <h4 class="text-white font-semibold text-sm">${log.type}</h4>
+                                    <p class="text-[10px] text-textMain mt-0.5">${log.date}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="text-right">
+                                    <span class="text-white font-bold text-sm block">${log.hours}h ${log.minutes}m</span>
+                                    <span class="text-[9px] ${ratingColor} uppercase tracking-wider font-bold">${log.rating}</span>
+                                </div>
+                                <button onclick="deleteLog(${log.id})" class="text-textMain hover:text-red-400 transition" title="Delete record">
+                                    <i class="ph-bold ph-trash text-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            // Update Today's Report Widget
+            document.getElementById('today-sleep-display').innerHTML = `${todaySleepStr} <span class="text-[10px] text-textMain font-normal"></span>`;
+            document.getElementById('today-nap-display').innerHTML = `${todayNapStr} <span class="text-[10px] text-textMain font-normal"></span>`;
+            document.getElementById('today-rating-display').className = `font-bold ${sleepRatingColor}`;
+            document.getElementById('today-rating-display').innerText = todayRating;
+        }
+
+        // Add Log
+        function addSleepLog() {
+            const type = document.getElementById('sleep-type').value;
+            const hours = parseInt(document.getElementById('sleep-hours').value) || 0;
+            const minutes = parseInt(document.getElementById('sleep-minutes').value) || 0;
+            const rating = document.getElementById('sleep-rating').value;
+            const date = document.getElementById('sleep-date').value;
+
+            if (hours === 0 && minutes === 0) return;
+
+            // Optional logic: if logging a "Sleep" for today, overwrite the existing "Sleep" for today so the widget remains accurate to the wireframe.
+            if (type === "Sleep") {
+                sleepLogs = sleepLogs.filter(log => !(log.date === date && log.type === "Sleep"));
+            } else if (type === "Nap") {
+                 sleepLogs = sleepLogs.filter(log => !(log.date === date && log.type === "Nap"));
+            }
+
+            sleepLogs.push({
+                id: Date.now(),
+                type: type,
+                hours: hours,
+                minutes: minutes,
+                rating: rating,
+                date: date
+            });
+
+            saveToDevice();
+            renderSleepData();
+
+            // Clear numeric inputs
+            document.getElementById('sleep-hours').value = '';
+            document.getElementById('sleep-minutes').value = '';
+        }
+
+        // Delete Log
+        function deleteLog(id) {
+            sleepLogs = sleepLogs.filter(log => log.id !== id);
+            saveToDevice();
+            renderSleepData();
+        }
+
+        // Initialize UI
+        window.onload = () => {
+            loadFromDevice();
+            renderSleepData();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Personal OS | Schedule</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        darkStart: '#0B0C10', 
+                        darkEnd: '#1F2833',
+                        accentTeal: '#66FCF1',
+                        accentBlue: '#45A29E',
+                        textMain: '#C5C6C7'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { 
+            background-color: #050505; 
+            color: #C5C6C7; 
+            font-family: 'Inter', sans-serif; 
+            min-height: 100vh;
+        }
+        ::-webkit-scrollbar { display: none; }
+        .glass-card {
+            background: rgba(31, 40, 51, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        input[type="time"]::-webkit-calendar-picker-indicator { 
+            filter: invert(1); opacity: 0.6; cursor: pointer; 
+        }
+    </style>
+</head>
+<body class="flex justify-center min-h-screen">
+
+    <div class="w-full max-w-md bg-gradient-to-br from-[#0B0C10] to-[#1F2833] relative shadow-2xl overflow-x-hidden min-h-[100dvh] flex flex-col">
+        
+        <div id="sidebar-injector" class="z-50"></div>
+
+        <header class="flex justify-between items-center p-6 pb-2">
+            <div class="flex items-center gap-4">
+                <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer hover:text-accentTeal transition"></i>
+                <h1 class="text-xl font-bold text-white tracking-wide">Schedule</h1>
+            </div>
+            <div class="glass-card px-3 py-1.5 rounded-lg flex items-center gap-2 font-bold text-white text-sm" id="header-date">
+                Apr 4
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-6 space-y-6 pb-12">
+            
+            <div>
+                <h2 class="text-3xl font-bold text-white mb-1">Time Blocks</h2>
+                <p class="text-textMain text-sm">Structure your day and rate activities.</p>
+            </div>
+
+            <div class="glass-card p-5 rounded-2xl">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-surfaceBorder pb-3">
+                    <i class="ph-fill ph-plus-circle text-accentTeal"></i> Add Activity
+                </h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Activity Name</label>
+                        <input type="text" id="event-name" placeholder="e.g., Deep Work, Lunch" class="w-full bg-black/20 border border-surfaceBorder rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Start Time</label>
+                            <input type="time" id="event-start" class="w-full bg-black/20 border border-surfaceBorder rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">End Time</label>
+                            <input type="time" id="event-end" class="w-full bg-black/20 border border-surfaceBorder rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Energy / Rating</label>
+                        <select id="event-rating" class="w-full bg-[#1F2833] border border-surfaceBorder rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
+                            <option value="High Energy">High Energy</option>
+                            <option value="Neutral">Neutral</option>
+                            <option value="Restorative">Restorative</option>
+                            <option value="Draining">Draining</option>
+                        </select>
+                    </div>
+
+                    <button onclick="addEvent()" class="w-full bg-accentTeal/20 hover:bg-accentTeal/30 text-accentTeal border border-accentTeal/30 font-bold py-3 rounded-lg transition mt-2 flex justify-center items-center gap-2">
+                        <i class="ph-bold ph-plus"></i> Log Activity
+                    </button>
+                </div>
+            </div>
+
+            <div class="glass-card p-5 rounded-2xl min-h-[300px]">
+                <div class="flex justify-between items-center mb-4 border-b border-surfaceBorder pb-3">
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider">Today's Timeline</h3>
+                </div>
+
+                <div class="space-y-3" id="schedule-list">
+                    </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/sidebar.js"></script>
+    
+    <script>
+        // Set dynamic date in header
+        const options = { month: 'short', day: 'numeric' };
+        document.getElementById('header-date').innerText = new Date().toLocaleDateString('en-US', options);
+
+        // Initial Mock Data
+        let scheduleEvents = [
+            { id: 1, start: "09:00", end: "11:30", activity: "Architectural Drafting", rating: "High Energy" },
+            { id: 2, start: "11:45", end: "12:45", activity: "Project Sync Meeting", rating: "Neutral" },
+            { id: 3, start: "13:00", end: "14:00", activity: "Lunch Break", rating: "Restorative" }
+        ];
+
+        function renderSchedule() {
+            const list = document.getElementById('schedule-list');
+            list.innerHTML = '';
+
+            // Sort chronologically
+            scheduleEvents.sort((a, b) => a.start.localeCompare(b.start));
+
+            if (scheduleEvents.length === 0) {
+                list.innerHTML = `<div class="text-center text-textMain text-xs py-8">Your schedule is clear.</div>`;
+                return;
+            }
+
+            scheduleEvents.forEach((ev, index) => {
+                // Determine rating color
+                let ratingColor = "text-textMain border-surfaceBorder";
+                let ratingBg = "bg-black/40";
+                
+                if (ev.rating === "High Energy") { ratingColor = "text-accentTeal border-accentTeal/30"; ratingBg = "bg-accentTeal/10"; }
+                if (ev.rating === "Restorative") { ratingColor = "text-accentBlue border-accentBlue/30"; ratingBg = "bg-accentBlue/10"; }
+                if (ev.rating === "Draining") { ratingColor = "text-red-400 border-red-400/30"; ratingBg = "bg-red-400/10"; }
+
+                // Show merge button only if there is a block right after this one
+                const mergeBtnHTML = (index < scheduleEvents.length - 1) 
+                    ? `<button onclick="mergeEvent(${index})" class="text-textMain hover:text-accentTeal transition p-1" title="Merge next block"><i class="ph-bold ph-arrows-merge text-lg"></i></button>`
+                    : ``;
+
+                list.innerHTML += `
+                    <div class="flex items-center gap-3 bg-black/20 p-3 rounded-xl border border-surfaceBorder hover:border-surfaceBorder/80 transition relative overflow-hidden group">
+                        
+                        <div class="flex-shrink-0 text-center w-14 border-r border-surfaceBorder/50 pr-3">
+                            <p class="text-white font-bold text-sm">${ev.start}</p>
+                            <p class="text-[10px] text-textMain mt-0.5">${ev.end}</p>
+                        </div>
+                        
+                        <div class="flex-1 min-w-0 pr-1">
+                            <p class="text-white font-medium text-sm truncate">${ev.activity}</p>
+                            <span class="inline-block mt-1.5 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider border ${ratingBg} ${ratingColor}">
+                                ${ev.rating}
+                            </span>
+                        </div>
+                        
+                        <div class="flex flex-col gap-1 items-center">
+                            ${mergeBtnHTML}
+                            <button onclick="deleteEvent(${ev.id})" class="text-textMain hover:text-red-400 transition p-1" title="Delete">
+                                <i class="ph-bold ph-trash text-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function addEvent() {
+            const name = document.getElementById('event-name').value;
+            const start = document.getElementById('event-start').value;
+            const end = document.getElementById('event-end').value;
+            const rating = document.getElementById('event-rating').value;
+
+            if (!name || !start || !end) return;
+
+            scheduleEvents.push({
+                id: Date.now(),
+                start: start,
+                end: end,
+                activity: name,
+                rating: rating
+            });
+
+            renderSchedule();
+
+            // Clean inputs
+            document.getElementById('event-name').value = '';
+            document.getElementById('event-start').value = '';
+            document.getElementById('event-end').value = '';
+        }
+
+        function deleteEvent(id) {
+            scheduleEvents = scheduleEvents.filter(ev => ev.id !== id);
+            renderSchedule();
+        }
+
+        function mergeEvent(index) {
+            const current = scheduleEvents[index];
+            const next = scheduleEvents[index + 1];
+
+            // Extend end time to the next block's end time
+            current.end = next.end;
+            // Append titles together cleanly
+            current.activity = `${current.activity} & ${next.activity}`;
+            
+            // Remove the next event from the array since it has been absorbed
+            scheduleEvents.splice(index + 1, 1);
+            
+            renderSchedule();
+        }
+
+        // Initialize UI
+        window.onload = renderSchedule;
+    </script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>System OS | Media Library</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6', accentPurple: '#A855F7', accentRed: '#EF4444' }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; display: flex; justify-content: center; height: 100vh; height: 100dvh; overflow: hidden; margin: 0; }
+        ::-webkit-scrollbar { display: none; }
+        
+        .mobile-viewport { width: 100%; max-width: 430px; height: 100%; position: relative; background-color: #020202; overflow: hidden; display: flex; flex-direction: column; }
+        
+        /* UPDATED BACKGROUND: CINEMATIC DARK LIBRARY */
+        .lib-bg { 
+            background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&q=80&w=1000'); 
+            background-size: cover; background-position: center; position: absolute; inset: 0; opacity: 0.18; z-index: 1; filter: grayscale(100%) contrast(110%);
+        }
+        .vignette { background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.98) 80%, #000 100%); position: absolute; inset: 0; z-index: 2; }
+        .content-layer { position: relative; z-index: 10; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        main { flex: 1; overflow-y: auto; padding-bottom: 2rem; }
+        .glass-panel { background: rgba(13, 17, 23, 0.75); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .input-dark { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 14px 12px; color: white; outline: none; font-size: 14px; transition: border 0.3s; }
+        .input-dark:focus { border-color: rgba(255, 255, 255, 0.3); }
+        
+        .check-circle { width: 24px; height: 24px; border: 2px solid rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s; cursor: pointer; flex-shrink: 0; }
+        .check-circle.done { background: #66FCF1; border-color: #66FCF1; }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-viewport">
+        <div class="lib-bg"></div>
+        <div class="vignette"></div>
+
+        <div class="content-layer">
+            <div id="sidebar-injector"></div>
+
+            <header class="p-6 pb-2 flex justify-between items-center border-b border-white/5 bg-black/30 backdrop-blur-md">
+                <div class="flex items-center gap-4">
+                    <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:text-accentTeal active:scale-90 transition"></i>
+                    <h1 class="text-xl font-bold text-white tracking-widest uppercase">Library</h1>
+                </div>
+                <div class="text-[9px] font-black text-accentTeal border border-accentTeal/20 bg-accentTeal/5 px-3 py-1 rounded-full uppercase tracking-widest">
+                    Backlog Sync
+                </div>
+            </header>
+
+            <main class="p-5 space-y-6">
+                
+                <div class="glass-panel p-5 rounded-[2rem] space-y-4 border-t-2 border-t-accentRed">
+                    <div class="flex items-center gap-2">
+                        <i class="ph-fill ph-film-strip text-accentRed text-lg"></i>
+                        <h3 class="text-[10px] font-black text-white uppercase tracking-widest">Movies</h3>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="input-movies" placeholder="Add Movie..." class="flex-1 input-dark">
+                        <button onclick="addMedia('movies')" class="bg-accentRed/20 text-accentRed font-black px-5 rounded-xl active:bg-accentRed/40 active:scale-95 transition"><i class="ph-bold ph-plus text-lg"></i></button>
+                    </div>
+                    <div id="list-movies" class="space-y-2"></div>
+                </div>
+
+                <div class="glass-panel p-5 rounded-[2rem] space-y-4 border-t-2 border-t-accentBlue">
+                    <div class="flex items-center gap-2">
+                        <i class="ph-fill ph-television text-accentBlue text-lg"></i>
+                        <h3 class="text-[10px] font-black text-white uppercase tracking-widest">TV Shows</h3>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="input-shows" placeholder="Add TV Show..." class="flex-1 input-dark">
+                        <button onclick="addMedia('shows')" class="bg-accentBlue/20 text-accentBlue font-black px-5 rounded-xl active:bg-accentBlue/40 active:scale-95 transition"><i class="ph-bold ph-plus text-lg"></i></button>
+                    </div>
+                    <div id="list-shows" class="space-y-2"></div>
+                </div>
+
+                <div class="glass-panel p-5 rounded-[2rem] space-y-4 border-t-2 border-t-accentTeal">
+                    <div class="flex items-center gap-2">
+                        <i class="ph-fill ph-book-bookmark text-accentTeal text-lg"></i>
+                        <h3 class="text-[10px] font-black text-white uppercase tracking-widest">Books</h3>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="input-books" placeholder="Add Book..." class="flex-1 input-dark">
+                        <button onclick="addMedia('books')" class="bg-accentTeal/20 text-accentTeal font-black px-5 rounded-xl active:bg-accentTeal/40 active:scale-95 transition"><i class="ph-bold ph-plus text-lg"></i></button>
+                    </div>
+                    <div id="list-books" class="space-y-2"></div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="js/sidebar.js"></script>
+    <script>
+        let library = {
+            movies: JSON.parse(localStorage.getItem('sys_movies')) || [],
+            shows: JSON.parse(localStorage.getItem('sys_shows')) || [],
+            books: JSON.parse(localStorage.getItem('sys_books')) || []
+        };
+
+        function addMedia(category) {
+            const inputField = document.getElementById(`input-${category}`);
+            const title = inputField.value.trim();
+            if (!title) return;
+            library[category].push({ id: Date.now(), title, done: false });
+            syncDatabase(category);
+            inputField.value = ''; 
+        }
+
+        function toggleMedia(category, id) {
+            const item = library[category].find(i => i.id === id);
+            if (item) { item.done = !item.done; syncDatabase(category); }
+        }
+
+        function deleteMedia(category, id) {
+            library[category] = library[category].filter(i => i.id !== id);
+            syncDatabase(category);
+        }
+
+        function syncDatabase(category) {
+            localStorage.setItem(`sys_${category}`, JSON.stringify(library[category]));
+            renderCategory(category);
+        }
+
+        function renderCategory(category) {
+            const container = document.getElementById(`list-${category}`);
+            container.innerHTML = '';
+            const sortedItems = library[category].sort((a, b) => a.done - b.done);
+
+            sortedItems.forEach(item => {
+                const row = document.createElement('div');
+                row.className = `flex justify-between items-center bg-black/40 p-3.5 rounded-xl transition-all ${item.done ? 'opacity-50' : ''}`;
+                row.innerHTML = `
+                    <div class="flex items-center gap-3 overflow-hidden pr-2">
+                        <div onclick="toggleMedia('${category}', ${item.id})" class="check-circle active:scale-90 ${item.done ? 'done' : ''}">
+                            ${item.done ? '<i class="ph-bold ph-check text-black text-xs"></i>' : ''}
+                        </div>
+                        <span class="text-sm font-bold text-white truncate ${item.done ? 'line-through text-gray-500' : ''}">${item.title}</span>
+                    </div>
+                    <button onclick="deleteMedia('${category}', ${item.id})" class="text-gray-600 hover:text-red-500 active:text-red-500 active:scale-90 transition p-1">
+                        <i class="ph ph-x-circle text-xl"></i>
+                    </button>
+                `;
+                container.appendChild(row);
+            });
+
+            if(sortedItems.length === 0) {
+                container.innerHTML = `<p class="text-[10px] text-gray-600 italic px-2">Log is empty.</p>`;
+            }
+        }
+
+        window.onload = () => {
+            renderCategory('movies'); renderCategory('shows'); renderCategory('books');
+        };
+    </script>
+</body>
+</html>

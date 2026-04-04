@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>System OS | Command Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { 
+                        bgDark: '#020202', 
+                        accentTeal: '#66FCF1', 
+                        accentBlue: '#3B82F6', 
+                        accentPurple: '#A855F7', 
+                        accentRed: '#FF4C4C', 
+                        accentYellow: '#FBBF24' 
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* SCROLLING FIXES - Locks everything but the main content area */
+        body { background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; display: flex; justify-content: center; height: 100vh; height: 100dvh; overflow: hidden; margin: 0; }
+        * { -ms-overflow-style: none; scrollbar-width: none; } /* Hide scrollbar Firefox */
+        ::-webkit-scrollbar { display: none; } /* Hide scrollbar Webkit */
+        
+        .mobile-viewport { width: 100%; max-width: 430px; height: 100%; position: relative; background-color: #020202; overflow: hidden; display: flex; flex-direction: column; }
+        .content-layer { position: relative; z-index: 10; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        main { flex: 1; overflow-y: auto; padding-bottom: 2rem; }
+        
+        /* Base Card Styles */
+        .module-card { 
+            position: relative; 
+            display: block; 
+            border-radius: 1.5rem; 
+            overflow: hidden; 
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.1s ease-in-out;
+        }
+        .module-card:active { transform: scale(0.95); }
+        .module-bg { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0.35; filter: grayscale(80%); transition: filter 0.3s, opacity 0.3s; }
+        
+        /* Vignette Gradients */
+        .vignette-side { background: linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 100%); }
+        .vignette-bottom { background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.95) 100%); }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-viewport">
+        <div class="content-layer">
+            <div id="sidebar-injector"></div>
+
+            <header class="p-6 pb-2 flex justify-between items-center z-20 bg-black/50 backdrop-blur-md border-b border-white/5">
+                <div class="flex items-center gap-4">
+                    <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:text-accentTeal active:scale-90 transition"></i>
+                    <h1 class="text-xl font-bold text-white tracking-widest uppercase">System OS</h1>
+                </div>
+                <div class="text-[9px] font-black text-gray-400 uppercase tracking-widest" id="live-clock">
+                    00:00
+                </div>
+            </header>
+
+            <main class="p-5">
+                
+                <div class="grid grid-cols-2 gap-4">
+                    
+                    <a href="calendar.html" class="module-card h-40 border-t-2 border-t-white">
+                        <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&q=80&w=800');"></div>
+                        <div class="absolute inset-0 vignette-bottom"></div>
+                        <div class="relative h-full p-4 flex flex-col justify-between">
+                            <i class="ph-fill ph-calendar-blank text-white text-3xl drop-shadow-md opacity-80"></i>
+                            <div>
+                                <h2 class="text-sm font-black text-white uppercase tracking-widest">Schedule</h2>
+                                <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em] mt-0.5">Timeline</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="focus.html" class="module-card h-40 border-t-2 border-t-accentYellow">
+                        <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?auto=format&fit=crop&q=80&w=800');"></div>
+                        <div class="absolute inset-0 vignette-bottom"></div>
+                        <div class="relative h-full p-4 flex flex-col justify-between">
+                            <i class="ph-fill ph-target text-accentYellow text-3xl drop-shadow-md opacity-80"></i>
+                            <div>
+                                <h2 class="text-sm font-black text-white uppercase tracking-widest">Focus</h2>
+                                <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em] mt-0.5">Timeboxing</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="habits.html" class="module-card h-40 border-t-2 border-t-accentTeal">
+                        <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=800');"></div>
+                        <div class="absolute inset-0 vignette-bottom"></div>
+                        <div class="relative h-full p-4 flex flex-col justify-between">
+                            <i class="ph-fill ph-check-square-offset text-accentTeal text-3xl drop-shadow-md opacity-80"></i>
+                            <div>
+                                <h2 class="text-sm font-black text-white uppercase tracking-widest">Habits</h2>
+                                <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em] mt-0.5">Forging</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="library.html" class="module-card h-40 border-t-2 border-t-accentBlue">
+                        <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&q=80&w=800');"></div>
+                        <div class="absolute inset-0 vignette-bottom"></div>
+                        <div class="relative h-full p-4 flex flex-col justify-between">
+                            <i class="ph-fill ph-books text-accentBlue text-3xl drop-shadow-md opacity-80"></i>
+                            <div>
+                                <h2 class="text-sm font-black text-white uppercase tracking-widest">Library</h2>
+                                <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em] mt-0.5">Backlog</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="budget.html" class="module-card h-32 col-span-2 border-l-2 border-l-accentRed">
+                        <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=800');"></div>
+                        <div class="absolute inset-0 vignette-side"></div>
+                        <div class="relative h-full p-5 flex flex-col justify-center">
+                            <i class="ph-fill ph-wallet text-accentRed text-3xl mb-1 drop-shadow-md opacity-80"></i>
+                            <h2 class="text-lg font-black text-white uppercase tracking-widest">Finance</h2>
+                            <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em] mt-1">Capital Control</p>
+                        </div>
+                    </a>
+
+                    <a href="health.html" class="module-card h-40 border-t-2 border-t-accentPurple">
+                        <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1530497610245-94d3c16cda28?auto=format&fit=crop&q=80&w=800'); filter: grayscale(100%);"></div>
+                        <div class="absolute inset-0 vignette-bottom"></div>
+                        <div class="relative h-full p-4 flex flex-col justify-between">
+                            <i class="ph-fill ph-heartbeat text-accentPurple text-3xl drop-shadow-md opacity-80"></i>
+                            <div>
+                                <h2 class="text-sm font-black text-white uppercase tracking-widest">Health</h2>
+                                <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em] mt-0.5">Ledger</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="analyzer.html" class="module-card h-40 border-t-2 border-t-white/50">
+                        <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1543286386-713bdd548da4?auto=format&fit=crop&q=80&w=800');"></div>
+                        <div class="absolute inset-0 vignette-bottom"></div>
+                        <div class="relative h-full p-4 flex flex-col justify-between">
+                            <i class="ph-fill ph-chart-line-up text-white/80 text-3xl drop-shadow-md opacity-80"></i>
+                            <div>
+                                <h2 class="text-sm font-black text-white uppercase tracking-widest">Analytics</h2>
+                                <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em] mt-0.5">Overview</p>
+                            </div>
+                        </div>
+                    </a>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/sidebar.js"></script>
+    <script>
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('live-clock').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+</body>
+</html>

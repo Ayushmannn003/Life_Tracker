@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Personal OS | Calendar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        darkStart: '#0B0C10', 
+                        darkEnd: '#1F2833',
+                        accentTeal: '#66FCF1',
+                        accentBlue: '#45A29E',
+                        textMain: '#C5C6C7'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { 
+            background-color: #050505; 
+            color: #C5C6C7; 
+            font-family: 'Inter', sans-serif; 
+            min-height: 100vh;
+        }
+        ::-webkit-scrollbar { display: none; }
+        .glass-card {
+            background: rgba(31, 40, 51, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Mobile-Optimized Calendar Grid */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 0.25rem;
+        }
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .calendar-day.has-event {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .calendar-day.active {
+            background: rgba(102, 252, 241, 0.2);
+            border: 1px solid #66FCF1;
+            color: white;
+            font-weight: bold;
+        }
+        .event-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background-color: #66FCF1;
+            position: absolute;
+            bottom: 4px;
+        }
+    </style>
+</head>
+<body class="flex justify-center min-h-screen">
+
+    <div class="w-full max-w-md bg-gradient-to-br from-[#0B0C10] to-[#1F2833] relative shadow-2xl overflow-x-hidden min-h-[100dvh] flex flex-col">
+        
+        <div id="sidebar-injector" class="z-50"></div>
+
+        <header class="flex justify-between items-center p-6 pb-2">
+            <div class="flex items-center gap-4">
+                <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer hover:text-accentTeal transition"></i>
+                <h1 class="text-xl font-bold text-white tracking-wide">Calendar</h1>
+            </div>
+            <div class="glass-card px-3 py-1.5 rounded-lg flex items-center gap-2 font-bold text-white text-sm" id="header-date">
+                Apr '26
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-6 space-y-6 pb-12">
+            
+            <div>
+                <h2 class="text-3xl font-bold text-white mb-1">Planner</h2>
+                <p class="text-textMain text-sm">Select a date to view or add events.</p>
+            </div>
+
+            <div class="glass-card p-5 rounded-2xl flex flex-col">
+                
+                <div class="flex justify-between items-center mb-4 border-b border-surfaceBorder pb-3">
+                    <button onclick="changeMonth(-1)" class="w-8 h-8 rounded-lg bg-black/40 border border-surfaceBorder hover:border-accentTeal flex items-center justify-center transition">
+                        <i class="ph-bold ph-caret-left"></i>
+                    </button>
+                    <h3 class="text-lg font-bold text-white" id="month-display">April 2026</h3>
+                    <button onclick="changeMonth(1)" class="w-8 h-8 rounded-lg bg-black/40 border border-surfaceBorder hover:border-accentTeal flex items-center justify-center transition">
+                        <i class="ph-bold ph-caret-right"></i>
+                    </button>
+                </div>
+
+                <div class="calendar-grid mb-2 text-center text-[10px] text-textMain uppercase tracking-wider font-bold">
+                    <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+                </div>
+
+                <div id="calendar-body" class="calendar-grid flex-1 text-textMain font-medium">
+                    </div>
+
+            </div>
+
+            <div class="glass-card p-5 rounded-2xl flex-1">
+                <div class="flex justify-between items-center border-b border-surfaceBorder pb-3 mb-4">
+                    <h3 class="text-sm font-bold text-accentTeal uppercase tracking-wider" id="selected-date-title">April 4, 2026</h3>
+                    <span class="text-[10px] text-textMain bg-black/40 px-2 py-1 rounded">Agenda</span>
+                </div>
+                
+                <div class="space-y-3" id="daily-agenda">
+                    </div>
+            </div>
+
+            <div class="glass-card p-5 rounded-2xl">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-4 border-b border-surfaceBorder pb-3 flex items-center gap-2">
+                    <i class="ph-bold ph-plus-circle text-accentTeal"></i> Add to Selected Date
+                </h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Event Note / Title</label>
+                        <input type="text" id="event-note" placeholder="e.g., Cleaning room" class="w-full bg-black/20 border border-surfaceBorder rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Type</label>
+                            <select id="event-type" class="w-full bg-[#1F2833] border border-surfaceBorder rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
+                                <option value="Event">Event / Task</option>
+                                <option value="Holiday">Holiday</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Priority</label>
+                            <select id="event-priority" class="w-full bg-[#1F2833] border border-surfaceBorder rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
+                                <option value="Very High">Very High</option>
+                                <option value="High">High</option>
+                                <option value="Normal">Normal</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button onclick="addCalendarEvent()" class="w-full bg-accentTeal/20 hover:bg-accentTeal/30 text-accentTeal border border-accentTeal/30 font-bold py-3 rounded-lg transition mt-2 flex items-center justify-center gap-2">
+                        <i class="ph-bold ph-plus"></i> Add Event
+                    </button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/sidebar.js"></script>
+    
+    <script>
+        // State variables
+        const now = new Date();
+        document.getElementById('header-date').innerText = now.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+        
+        let currentDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // Match current date
+        let selectedDateStr = formatISODate(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+        let eventsData = {}; 
+
+        function loadFromDevice() {
+            const saved = localStorage.getItem('pdos_calendar_data');
+            if (saved) {
+                eventsData = JSON.parse(saved);
+            } else {
+                // Initialize with wireframe mockup data (adjusting to current month for visibility)
+                const mockDay1 = formatISODate(currentDate.getFullYear(), currentDate.getMonth(), 4);
+                const mockDay2 = formatISODate(currentDate.getFullYear(), currentDate.getMonth(), 10);
+                
+                eventsData = {};
+                eventsData[mockDay1] = [{ id: "1", note: "Cleaning room", type: "Event", priority: "Very High" }];
+                eventsData[mockDay2] = [{ id: "2", note: "Company Holiday", type: "Holiday", priority: "Normal" }];
+                
+                saveToDevice();
+            }
+        }
+
+        function saveToDevice() {
+            localStorage.setItem('pdos_calendar_data', JSON.stringify(eventsData));
+        }
+
+        function changeMonth(direction) {
+            currentDate.setMonth(currentDate.getMonth() + direction);
+            renderCalendar();
+        }
+
+        function formatISODate(year, month, day) {
+            return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        }
+
+        function renderCalendar() {
+            const body = document.getElementById('calendar-body');
+            body.innerHTML = '';
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            // Update Header Display
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            document.getElementById('month-display').innerText = `${monthNames[month]} ${year}`;
+
+            // Calculate grid math
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // Empty slots for previous month
+            for (let i = 0; i < firstDayIndex; i++) {
+                body.innerHTML += `<div class="calendar-day opacity-0"></div>`;
+            }
+
+            // Actual days
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = formatISODate(year, month, day);
+                const isActive = dateStr === selectedDateStr ? 'active' : '';
+                const hasEvents = eventsData[dateStr] && eventsData[dateStr].length > 0;
+                const dotHTML = hasEvents ? `<div class="event-dot"></div>` : '';
+                const eventClass = hasEvents ? 'has-event border border-surfaceBorder/30' : 'border border-transparent';
+
+                body.innerHTML += `
+                    <div class="calendar-day ${eventClass} ${isActive}" onclick="selectDate('${dateStr}')">
+                        ${day}
+                        ${dotHTML}
+                    </div>
+                `;
+            }
+
+            // Render agenda for currently selected date
+            renderAgenda();
+        }
+
+        function selectDate(dateStr) {
+            selectedDateStr = dateStr;
+            renderCalendar(); // Re-render to update the 'active' highlight
+        }
+
+        function renderAgenda() {
+            // Update panel title safely avoiding timezone shifting
+            const parts = selectedDateStr.split('-');
+            const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+            const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+            document.getElementById('selected-date-title').innerText = dateObj.toLocaleDateString('en-US', options);
+
+            const agendaList = document.getElementById('daily-agenda');
+            agendaList.innerHTML = '';
+
+            const dailyEvents = eventsData[selectedDateStr] || [];
+
+            if (dailyEvents.length === 0) {
+                agendaList.innerHTML = `<p class="text-[11px] text-textMain italic py-2">No events scheduled for this day.</p>`;
+                return;
+            }
+
+            dailyEvents.forEach(ev => {
+                let borderClass = "border-surfaceBorder";
+                let textClass = "text-textMain";
+                let icon = "ph-calendar-blank";
+                
+                if (ev.type === "Holiday") {
+                    borderClass = "border-accentBlue/40";
+                    textClass = "text-accentBlue";
+                    icon = "ph-calendar-star";
+                } else if (ev.priority === "Very High") {
+                    borderClass = "border-red-400/40";
+                    textClass = "text-red-400";
+                    icon = "ph-warning-circle";
+                }
+
+                agendaList.innerHTML += `
+                    <div class="bg-black/20 p-3 rounded-xl border ${borderClass} flex justify-between items-center group">
+                        <div class="flex items-center gap-3">
+                            <i class="ph-fill ${icon} ${textClass} text-xl shrink-0"></i>
+                            <div>
+                                <h4 class="text-white font-medium text-sm">${ev.note}</h4>
+                                <p class="text-[10px] ${textClass} mt-0.5 uppercase tracking-wider font-bold">${ev.type} • ${ev.priority}</p>
+                            </div>
+                        </div>
+                        <button onclick="deleteEvent('${ev.id}')" class="text-textMain hover:text-red-400 transition p-1" title="Delete">
+                            <i class="ph-bold ph-trash text-lg"></i>
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        function addCalendarEvent() {
+            const note = document.getElementById('event-note').value;
+            const type = document.getElementById('event-type').value;
+            const priority = document.getElementById('event-priority').value;
+
+            if (!note) return;
+
+            // Initialize array for this date if it doesn't exist
+            if (!eventsData[selectedDateStr]) {
+                eventsData[selectedDateStr] = [];
+            }
+
+            eventsData[selectedDateStr].push({
+                id: Date.now().toString(),
+                note: note,
+                type: type,
+                priority: priority
+            });
+
+            saveToDevice();
+            renderCalendar(); // Refreshes both grid and agenda
+
+            // Clear input
+            document.getElementById('event-note').value = '';
+        }
+
+        function deleteEvent(idStr) {
+            eventsData[selectedDateStr] = eventsData[selectedDateStr].filter(ev => ev.id !== idStr);
+            
+            if (eventsData[selectedDateStr].length === 0) {
+                delete eventsData[selectedDateStr];
+            }
+            
+            saveToDevice();
+            renderCalendar();
+        }
+
+        // Init
+        window.onload = () => {
+            loadFromDevice();
+            renderCalendar();
+        };
+    </script>
+</body>
+</html>

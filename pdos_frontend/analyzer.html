@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>System OS | Core Analytics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6', accentPurple: '#A855F7', accentYellow: '#FBBF24', accentRed: '#FF4C4C' }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; display: flex; justify-content: center; height: 100vh; height: 100dvh; overflow: hidden; margin: 0; }
+        ::-webkit-scrollbar { display: none; }
+        .mobile-viewport { width: 100%; max-width: 430px; height: 100%; position: relative; background-color: #020202; overflow: hidden; display: flex; flex-direction: column; }
+        
+        .analyzer-bg { background-image: url('https://images.unsplash.com/photo-1543286386-713bdd548da4?auto=format&fit=crop&q=80&w=1000'); background-size: cover; background-position: center; position: absolute; inset: 0; opacity: 0.1; z-index: 1; filter: grayscale(100%); }
+        .vignette { background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.98) 80%, #000 100%); position: absolute; inset: 0; z-index: 2; }
+        .content-layer { position: relative; z-index: 10; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        main { flex: 1; overflow-y: auto; padding-bottom: 2rem; }
+        .glass-panel { background: rgba(13, 17, 23, 0.85); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .progress-track { height: 4px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; transition: width 1s ease-in-out; }
+
+        /* Graph Aesthetics */
+        .chart-line { fill: none; stroke-width: 3; stroke-linecap: round; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-viewport">
+        <div class="analyzer-bg"></div>
+        <div class="vignette"></div>
+
+        <div class="content-layer">
+            <div id="sidebar-injector"></div>
+
+            <header class="p-6 pb-2 flex justify-between items-center z-20 bg-black/30 backdrop-blur-md border-b border-white/5">
+                <div class="flex items-center gap-4">
+                    <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:text-accentTeal active:scale-90 transition"></i>
+                    <h1 class="text-xl font-bold text-white tracking-widest uppercase">Analytics</h1>
+                </div>
+                <div class="text-[9px] font-black text-accentTeal border border-accentTeal/20 bg-accentTeal/5 px-3 py-1 rounded-full uppercase">Live Sync</div>
+            </header>
+
+            <main class="p-5 space-y-5">
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="glass-panel p-5 rounded-[2rem] space-y-3">
+                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest">Capital Burn</p>
+                        <h2 class="text-xl font-black text-white" id="core-budget">₹0</h2>
+                        <div class="progress-track"><div id="budget-bar" class="progress-fill bg-accentRed" style="width: 0%"></div></div>
+                    </div>
+                    <div class="glass-panel p-5 rounded-[2rem] space-y-3">
+                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest">Task Yield</p>
+                        <h2 class="text-xl font-black text-white"><span id="task-done">0</span><span class="text-xs text-gray-600 ml-1">Total</span></h2>
+                        <div class="progress-track"><div id="task-bar" class="progress-fill bg-accentTeal" style="width: 0%"></div></div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-6 rounded-[2.5rem] border-t-2 border-t-accentYellow">
+                    <div class="flex justify-between items-end mb-4">
+                        <div>
+                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Deep Focus Yield (Today)</p>
+                            <h2 class="text-2xl font-black text-white"><span id="focus-hours">0</span>h <span id="focus-mins">0</span>m</h2>
+                        </div>
+                        <span id="focus-sessions" class="text-[10px] font-black text-accentYellow uppercase border border-accentYellow/20 px-2 py-0.5 rounded">0 Sessions</span>
+                    </div>
+                    <div class="progress-track"><div id="focus-bar" class="progress-fill bg-accentYellow" style="width: 0%"></div></div>
+                </div>
+
+                <div class="glass-panel p-6 rounded-[2.5rem] border-t-2 border-t-accentTeal space-y-6">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <i class="ph-fill ph-moon text-accentTeal text-lg"></i>
+                            <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em]">Recovery Architecture</h3>
+                        </div>
+                        <span class="text-[9px] font-black text-gray-500 uppercase">Last 7 Days</span>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center px-1">
+                            <span class="text-[8px] font-bold text-gray-400 uppercase tracking-tighter">Core Sleep (Hours)</span>
+                            <span id="avg-sleep" class="text-[10px] font-black text-accentTeal">Avg: 0h</span>
+                        </div>
+                        <div class="h-16 w-full bg-white/5 rounded-xl p-2 relative overflow-hidden">
+                            <svg viewBox="0 0 100 30" class="w-full h-full">
+                                <path id="sleep-path" d="M0,30 L20,30 L40,30 L60,30 L80,30 L100,30" class="chart-line stroke-accentTeal" fill="none" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center px-1">
+                            <span class="text-[8px] font-bold text-gray-400 uppercase tracking-tighter">Power Naps (Mins)</span>
+                            <span id="avg-naps" class="text-[10px] font-black text-accentPurple">Avg: 0m</span>
+                        </div>
+                        <div class="h-16 w-full bg-white/5 rounded-xl p-2 relative overflow-hidden">
+                            <svg viewBox="0 0 100 30" class="w-full h-full">
+                                <path id="nap-path" d="M0,30 L20,30 L40,30 L60,30 L80,30 L100,30" class="chart-line stroke-accentPurple" fill="none" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-6 rounded-[2.5rem] border-t-2 border-t-accentBlue space-y-4">
+                    <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em]">Media Yield</h3>
+                    <div class="grid grid-cols-3 gap-2 text-center">
+                        <div>
+                            <p id="movies-stat" class="text-xs font-black text-white">0/0</p>
+                            <p class="text-[7px] text-gray-500 uppercase font-bold">Movies</p>
+                        </div>
+                        <div>
+                            <p id="shows-stat" class="text-xs font-black text-white">0/0</p>
+                            <p class="text-[7px] text-gray-500 uppercase font-bold">Series</p>
+                        </div>
+                        <div>
+                            <p id="books-stat" class="text-xs font-black text-white">0/0</p>
+                            <p class="text-[7px] text-gray-500 uppercase font-bold">Books</p>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="js/sidebar.js"></script>
+    <script>
+        function syncAnalytics() {
+            // -- FINANCE --
+            const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+            const spent = expenses.reduce((s, e) => s + e.amount, 0);
+            document.getElementById('core-budget').innerText = `₹${spent.toLocaleString('en-IN')}`;
+            document.getElementById('budget-bar').style.width = `${Math.min((spent/50000)*100, 100)}%`;
+
+            // -- TASKS --
+            const tasks = JSON.parse(localStorage.getItem('system_tasks')) || [];
+            const tDone = tasks.filter(t => t.done).length;
+            document.getElementById('task-done').innerText = tDone;
+            document.getElementById('task-bar').style.width = `${tasks.length > 0 ? (tDone/tasks.length)*100 : 0}%`;
+
+            // -- FOCUS --
+            const focusLogs = JSON.parse(localStorage.getItem('sys_focus_logs')) || [];
+            const today = new Date().toISOString().split('T')[0];
+            const todaysLogs = focusLogs.filter(l => l.date === today);
+            const totalMins = todaysLogs.reduce((s, l) => s + l.duration, 0);
+            document.getElementById('focus-hours').innerText = Math.floor(totalMins / 60);
+            document.getElementById('focus-mins').innerText = totalMins % 60;
+            document.getElementById('focus-sessions').innerText = `${todaysLogs.length} Sessions`;
+            document.getElementById('focus-bar').style.width = `${Math.min((totalMins/240)*100, 100)}%`;
+
+            // -- RECOVERY ARCHITECTURE (SLEEP & NAPS) --
+            // Dummy data provided if no localStorage found
+            const sleepData = JSON.parse(localStorage.getItem('sys_sleep_logs')) || [7, 6.5, 8, 7.2, 6, 7.5, 8]; 
+            const napData = JSON.parse(localStorage.getItem('sys_nap_logs')) || [20, 0, 30, 15, 0, 45, 20];
+
+            const avgSleep = (sleepData.reduce((a,b) => a+b, 0) / sleepData.length).toFixed(1);
+            const avgNaps = Math.round(napData.reduce((a,b) => a+b, 0) / napData.length);
+            
+            document.getElementById('avg-sleep').innerText = `Avg: ${avgSleep}h`;
+            document.getElementById('avg-naps').innerText = `Avg: ${avgNaps}m`;
+
+            // Update SVG Paths
+            const generatePath = (data, max) => {
+                let points = data.map((val, i) => `${i * 16.6},${30 - (val / max * 25)}`).join(' L');
+                return `M${points}`;
+            };
+            document.getElementById('sleep-path').setAttribute('d', generatePath(sleepData, 10));
+            document.getElementById('nap-path').setAttribute('d', generatePath(napData, 60));
+
+            // -- LIBRARY SYNC --
+            const cats = ['movies', 'shows', 'books'];
+            cats.forEach(c => {
+                const data = JSON.parse(localStorage.getItem(`sys_${c}`)) || [];
+                document.getElementById(`${c}-stat`).innerText = `${data.filter(i => i.done).length}/${data.length}`;
+            });
+        }
+
+        window.onload = syncAnalytics;
+        setInterval(syncAnalytics, 5000);
+    </script>
+</body>
+</html>
