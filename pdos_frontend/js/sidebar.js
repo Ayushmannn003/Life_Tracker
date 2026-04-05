@@ -1,123 +1,130 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const menuBtn = document.getElementById('menu-btn');
-    if (!menuBtn) return;
+// SYSTEM OS | TRUE MOBILE SIDEBAR ENGINE
 
-    // 1. Mobile-Optimized HTML (Now including Health)
+document.addEventListener("DOMContentLoaded", () => {
+    const injector = document.getElementById('sidebar-injector');
+    if (!injector) return;
+
+    // CHANGED: 'fixed' changed to 'absolute' to keep it trapped inside the mobile viewport
     const sidebarHTML = `
-        <div id="side-menu-container" class="fixed inset-0 z-[100] pointer-events-none flex justify-center">
-            <div class="w-full max-w-[430px] h-full relative overflow-hidden pointer-events-none">
-                
-                <div id="menu-overlay" class="absolute inset-0 bg-black/70 backdrop-blur-md opacity-0 transition-opacity duration-300 pointer-events-auto hidden"></div>
-                
-                <div id="side-panel" class="absolute inset-y-0 left-0 w-[80%] max-w-[320px] bg-[#050505] border-r border-white/10 transform -translate-x-full transition-transform duration-300 ease-out pointer-events-auto shadow-2xl flex flex-col">
-                    
-                    <div class="p-6 flex flex-col h-full overflow-y-auto overscroll-none pb-10">
-                        <div class="flex justify-between items-center mb-8 pt-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-2 h-2 bg-accentTeal rounded-full animate-pulse"></div>
-                                <h2 class="text-[10px] font-black text-white uppercase tracking-[0.3em]">System OS</h2>
-                            </div>
-                            <i id="close-menu" class="ph ph-x text-2xl text-gray-500 cursor-pointer active:scale-90 transition p-2"></i>
-                        </div>
-
-                        <nav class="flex-1 flex flex-col gap-1">
-                            <a href="index.html" class="flex items-center gap-4 text-gray-400 hover:text-white hover:bg-white/5 p-4 rounded-2xl transition-all active:scale-95">
-                                <i class="ph ph-house-simple text-2xl text-accentTeal"></i>
-                                <span class="text-[10px] font-black uppercase tracking-[0.2em]">Dashboard</span>
-                            </a>
-                            <a href="calendar.html" class="flex items-center gap-4 text-gray-400 hover:text-white hover:bg-white/5 p-4 rounded-2xl transition-all active:scale-95">
-                                <i class="ph ph-calendar-blank text-2xl"></i>
-                                <span class="text-[10px] font-black uppercase tracking-[0.2em]">Schedule</span>
-                            </a>
-                            <a href="focus.html" class="flex items-center gap-4 text-gray-400 hover:text-white hover:bg-white/5 p-4 rounded-2xl transition-all active:scale-95">
-                                <i class="ph ph-target text-2xl text-accentYellow"></i>
-                                <span class="text-[10px] font-black uppercase tracking-[0.2em]">Deep Focus</span>
-                            </a>
-                            <a href="regular_habits.html" class="flex items-center gap-4 text-gray-400 hover:text-white hover:bg-white/5 p-4 rounded-2xl transition-all active:scale-95">
-    <i class="ph ph-calendar-check text-2xl text-accentBlue"></i>
-    <span class="text-[10px] font-black uppercase tracking-[0.2em]">Monthly Routines</span>
-</a>
-                            <a href="habits.html" class="flex items-center gap-4 text-gray-400 hover:text-white hover:bg-white/5 p-4 rounded-2xl transition-all active:scale-95">
-                                <i class="ph ph-check-square-offset text-2xl text-accentTeal"></i>
-                                <span class="text-[10px] font-black uppercase tracking-[0.2em]">Habits</span>
-                            </a>
-                            <a href="library.html" class="flex items-center gap-4 text-gray-400 hover:text-white hover:bg-white/5 p-4 rounded-2xl transition-all active:scale-95">
-                                <i class="ph ph-books text-2xl text-accentBlue"></i>
-                                <span class="text-[10px] font-black uppercase tracking-[0.2em]">Library</span>
-                            </a>
-                            <a href="health.html" class="flex items-center gap-4 text-gray-400 hover:text-white hover:bg-white/5 p-4 rounded-2xl transition-all active:scale-95">
-                                <i class="ph ph-heartbeat text-2xl text-accentPurple"></i>
-                                <span class="text-[10px] font-black uppercase tracking-[0.2em]">Health</span>
-                            </a>
-                            <a href="sleep.html" class="flex items-center gap-4 text-gray-400 hover:text-white hover:bg-white/5 p-4 rounded-2xl transition-all active:scale-95">
-    <i class="ph ph-moon-stars text-2xl text-accentPurple"></i>
-    <span class="text-[10px] font-black uppercase tracking-[0.2em]">Recovery</span>
-</a>
-                            <a href="analyzer.html" class="flex items-center gap-4 text-gray-400 hover:text-white hover:bg-white/5 p-4 rounded-2xl transition-all active:scale-95">
-                                <i class="ph ph-chart-line-up text-2xl"></i>
-                                <span class="text-[10px] font-black uppercase tracking-[0.2em]">Analytics</span>
-                            </a>
-                        </nav>
-
-                        <div class="pt-6 mt-6 border-t border-white/5">
-                            <p class="text-[8px] font-black text-center uppercase tracking-widest text-gray-600">Mobile Build v4.2</p>
-                        </div>
+        <div id="sidebar-overlay" class="absolute inset-0 bg-black/80 backdrop-blur-sm z-[90] hidden opacity-0 transition-opacity duration-300"></div>
+        
+        <nav id="sidebar-menu" class="absolute top-0 left-0 h-full w-[85%] bg-[#050505]/95 backdrop-blur-xl border-r border-white/10 z-[100] transform -translate-x-full transition-transform duration-300 flex flex-col shadow-[20px_0_50px_rgba(0,0,0,0.8)]">
+            
+            <div class="p-6 pt-8 border-b border-white/10 bg-gradient-to-b from-white/10 to-transparent">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="h-12 w-12 rounded-full bg-accentTeal/20 border border-accentTeal flex items-center justify-center">
+                        <i class="ph-fill ph-user text-2xl text-accentTeal"></i>
+                    </div>
+                    <div id="close-sidebar" class="h-8 w-8 flex items-center justify-center bg-black/50 rounded-full active:scale-90 transition cursor-pointer border border-white/10">
+                        <i class="ph ph-x text-sm text-gray-400"></i>
                     </div>
                 </div>
+                <div>
+                    <h2 class="text-sm font-black text-white tracking-widest uppercase">Admin User</h2>
+                    <p class="text-[9px] text-accentTeal font-bold tracking-[0.2em] mt-1 flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-accentTeal animate-pulse"></span> SYSTEM OS ONLINE
+                    </p>
+                </div>
             </div>
-        </div>
+            
+            <div class="flex-1 overflow-y-auto p-4 space-y-5 pb-20">
+                
+                <div class="space-y-1">
+                    <p class="text-[8px] font-black text-gray-600 uppercase tracking-widest px-4 mb-2">Core System</p>
+                    <a href="index.html" class="flex items-center gap-4 text-gray-300 hover:text-white hover:bg-white/5 active:bg-white/10 p-3.5 rounded-2xl transition-all">
+                        <i class="ph-fill ph-squares-four text-xl text-white"></i>
+                        <span class="text-xs font-black uppercase tracking-widest">Command Center</span>
+                    </a>
+                    <a href="analyzer.html" class="flex items-center gap-4 text-gray-300 hover:text-white hover:bg-white/5 active:bg-white/10 p-3.5 rounded-2xl transition-all">
+                        <i class="ph-fill ph-chart-line-up text-xl text-white"></i>
+                        <span class="text-xs font-black uppercase tracking-widest">Core Analytics</span>
+                    </a>
+                </div>
+
+                <div class="space-y-1">
+                    <p class="text-[8px] font-black text-gray-600 uppercase tracking-widest px-4 mb-2">Workflow</p>
+                    <a href="calendar.html" class="flex items-center gap-4 text-gray-300 hover:text-white hover:bg-white/5 active:bg-white/10 p-3.5 rounded-2xl transition-all">
+                        <i class="ph-fill ph-calendar-blank text-xl text-white"></i>
+                        <span class="text-xs font-black uppercase tracking-widest">Schedule</span>
+                    </a>
+                    <a href="focus.html" class="flex items-center gap-4 text-gray-300 hover:text-white hover:bg-white/5 active:bg-white/10 p-3.5 rounded-2xl transition-all">
+                        <i class="ph-fill ph-target text-xl text-[#FBBF24]"></i>
+                        <span class="text-xs font-black uppercase tracking-widest">Deep Focus</span>
+                    </a>
+                    <a href="habits.html" class="flex items-center gap-4 text-gray-300 hover:text-white hover:bg-white/5 active:bg-white/10 p-3.5 rounded-2xl transition-all">
+                        <i class="ph-fill ph-check-square-offset text-xl text-[#66FCF1]"></i>
+                        <span class="text-xs font-black uppercase tracking-widest">Habit Forge</span>
+                    </a>
+                    <a href="regular_habits.html" class="flex items-center gap-4 text-gray-300 hover:text-white hover:bg-white/5 active:bg-white/10 p-3.5 rounded-2xl transition-all">
+                        <i class="ph-fill ph-calendar-check text-xl text-[#3B82F6]"></i>
+                        <span class="text-xs font-black uppercase tracking-widest">Daily Routines</span>
+                    </a>
+                </div>
+
+                <div class="space-y-1">
+                    <p class="text-[8px] font-black text-gray-600 uppercase tracking-widest px-4 mb-2">Life & Bio</p>
+                    <a href="budget.html" class="flex items-center gap-4 text-gray-300 hover:text-white hover:bg-white/5 active:bg-white/10 p-3.5 rounded-2xl transition-all">
+                        <i class="ph-fill ph-wallet text-xl text-[#FF4C4C]"></i>
+                        <span class="text-xs font-black uppercase tracking-widest">Capital Control</span>
+                    </a>
+                    <a href="library.html" class="flex items-center gap-4 text-gray-300 hover:text-white hover:bg-white/5 active:bg-white/10 p-3.5 rounded-2xl transition-all">
+                        <i class="ph-fill ph-books text-xl text-[#3B82F6]"></i>
+                        <span class="text-xs font-black uppercase tracking-widest">Library Backlog</span>
+                    </a>
+                    <a href="health.html" class="flex items-center gap-4 text-gray-300 hover:text-white hover:bg-white/5 active:bg-white/10 p-3.5 rounded-2xl transition-all">
+                        <i class="ph-fill ph-heartbeat text-xl text-[#FF4C4C]"></i>
+                        <span class="text-xs font-black uppercase tracking-widest">Health Matrix</span>
+                    </a>
+                    <a href="sleep.html" class="flex items-center gap-4 text-gray-300 hover:text-white hover:bg-white/5 active:bg-white/10 p-3.5 rounded-2xl transition-all">
+                        <i class="ph-fill ph-moon-stars text-xl text-[#A855F7]"></i>
+                        <span class="text-xs font-black uppercase tracking-widest">Recovery Arc</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
     `;
 
-    document.body.insertAdjacentHTML('beforeend', sidebarHTML);
+    injector.innerHTML = sidebarHTML;
 
-    const overlay = document.getElementById('menu-overlay');
-    const panel = document.getElementById('side-panel');
-    const closeBtn = document.getElementById('close-menu');
-    let isMenuOpen = false;
+    // --- LOGIC & ANIMATIONS ---
+    const menuBtn = document.getElementById('menu-btn');
+    const closeBtn = document.getElementById('close-sidebar');
+    const sidebar = document.getElementById('sidebar-menu');
+    const overlay = document.getElementById('sidebar-overlay');
 
-    // 2. Toggle Logic
-    const toggleMenu = (isOpen) => {
-        isMenuOpen = isOpen;
-        if (isOpen) {
-            overlay.classList.remove('hidden');
-            setTimeout(() => {
-                overlay.classList.add('opacity-100');
-                panel.classList.remove('-translate-x-full');
-            }, 10);
-        } else {
-            panel.classList.add('-translate-x-full');
-            overlay.classList.remove('opacity-100');
-            setTimeout(() => overlay.classList.add('hidden'), 300);
-        }
-    };
+    function openMenu() {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+        setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+    }
 
-    // 3. Mobile Swipe-to-Close Gesture Engine
+    function closeMenu() {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('opacity-0');
+        setTimeout(() => overlay.classList.add('hidden'), 300);
+    }
+
+    if (menuBtn) menuBtn.addEventListener('click', openMenu);
+    if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+    if (overlay) overlay.addEventListener('click', closeMenu);
+
+    // --- NATIVE MOBILE SWIPE-TO-CLOSE GESTURE ---
     let touchStartX = 0;
     let touchEndX = 0;
 
-    panel.addEventListener('touchstart', (e) => {
+    sidebar.addEventListener('touchstart', e => {
         touchStartX = e.changedTouches[0].screenX;
     }, { passive: true });
 
-    panel.addEventListener('touchmove', (e) => {
+    sidebar.addEventListener('touchend', e => {
         touchEndX = e.changedTouches[0].screenX;
-        let diff = touchStartX - touchEndX;
-        if (diff > 0) {
-            panel.style.transform = `translateX(-${diff}px)`;
-            panel.style.transition = 'none';
-        }
+        handleSwipe();
     }, { passive: true });
 
-    panel.addEventListener('touchend', (e) => {
-        panel.style.transition = 'transform 300ms ease-out';
-        panel.style.transform = '';
-        if (touchStartX - touchEndX > 50) {
-            toggleMenu(false);
+    function handleSwipe() {
+        // If swiped left by more than 40px, dismiss menu
+        if (touchEndX < touchStartX - 40) {
+            closeMenu();
         }
-    }, { passive: true });
-
-    // 4. Click Listeners
-    menuBtn.addEventListener('click', () => toggleMenu(true));
-    closeBtn.addEventListener('click', () => toggleMenu(false));
-    overlay.addEventListener('click', () => toggleMenu(false));
+    }
 });

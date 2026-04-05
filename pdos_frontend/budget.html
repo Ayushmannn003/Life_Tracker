@@ -3,269 +3,347 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>System OS | Finance Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>System OS | Capital Control</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { 
-                        bgDark: '#020202',
-                        cardDark: 'rgba(15, 23, 42, 0.5)',
-                        accentTeal: '#66FCF1',
-                        accentBlue: '#2563EB',
-                        accentPurple: '#8B5CF6',
-                        accentOrange: '#F97316'
-                    }
+                    colors: { bgDark: '#020202', accentRed: '#FF4C4C', accentTeal: '#66FCF1', accentYellow: '#FBBF24', accentPurple: '#A855F7' }
                 }
             }
         }
     </script>
     <style>
-        body { background-color: #000000; color: #C5C6C7; font-family: 'Inter', sans-serif; }
-        ::-webkit-scrollbar { display: none; }
-        
-        /* THE OBSIDIAN STACK */
-        .obsidian-bg {
-            background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1000');
-            background-size: cover;
-            background-position: center;
-            position: relative;
-        }
-        .obsidian-overlay {
-            /* Heavy Top and Bottom Vignette for maximum focus */
-            background: linear-gradient(180deg, 
-                rgba(0,0,0,0.85) 0%, 
-                rgba(0,0,0,0.6) 20%, 
-                rgba(2,2,2,0.95) 70%, 
-                rgba(0,0,0,1) 100%);
-            position: absolute; inset: 0; z-index: 1;
-        }
-        .main-content { position: relative; z-index: 2; }
-        
-        .glass-panel { 
-            background: rgba(13, 17, 23, 0.7); 
-            backdrop-filter: blur(24px); 
-            border: 1px solid rgba(255, 255, 255, 0.04); 
-            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
-        }
-        
-        .input-dark { 
-            background: rgba(0, 0, 0, 0.6); 
-            border: 1px solid rgba(255, 255, 255, 0.08); 
-            border-radius: 12px; 
-            padding: 12px; 
-            color: #FFF; 
-            outline: none; 
-            transition: border 0.3s;
-        }
-        .input-dark:focus { border-color: #66FCF1; }
+        body, html { background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; margin: 0; height: 100dvh; overflow: hidden; position: fixed; width: 100%; }
+        .mobile-viewport { width: 100%; max-width: 430px; height: 100dvh; margin: 0 auto; position: relative; background-color: #020202; display: flex; flex-direction: column; overflow: hidden; }
 
-        .btn-obsidian {
-            background: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            font-weight: 700;
-            transition: all 0.2s;
+        /* UPGRADED BACKGROUND: High-tech financial data terminal */
+        .budget-bg { 
+            background-image: url('https://images.unsplash.com/photo-1642543492481-44e81e391452?auto=format&fit=crop&q=80&w=1000'); 
+            background-size: cover; background-position: center; position: absolute; inset: 0; opacity: 0.2; z-index: 1; filter: grayscale(100%) contrast(110%); 
         }
-        .btn-obsidian:active { transform: scale(0.97); }
+        .vignette { background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.98) 80%, #000 100%); position: absolute; inset: 0; z-index: 2; }
+        .content-layer { position: relative; z-index: 10; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
-        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.5; }
+        main { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 1.25rem; }
+        main::-webkit-scrollbar { display: none; }
+
+        .glass-panel { background: rgba(13, 17, 23, 0.75); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .input-dark { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 12px; color: white; outline: none; font-size: 14px; }
+        .input-dark:focus { border-color: rgba(255, 76, 76, 0.5); }
+        
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.6; cursor: pointer; }
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+
+        .limit-input { background: transparent; text-align: right; font-size: 0.75rem; font-weight: 700; color: white; width: 4rem; outline: none; border-bottom: 1px solid transparent; transition: 0.2s; }
+        .limit-input:focus { border-bottom: 1px solid #FF4C4C; }
+
+        .progress-bg { height: 6px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; transition: width 0.5s ease; }
     </style>
 </head>
-<body class="flex justify-center min-h-screen">
+<body>
 
-    <div class="w-full max-w-md bg-bgDark relative shadow-2xl overflow-x-hidden min-h-[100dvh] flex flex-col obsidian-bg">
-        <div class="obsidian-overlay"></div>
-        
-        <div class="main-content flex-1 flex flex-col">
+    <div class="mobile-viewport">
+        <div class="budget-bg"></div>
+        <div class="vignette"></div>
+
+        <div class="content-layer">
             <div id="sidebar-injector"></div>
 
-            <header class="p-6 pb-2 flex justify-between items-center">
+            <header class="p-6 pb-2 flex justify-between items-center border-b border-white/5 bg-black/20 backdrop-blur-md">
                 <div class="flex items-center gap-4">
-                    <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer hover:text-accentTeal transition"></i>
-                    <h1 class="text-xl font-bold text-white tracking-widest uppercase">Finance Hub</h1>
+                    <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
+                    <h1 class="text-xl font-black text-white tracking-widest uppercase">Capital</h1>
                 </div>
-                <div class="text-[9px] font-black text-accentTeal bg-accentTeal/5 px-3 py-1 rounded-full border border-accentTeal/10">04 APR 26</div>
+                <div class="text-[9px] font-black text-accentRed border border-accentRed/20 bg-accentRed/5 px-3 py-1 rounded-full uppercase" id="current-month-badge">Control</div>
             </header>
 
-            <main class="flex-1 overflow-y-auto p-5 space-y-6">
-                
-                <div class="glass-panel p-6 rounded-[2.5rem] space-y-4">
+            <main>
+                <div class="glass-panel p-6 rounded-[2.5rem] mb-6 border-t-2 border-t-accentRed space-y-4">
+                    <div class="flex justify-between items-center border-b border-white/10 pb-3 mb-2">
+                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                            <i class="ph-fill ph-sliders-horizontal"></i> Core Limit
+                        </p>
+                        <div class="flex items-center gap-1 bg-black/40 px-3 py-1.5 rounded-lg border border-white/5">
+                            <span class="text-xs font-bold text-gray-500">₹</span>
+                            <input type="number" id="monthly-limit-input" class="limit-input" value="30000" onchange="updateLimit()">
+                            <i class="ph ph-pencil-simple text-gray-600 text-[10px]"></i>
+                        </div>
+                    </div>
+
                     <div class="flex justify-between items-end">
                         <div>
-                            <p class="text-[9px] text-gray-500 uppercase font-black tracking-tighter mb-1">Monthly Limit</p>
-                            <div class="flex items-center gap-1">
-                                <span class="text-white font-bold">₹</span>
-                                <input type="number" id="budget-limit" value="50000" oninput="updateCalculations()" class="bg-transparent text-3xl font-bold text-white w-32 outline-none">
-                            </div>
+                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Total Burn (This Month)</p>
+                            <h2 class="text-3xl font-black text-white" id="total-spent">₹0</h2>
                         </div>
                         <div class="text-right">
-                            <p class="text-[9px] text-gray-500 uppercase font-black tracking-tighter mb-1">Available</p>
-                            <p id="remaining-val" class="text-2xl font-bold text-accentTeal">₹50,000</p>
+                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Allowance Left</p>
+                            <p class="text-xs font-bold text-accentRed" id="remaining-budget">₹0</p>
                         </div>
                     </div>
-                    <div class="space-y-2">
-                        <div class="w-full bg-black/80 rounded-full h-1 overflow-hidden">
-                            <div id="progress-bar" class="bg-accentBlue h-full transition-all duration-1000" style="width: 0%"></div>
-                        </div>
-                        <div class="flex justify-between text-[8px] text-gray-600 font-black uppercase">
-                            <span id="spent-label">₹0 SPENT</span>
-                            <span id="percent-label">0% UTILIZED</span>
-                        </div>
+                    <div class="progress-bg">
+                        <div id="budget-bar" class="progress-fill bg-accentRed" style="width: 0%"></div>
                     </div>
                 </div>
 
-                <div class="glass-panel p-6 rounded-[2.5rem] space-y-4">
-                    <div class="flex bg-black/80 p-1 rounded-2xl gap-1">
-                        <button id="tab-exp" onclick="switchTab('exp')" class="flex-1 py-2.5 text-[10px] font-black uppercase rounded-xl bg-accentBlue text-white shadow-lg transition-all">Expense</button>
-                        <button id="tab-sub" onclick="switchTab('sub')" class="flex-1 py-2.5 text-[10px] font-black uppercase rounded-xl text-gray-600 transition-all">Subscription</button>
+                <div class="space-y-4 mb-10">
+                    <div class="glass-panel p-5 rounded-[2rem] space-y-3">
+                        <div class="flex gap-2">
+                            <input type="date" id="exp-date" class="w-1/3 input-dark !text-[10px] font-bold text-gray-300 !px-2">
+                            <input type="text" id="exp-name" placeholder="Item Name..." class="flex-1 input-dark">
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="number" id="exp-amount" placeholder="₹ Amount" class="w-1/3 input-dark text-center font-bold">
+                            <input type="text" id="exp-note" placeholder="Note (Optional)..." class="flex-1 input-dark !text-[11px] italic text-gray-400">
+                        </div>
+                        <button onclick="addExpense()" class="w-full bg-accentRed/20 text-accentRed border border-accentRed/30 font-black py-3 rounded-xl uppercase text-[10px] tracking-widest active:scale-95 transition shadow-lg mt-1">Authorize Expense</button>
                     </div>
 
-                    <div class="space-y-3">
-                        <input type="text" id="input-name" placeholder="Transaction Name" class="w-full input-dark">
-                        <div class="grid grid-cols-2 gap-3">
-                            <input type="number" id="input-cost" placeholder="Amount ₹" class="input-dark">
-                            <select id="input-cat" class="input-dark">
-                                <option>Food</option>
-                                <option>Bills</option>
-                                <option>Rent/EMI</option>
-                                <option>Shopping</option>
-                                <option>Transport</option>
-                                <option>Health</option>
-                                <option>Other</option>
-                            </select>
-                        </div>
-                        <input type="date" id="input-date" class="w-full input-dark">
-                        <button onclick="handleEntry()" class="w-full btn-obsidian py-4 rounded-2xl shadow-xl border-t border-white/5 active:bg-accentBlue active:text-white transition-all">+ Log Transaction</button>
+                    <div>
+                        <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em] px-2 mb-3 flex items-center gap-2">
+                            Current Ledger <span id="ledger-month-label" class="text-accentRed"></span>
+                        </h3>
+                        <div id="current-expense-list" class="space-y-3">
+                            </div>
                     </div>
                 </div>
 
-                <div class="space-y-6">
-                    <section>
-                        <h3 class="text-[10px] font-black text-accentPurple uppercase tracking-[0.2em] px-2 mb-3">Subscriptions</h3>
-                        <div id="list-subs" class="space-y-3"></div>
-                    </section>
-                    <section>
-                        <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em] px-2 mb-3">Today</h3>
-                        <div id="list-today" class="space-y-3"></div>
-                    </section>
-                    <section class="pb-16">
-                        <div class="flex justify-between items-center px-2 mb-3">
-                            <h3 class="text-[10px] font-black text-gray-700 uppercase tracking-[0.2em]">Archive</h3>
-                            <button onclick="toggleArchive()" id="archive-toggle" class="text-[8px] text-accentTeal border border-accentTeal/20 px-2 py-0.5 rounded uppercase font-black">View All</button>
+                <div class="glass-panel p-5 rounded-[2rem] mb-10 border-t-2 border-t-accentYellow space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+                            <i class="ph-fill ph-repeat text-accentYellow text-lg"></i> Recurring Protocol
+                        </h3>
+                        <button onclick="toggleSubInput()" class="text-accentYellow text-xl active:scale-90 transition"><i class="ph-bold ph-plus-circle"></i></button>
+                    </div>
+                    
+                    <div id="sub-input-zone" class="hidden space-y-2 pb-2">
+                        <div class="flex gap-2">
+                            <input type="text" id="sub-name" placeholder="Service (Netflix, Gym)" class="flex-1 input-dark !text-xs">
+                            <input type="number" id="sub-amount" placeholder="₹/mo" class="w-20 input-dark !text-xs text-center">
+                            <button onclick="addSubscription()" class="bg-accentYellow text-black px-4 rounded-xl font-black text-[10px] uppercase tracking-widest active:scale-95 transition">Add</button>
                         </div>
-                        <div id="list-archive" class="space-y-3 hidden"></div>
-                    </section>
+                    </div>
+
+                    <div id="sub-list" class="space-y-2 max-h-40 overflow-y-auto pr-1">
+                        </div>
                 </div>
 
+                <div class="space-y-4 opacity-70">
+                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-2 flex items-center gap-2 border-t border-white/10 pt-4">
+                        <i class="ph-fill ph-archive text-gray-500"></i> Previous Records
+                    </h3>
+                    <div id="previous-expense-list" class="space-y-3">
+                        </div>
+                </div>
+
+                <div class="h-32"></div>
             </main>
         </div>
     </div>
 
-    <script src="js/api.js"></script>
     <script src="js/sidebar.js"></script>
     <script>
-        const SYSTEM_TODAY = "2026-04-04";
-        let expenses = [];
-        let subscriptions = [];
-        let activeTab = 'exp';
-        let archiveVisible = false;
+        // --- DATA STATE ---
+        let monthlyLimit = parseFloat(localStorage.getItem('sys_budget_limit')) || 30000;
+        let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+        let subscriptions = JSON.parse(localStorage.getItem('sys_subscriptions')) || [];
 
-        document.getElementById('input-date').value = SYSTEM_TODAY;
+        const todayStr = new Date().toISOString().split('T')[0];
+        document.getElementById('exp-date').value = todayStr;
 
-        function switchTab(type) {
-            activeTab = type;
-            const btnExp = document.getElementById('tab-exp');
-            const btnSub = document.getElementById('tab-sub');
-            if(type === 'exp') {
-                btnExp.className = "flex-1 py-2.5 text-[10px] font-black uppercase rounded-xl bg-accentBlue text-white shadow-lg";
-                btnSub.className = "flex-1 py-2.5 text-[10px] font-black uppercase rounded-xl text-gray-600";
-            } else {
-                btnSub.className = "flex-1 py-2.5 text-[10px] font-black uppercase rounded-xl bg-accentPurple text-white shadow-lg";
-                btnExp.className = "flex-1 py-2.5 text-[10px] font-black uppercase rounded-xl text-gray-600";
-            }
-        }
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const currentMonthName = monthNames[new Date().getMonth()];
+        document.getElementById('current-month-badge').innerText = currentMonthName;
+        document.getElementById('ledger-month-label').innerText = `(${currentMonthName})`;
 
-        function toggleArchive() {
-            archiveVisible = !archiveVisible;
-            document.getElementById('list-archive').classList.toggle('hidden');
-            document.getElementById('archive-toggle').innerText = archiveVisible ? "Hide" : "View All";
-        }
-
-        function updateCalculations() {
-            const limit = parseFloat(document.getElementById('budget-limit').value) || 0;
-            const totalSpent = [...expenses, ...subscriptions].reduce((s, e) => s + e.amount, 0);
-            const remaining = limit - totalSpent;
-            const percent = limit > 0 ? Math.min((totalSpent / limit) * 100, 100) : 0;
-
-            document.getElementById('remaining-val').innerText = `₹${remaining.toLocaleString('en-IN')}`;
-            document.getElementById('spent-label').innerText = `₹${totalSpent.toLocaleString('en-IN')} SPENT`;
-            document.getElementById('percent-label').innerText = `${Math.round(percent)}% UTILIZED`;
+        // --- UPDATE DYNAMIC LIMIT ---
+        function updateLimit() {
+            const inputField = document.getElementById('monthly-limit-input');
+            let newVal = parseFloat(inputField.value);
+            if (isNaN(newVal) || newVal <= 0) newVal = 30000; 
             
-            const bar = document.getElementById('progress-bar');
-            bar.style.width = `${percent}%`;
-            bar.className = percent > 90 ? "bg-red-600 h-full transition-all duration-1000" : "bg-accentBlue h-full transition-all duration-1000";
-            
-            renderAll();
+            monthlyLimit = newVal;
+            localStorage.setItem('sys_budget_limit', monthlyLimit);
+            inputField.value = monthlyLimit;
+            render();
         }
 
-        function renderAll() {
-            const subC = document.getElementById('list-subs');
-            const todayC = document.getElementById('list-today');
-            const archC = document.getElementById('list-archive');
-            subC.innerHTML = ''; todayC.innerHTML = ''; archC.innerHTML = '';
+        // --- ADD ITEMS ---
+        function addExpense() {
+            const dateVal = document.getElementById('exp-date').value;
+            const name = document.getElementById('exp-name').value.trim();
+            const amount = parseFloat(document.getElementById('exp-amount').value);
+            const note = document.getElementById('exp-note').value.trim();
+            
+            if (!dateVal || !name || isNaN(amount) || amount <= 0) return;
 
-            subscriptions.forEach(sub => subC.innerHTML += createCard(sub, 'sub', 'accentPurple'));
-            expenses.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(exp => {
-                const card = createCard(exp, 'exp', exp.date === SYSTEM_TODAY ? 'accentOrange' : 'gray-800');
-                if(exp.date === SYSTEM_TODAY) todayC.innerHTML += card;
-                else archC.innerHTML += card;
+            const d = new Date(dateVal);
+            const formattedDate = d.toLocaleDateString('en-US', { timeZone: 'UTC', year: 'numeric', month: 'short', day: 'numeric' });
+
+            expenses.unshift({ 
+                id: Date.now(), name: name, amount: amount, 
+                date: formattedDate, rawDate: dateVal, note: note 
             });
+            
+            document.getElementById('exp-name').value = '';
+            document.getElementById('exp-amount').value = '';
+            document.getElementById('exp-note').value = '';
+            sync();
         }
 
-        function createCard(data, type, color) {
-            return `
-                <div class="glass-panel p-4 rounded-2xl flex justify-between items-center group">
-                    <div class="flex items-center gap-4">
-                        <div class="w-1 h-1 rounded-full bg-${color}"></div>
-                        <div>
-                            <h4 class="text-white text-sm font-semibold">${data.name}</h4>
-                            <p class="text-[9px] text-gray-500 font-black uppercase tracking-widest">${data.category} • ${data.date}</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-5">
-                        <p class="text-white font-bold">₹${data.amount.toLocaleString('en-IN')}</p>
-                        <button onclick="deleteEntry('${type}', ${data.id})" class="text-gray-700 hover:text-red-500 transition-colors">
-                            <i class="ph ph-trash text-lg"></i>
-                        </button>
-                    </div>
-                </div>
-            `;
+        function toggleSubInput() {
+            document.getElementById('sub-input-zone').classList.toggle('hidden');
         }
 
-        function handleEntry() {
-            const name = document.getElementById('input-name').value;
-            const cost = parseFloat(document.getElementById('input-cost').value);
-            const date = document.getElementById('input-date').value;
-            if (!name || isNaN(cost) || !date) return;
-            const entry = { id: Date.now(), name, amount: cost, category: document.getElementById('input-cat').value, date };
-            if(activeTab === 'exp') expenses.push(entry);
-            else subscriptions.push(entry);
-            document.getElementById('input-name').value = '';
-            document.getElementById('input-cost').value = '';
-            updateCalculations();
+        function addSubscription() {
+            const name = document.getElementById('sub-name').value.trim();
+            const amount = parseFloat(document.getElementById('sub-amount').value);
+            if (!name || isNaN(amount) || amount <= 0) return;
+
+            subscriptions.push({ id: Date.now(), name, amount });
+            document.getElementById('sub-name').value = '';
+            document.getElementById('sub-amount').value = '';
+            toggleSubInput();
+            sync();
         }
 
-        function deleteEntry(type, id) {
-            if(type === 'exp') expenses = expenses.filter(e => e.id !== id);
+        // --- DELETE ITEMS ---
+        function deleteItem(id, type) {
+            if (type === 'exp') expenses = expenses.filter(e => e.id !== id);
             else subscriptions = subscriptions.filter(s => s.id !== id);
-            updateCalculations();
+            sync();
         }
 
-        window.onload = updateCalculations;
+        // --- RENDER ENGINE ---
+        function sync() {
+            localStorage.setItem('expenses', JSON.stringify(expenses));
+            localStorage.setItem('sys_subscriptions', JSON.stringify(subscriptions));
+            render();
+        }
+
+        function render() {
+            document.getElementById('monthly-limit-input').value = monthlyLimit;
+
+            const today = new Date();
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
+
+            let currentMonthExpenses = [];
+            let previousExpenses = [];
+
+            expenses.forEach(e => {
+                if (e.rawDate) {
+                    const eDate = new Date(e.rawDate);
+                    if (eDate.getUTCMonth() === currentMonth && eDate.getUTCFullYear() === currentYear) {
+                        currentMonthExpenses.push(e);
+                    } else {
+                        previousExpenses.push(e);
+                    }
+                } else {
+                    previousExpenses.push(e);
+                }
+            });
+
+            // CURRENT LEDGER
+            const cContainer = document.getElementById('current-expense-list');
+            cContainer.innerHTML = '';
+            let totalEx = 0;
+            
+            currentMonthExpenses.forEach(e => {
+                totalEx += e.amount;
+                let noteHTML = e.note ? `<p class="text-[9px] text-gray-400 italic truncate mt-0.5">${e.note}</p>` : '';
+                
+                cContainer.innerHTML += `
+                    <div class="glass-panel p-4 rounded-2xl flex justify-between items-center border-l-2 border-l-accentRed gap-2">
+                        <div class="flex-1 min-w-0 pr-2">
+                            <p class="text-xs font-bold text-white uppercase truncate">${e.name}</p>
+                            ${noteHTML}
+                            <p class="text-[8px] font-black text-gray-500 uppercase mt-1 tracking-widest">${e.date}</p>
+                        </div>
+                        <div class="flex items-center gap-3 shrink-0">
+                            <span class="text-sm font-black text-white text-right w-16 truncate">₹${e.amount}</span>
+                            <div class="h-6 w-[1px] bg-white/10"></div>
+                            <i onclick="deleteItem(${e.id}, 'exp')" class="ph ph-trash text-gray-500 hover:text-red-500 active:text-red-500 transition text-lg cursor-pointer"></i>
+                        </div>
+                    </div>`;
+            });
+
+            if(currentMonthExpenses.length === 0) {
+                cContainer.innerHTML = `<p class="text-[10px] text-gray-700 italic text-center py-6 uppercase tracking-widest">No Logged Expenses This Month</p>`;
+            }
+
+            // PREVIOUS LEDGER
+            const pContainer = document.getElementById('previous-expense-list');
+            pContainer.innerHTML = '';
+            
+            previousExpenses.forEach(e => {
+                let noteHTML = e.note ? `<p class="text-[8px] text-gray-500 italic truncate mt-0.5">${e.note}</p>` : '';
+
+                pContainer.innerHTML += `
+                    <div class="glass-panel p-3.5 rounded-2xl flex justify-between items-center border border-white/5 bg-black/40 gap-2">
+                        <div class="flex-1 min-w-0 pr-2">
+                            <p class="text-[10px] font-bold text-gray-300 uppercase truncate">${e.name}</p>
+                            ${noteHTML}
+                            <p class="text-[7px] font-black text-gray-600 uppercase mt-1 tracking-widest">${e.date}</p>
+                        </div>
+                        <div class="flex items-center gap-3 shrink-0">
+                            <span class="text-xs font-black text-gray-400 text-right w-14 truncate">₹${e.amount}</span>
+                            <div class="h-5 w-[1px] bg-white/10"></div>
+                            <i onclick="deleteItem(${e.id}, 'exp')" class="ph ph-trash text-gray-600 hover:text-red-500 active:text-red-500 transition text-sm cursor-pointer"></i>
+                        </div>
+                    </div>`;
+            });
+
+            if(previousExpenses.length === 0) {
+                pContainer.innerHTML = `<p class="text-[9px] text-gray-800 italic uppercase tracking-widest px-2">No Historical Data Found.</p>`;
+            }
+
+            // SUBSCRIPTIONS
+            const sContainer = document.getElementById('sub-list');
+            sContainer.innerHTML = '';
+            let totalSub = 0;
+            subscriptions.forEach(s => {
+                totalSub += s.amount;
+                sContainer.innerHTML += `
+                    <div class="flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/5 gap-2">
+                        <span class="text-[10px] font-bold text-gray-300 uppercase tracking-widest truncate flex-1">${s.name}</span>
+                        <div class="flex items-center gap-3 shrink-0">
+                            <span class="text-[10px] font-black text-accentYellow w-14 text-right truncate">₹${s.amount}/mo</span>
+                            <div class="h-4 w-[1px] bg-white/10"></div>
+                            <i onclick="deleteItem(${s.id}, 'sub')" class="ph ph-trash text-gray-500 active:text-accentRed transition text-sm cursor-pointer"></i>
+                        </div>
+                    </div>`;
+            });
+
+            // MATH ENGINE
+            const combinedBurn = totalEx + totalSub;
+            document.getElementById('total-spent').innerText = `₹${combinedBurn.toLocaleString()}`;
+            
+            const remaining = monthlyLimit - combinedBurn;
+            const remainingEl = document.getElementById('remaining-budget');
+            if (remaining < 0) {
+                remainingEl.innerText = `-₹${Math.abs(remaining).toLocaleString()}`;
+                remainingEl.classList.replace('text-accentRed', 'text-white');
+            } else {
+                remainingEl.innerText = `₹${remaining.toLocaleString()}`;
+                remainingEl.classList.replace('text-white', 'text-accentRed');
+            }
+            
+            const pct = (combinedBurn / monthlyLimit) * 100;
+            const bar = document.getElementById('budget-bar');
+            bar.style.width = `${Math.min(pct, 100)}%`;
+            
+            if (pct >= 100) bar.className = "progress-fill bg-white";
+            else if (pct >= 80) bar.className = "progress-fill bg-accentYellow";
+            else bar.className = "progress-fill bg-accentRed";
+        }
+
+        window.onload = render;
     </script>
 </body>
 </html>
