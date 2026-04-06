@@ -37,9 +37,6 @@
         .glass-panel { background: rgba(13, 17, 23, 0.85); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.05); }
         .progress-track { height: 4px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
         .progress-fill { height: 100%; transition: width 1s ease-in-out; }
-
-        /* Smooth Chart Animation */
-        .chart-bar { transition: height 1s cubic-bezier(0.4, 0, 0.2, 1); height: 0%; }
     </style>
 </head>
 <body>
@@ -117,8 +114,7 @@
                             </div>
                             <span class="text-[9px] font-black text-gray-500 uppercase">Last 7 Logs</span>
                         </div>
-                        
-                        <div class="h-32 w-full flex items-end justify-between gap-1.5 relative pb-2" id="graph-core">
+                        <div class="h-32 w-full relative" id="graph-core">
                             </div>
                     </div>
 
@@ -130,8 +126,7 @@
                             </div>
                             <span class="text-[9px] font-black text-gray-500 uppercase">Last 7 Logs</span>
                         </div>
-                        
-                        <div class="h-32 w-full flex items-end justify-between gap-1.5 relative pb-2" id="graph-nap">
+                        <div class="h-32 w-full relative" id="graph-nap">
                             </div>
                     </div>
 
@@ -220,11 +215,10 @@
             document.getElementById('core-budget').innerText = `₹${spent.toLocaleString('en-IN')}`;
             document.getElementById('budget-bar').style.width = `${Math.min((spent/50000)*100, 100)}%`;
 
-            // -- NEW: TO-DO PROTOCOL (Tri-State Synced) --
+            // -- TO-DO PROTOCOL --
             const todos = JSON.parse(localStorage.getItem('sys_todo_list')) || [];
             const todayTasks = todos.filter(t => t.date === new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }));
             const totalTasks = todayTasks.length;
-            // Counts tasks marked specifically as 'completed' (or the old 'done' variable)
             const completedTasks = todayTasks.filter(t => t.status === 'completed' || t.done === true).length;
             const todoPct = totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
 
@@ -255,15 +249,15 @@
             document.getElementById('focus-sessions').innerText = `${todaysLogs.length} Sessions`;
             document.getElementById('focus-bar').style.width = `${Math.min((totalMins/240)*100, 100)}%`;
 
-            // -- SLEEP & NAP GRAPHICAL ANIMATIONS --
+            // -- NEW: SVG LINE GRAPH ENGINE (Sleep & Nap) --
             const sleepLedger = JSON.parse(localStorage.getItem('sys_sleep_ledger')) || [];
             
-            function drawBarGraph(containerId, data, colorClass, isNap) {
+            function drawLineGraph(containerId, data, colorHex, isNap) {
                 const container = document.getElementById(containerId);
                 container.innerHTML = '';
                 
                 if (data.length === 0) {
-                    container.innerHTML = '<div class="w-full text-center text-[10px] text-gray-600 mb-4 uppercase tracking-widest flex items-center justify-center h-full">No Data Logged</div>';
+                    container.innerHTML = '<div class="w-full text-center text-[10px] text-gray-600 mt-10 uppercase tracking-widest">No Data Logged</div>';
                     return;
                 }
 
@@ -274,40 +268,77 @@
                     if (val > maxVal) maxVal = val;
                 });
 
+                // Add padding to max bounds so the line doesn't hit the absolute top of the container
+                maxVal = maxVal * 1.2; 
+
+                const svgWidth = 300;
+                const svgHeight = 80;
+                const xStep = recent.length > 1 ? svgWidth / (recent.length - 1) : svgWidth;
+
+                let points = [];
+                let svgHTML = `
+                    <div class="relative w-full h-full flex flex-col justify-end pt-4">
+                        <svg viewBox="-15 -20 330 120" class="w-full h-full overflow-visible drop-shadow-[0_0_8px_${colorHex}40]">
+                `;
+
+                // Calculate exact X,Y coordinates for the data points
                 recent.forEach((log, index) => {
                     let val = parseFloat(log.duration);
-                    let pct = (val / maxVal) * 100;
-                    let unit = isNap ? 'm' : 'h';
-                    
-                    // Display either the day string (Mon/Tue) or D1/D2
-                    let dateArr = log.date.split(', ');
-                    let dateLabel = dateArr.length > 1 ? dateArr[0].substring(0,3) : `D${index+1}`;
-
-                    container.innerHTML += `
-                        <div class="flex flex-col items-center justify-end h-full w-full group relative gap-1">
-                            <span class="text-[8px] font-bold text-white opacity-80">${val}${unit}</span>
-                            <div class="w-full bg-black/40 rounded-sm h-full relative flex items-end justify-center overflow-hidden border border-white/5">
-                                <div class="w-full ${colorClass} rounded-sm chart-bar" style="height: 0%" data-target-height="${pct}%"></div>
-                            </div>
-                            <span class="text-[7px] font-black text-gray-500 uppercase">${dateLabel}</span>
-                        </div>
-                    `;
+                    let x = index * xStep;
+                    let y = svgHeight - ((val / maxVal) * svgHeight);
+                    points.push(`${x},${y}`);
                 });
 
-                // Trigger smooth chart animation after structure is loaded
+                let pathD = `M ${points.join(' L ')}`;
+
+                // 1. Draw the actual line connecting the points
+                svgHTML += `<path d="${pathD}" fill="none" stroke="${colorHex}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="chart-line" stroke-dasharray="1000" stroke-dashoffset="1000" />`;
+
+                // 2. Draw the plot dots and text values above them
+                recent.forEach((log, index) => {
+                    let val = parseFloat(log.duration);
+                    let x = index * xStep;
+                    let y = svgHeight - ((val / maxVal) * svgHeight);
+                    let unit = isNap ? 'm' : 'h';
+
+                    svgHTML += `<circle cx="${x}" cy="${y}" r="4" fill="#000" stroke="${colorHex}" stroke-width="2.5" class="chart-point opacity-0" style="transition-delay: ${index * 80}ms;" />`;
+                    svgHTML += `<text x="${x}" y="${y - 12}" fill="white" font-size="11" font-family="Inter" font-weight="bold" text-anchor="middle" class="chart-point opacity-0" style="transition-delay: ${index * 80}ms;">${val}${unit}</text>`;
+                });
+
+                svgHTML += `</svg><div class="flex justify-between w-full mt-2">`;
+
+                // 3. Render X-Axis (Days)
+                recent.forEach((log, index) => {
+                    let dateArr = log.date.split(', ');
+                    let dateLabel = dateArr.length > 1 ? dateArr[0].substring(0,3) : `D${index+1}`;
+                    svgHTML += `<span class="text-[8px] font-black text-gray-500 uppercase text-center w-8 shrink-0">${dateLabel}</span>`;
+                });
+
+                svgHTML += `</div></div>`;
+                container.innerHTML = svgHTML;
+
+                // Trigger smooth path drawing animation after HTML injection
                 setTimeout(() => {
-                    const bars = container.querySelectorAll('.chart-bar');
-                    bars.forEach(bar => {
-                        bar.style.height = bar.getAttribute('data-target-height');
+                    const lines = container.querySelectorAll('.chart-line');
+                    lines.forEach(line => {
+                        line.style.transition = "stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1)";
+                        line.style.strokeDashoffset = "0";
                     });
-                }, 100);
+                    const pts = container.querySelectorAll('.chart-point');
+                    pts.forEach(pt => {
+                        pt.style.transitionProperty = "opacity";
+                        pt.style.transitionDuration = "0.5s";
+                        pt.classList.remove('opacity-0');
+                    });
+                }, 50);
             }
 
             const coreLogs = sleepLedger.filter(l => l.type === 'Core');
             const napLogs = sleepLedger.filter(l => l.type === 'Nap');
             
-            drawBarGraph('graph-core', coreLogs, 'bg-accentPurple', false);
-            drawBarGraph('graph-nap', napLogs, 'bg-accentYellow', true);
+            // Pass specific hex codes into the SVG renderer
+            drawLineGraph('graph-core', coreLogs, '#A855F7', false);
+            drawLineGraph('graph-nap', napLogs, '#FBBF24', true);
 
             // -- DAILY BIO-METRICS --
             const dailyHealth = JSON.parse(localStorage.getItem('sys_daily_health')) || { water: 0, caffeine: 0, meditation: 0 };
@@ -315,7 +346,7 @@
             document.getElementById('stat-caffeine').innerText = dailyHealth.caffeine || 0;
             document.getElementById('stat-meditation').innerHTML = `${dailyHealth.meditation || 0}<span class="text-[10px] text-gray-500 ml-0.5">m</span>`;
 
-            // -- REGULAR HABITS (MONTHLY) --
+            // -- REGULAR HABITS --
             const regHabits = JSON.parse(localStorage.getItem('sys_reg_habits')) || [];
             let activeRegCount = regHabits.length;
             let regTotalHits = 0;
