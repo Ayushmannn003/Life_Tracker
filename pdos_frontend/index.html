@@ -13,12 +13,8 @@
             theme: {
                 extend: {
                     colors: { 
-                        bgDark: '#020202', 
-                        accentTeal: '#66FCF1', 
-                        accentBlue: '#3B82F6', 
-                        accentPurple: '#A855F7', 
-                        accentRed: '#FF4C4C', 
-                        accentYellow: '#FBBF24' 
+                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6', 
+                        accentPurple: '#A855F7', accentRed: '#FF4C4C', accentYellow: '#FBBF24' 
                     }
                 }
             }
@@ -26,93 +22,86 @@
     </script>
     <style>
         /* UNIVERSAL MOBILE SCROLL FIX */
-        body, html { 
-            background-color: #000; 
-            color: #C5C6C7; 
-            font-family: 'Inter', sans-serif; 
-            margin: 0; 
-            height: 100%; 
-            height: 100dvh; 
-            overflow: hidden; 
-            position: fixed; 
-            width: 100%;
-        }
-
-        .mobile-viewport { 
-            width: 100%; 
-            max-width: 430px; 
-            height: 100dvh; 
-            margin: 0 auto;
-            position: relative; 
-            background-color: #020202; 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden;
-        }
+        body, html { background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; margin: 0; height: 100dvh; overflow: hidden; position: fixed; width: 100%; }
+        .mobile-viewport { width: 100%; max-width: 430px; height: 100dvh; margin: 0 auto; position: relative; background-color: #020202; display: flex; flex-direction: column; overflow: hidden; }
 
         /* MAIN CONTENT AREA */
-        main { 
-            flex: 1; 
-            overflow-y: auto; 
-            overflow-x: hidden;
-            -webkit-overflow-scrolling: touch; 
-            padding: 1.25rem;
-        }
+        main { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; padding: 1.25rem; }
         main::-webkit-scrollbar { display: none; }
-        main { -ms-overflow-style: none; scrollbar-width: none; }
-
+        
         /* Card System */
         .module-card { 
-            position: relative; 
-            display: block; 
-            border-radius: 1.75rem; 
-            overflow: hidden; 
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: transform 0.1s ease-in-out;
-            background: #0a0a0a;
+            position: relative; display: block; border-radius: 1.75rem; overflow: hidden; 
+            border: 1px solid rgba(255, 255, 255, 0.05); transition: transform 0.1s ease-in-out; background: #0a0a0a;
         }
-        .module-card:active { transform: scale(0.96); }
-        .module-bg { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0.3; filter: grayscale(100%); }
-        
+        .module-card:active { transform: scale(0.95); }
+        .module-bg { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0.25; filter: grayscale(100%); }
+        .vignette-bottom { background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.95) 100%); }
         .vignette-side { background: linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 100%); }
-        .vignette-bottom { background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.95) 100%); }
+
+        /* Section Dividers */
+        .sector-divider { display: flex; align-items: center; gap: 12px; margin: 24px 0 16px 0; opacity: 0.7; }
+        .sector-line { height: 1px; flex: 1; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); }
     </style>
 </head>
 <body>
 
     <div class="mobile-viewport">
-        <header class="p-6 pb-2 flex justify-between items-center z-50 bg-black/50 backdrop-blur-xl border-b border-white/5">
-            <div class="flex items-center gap-4">
-                <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
+        <header class="p-6 pb-3 flex justify-between items-center z-50 bg-[#020202]/80 backdrop-blur-xl border-b border-white/5 relative">
+            <div class="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none"></div>
+            <div class="flex items-center gap-4 relative z-10">
+                <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]"></i>
                 <h1 class="text-xl font-black text-white tracking-widest uppercase">System OS</h1>
             </div>
-            <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest" id="live-clock">00:00</div>
+            <div class="text-[10px] font-black text-accentTeal uppercase tracking-widest bg-accentTeal/10 border border-accentTeal/20 px-3 py-1.5 rounded-full flex items-center gap-2 relative z-10">
+                <span class="w-1.5 h-1.5 rounded-full bg-accentTeal animate-pulse"></span>
+                <span id="live-clock">00:00</span>
+            </div>
         </header>
 
         <main>
-            <div class="grid grid-cols-2 gap-4">
-
-                <div id="dynamic-ritual-container" class="col-span-2" style="display: none;"></div>
-                
-                <div class="module-card col-span-2 border-l-2 border-l-white bg-black/40 backdrop-blur-md p-5 flex flex-col justify-center min-h-[100px]" id="dashboard-quote-card">
-                    <div class="flex items-center gap-2 mb-2">
-                        <i class="ph-fill ph-quotes text-white/50 text-sm"></i>
-                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest">Protocol Intention</p>
-                    </div>
-                    <p id="dashboard-quote-text" class="text-sm font-bold text-white italic leading-relaxed">
-                        "Awaiting daily input. Access Health Matrix to initialize protocol."
-                    </p>
+            
+            <div class="module-card border-l-2 border-l-white bg-black/40 backdrop-blur-md p-5 flex flex-col justify-center min-h-[90px] mb-4" id="dashboard-quote-card">
+                <div class="flex items-center gap-2 mb-2">
+                    <i class="ph-fill ph-quotes text-white/50 text-sm"></i>
+                    <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest">Protocol Intention</p>
                 </div>
+                <p id="dashboard-quote-text" class="text-xs font-bold text-white italic leading-relaxed">
+                    "Awaiting daily input. Access Health Matrix."
+                </p>
+            </div>
 
+            <div id="dynamic-ritual-container" class="mb-4" style="display: none;"></div>
+
+            <a href="todo.html" class="module-card border-l-2 border-l-accentTeal p-5 flex flex-col justify-center min-h-[120px] mb-2">
+                <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&q=80&w=800'); opacity: 0.15;"></div>
+                <div class="absolute inset-0 vignette-side"></div>
+                <div class="relative z-10 w-full">
+                    <div class="flex justify-between items-center mb-3">
+                        <div class="flex items-center gap-2">
+                            <i class="ph-fill ph-list-checks text-accentTeal text-lg opacity-80"></i>
+                            <h2 class="text-sm font-black text-white uppercase tracking-widest">Task Protocol</h2>
+                        </div>
+                        <span id="todo-dash-count" class="text-[9px] font-black text-accentTeal bg-accentTeal/10 px-2 py-1 rounded border border-accentTeal/20">0 Active</span>
+                    </div>
+                    <div id="todo-dash-preview" class="space-y-2">
+                        </div>
+                </div>
+            </a>
+
+            <div class="sector-divider">
+                <div class="sector-line"></div>
+                <span class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Time & Focus</span>
+                <div class="sector-line"></div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
                 <a href="calendar.html" class="module-card h-40 border-t-2 border-t-white">
                     <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&q=80&w=800');"></div>
                     <div class="absolute inset-0 vignette-bottom"></div>
                     <div class="relative h-full p-4 flex flex-col justify-between">
                         <i class="ph-fill ph-calendar-blank text-white text-3xl opacity-80"></i>
-                        <div>
-                            <h2 class="text-sm font-black text-white uppercase tracking-widest">Schedule</h2>
-                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Timeline</p>
-                        </div>
+                        <div><h2 class="text-sm font-black text-white uppercase tracking-widest">Schedule</h2><p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Timeline</p></div>
                     </div>
                 </a>
 
@@ -121,39 +110,12 @@
                     <div class="absolute inset-0 vignette-bottom"></div>
                     <div class="relative h-full p-4 flex flex-col justify-between">
                         <i class="ph-fill ph-target text-accentYellow text-3xl opacity-80"></i>
-                        <div>
-                            <h2 class="text-sm font-black text-white uppercase tracking-widest">Focus</h2>
-                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Timebox</p>
-                        </div>
-                    </div>
-                </a>
-
-                <a href="todo.html" class="module-card h-40 border-t-2 border-t-accentTeal">
-                    <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&q=80&w=800'); opacity: 0.35;"></div>
-                    <div class="absolute inset-0 vignette-bottom"></div>
-                    <div class="relative h-full p-4 flex flex-col justify-between">
-                        <i class="ph-fill ph-list-checks text-accentTeal text-3xl opacity-80"></i>
-                        <div>
-                            <h2 class="text-sm font-black text-white uppercase tracking-widest">To-Do</h2>
-                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Task Protocol</p>
-                        </div>
-                    </div>
-                </a>
-
-                <a href="habits.html" class="module-card h-40 border-t-2 border-t-accentTeal">
-                    <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=800');"></div>
-                    <div class="absolute inset-0 vignette-bottom"></div>
-                    <div class="relative h-full p-4 flex flex-col justify-between">
-                        <i class="ph-fill ph-check-square-offset text-accentTeal text-3xl opacity-80"></i>
-                        <div>
-                            <h2 class="text-sm font-black text-white uppercase tracking-widest">Habits</h2>
-                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">21-Day Arc</p>
-                        </div>
+                        <div><h2 class="text-sm font-black text-white uppercase tracking-widest">Focus</h2><p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Timebox</p></div>
                     </div>
                 </a>
 
                 <a href="weekly.html" class="module-card h-32 col-span-2 border-l-2 border-l-accentBlue">
-                    <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1506784693919-ef06d93c28d2?auto=format&fit=crop&q=80&w=800'); opacity: 0.25;"></div>
+                    <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1506784693919-ef06d93c28d2?auto=format&fit=crop&q=80&w=800'); opacity: 0.3;"></div>
                     <div class="absolute inset-0 vignette-side"></div>
                     <div class="relative h-full p-6 flex flex-col justify-center">
                         <i class="ph-fill ph-grid-four text-accentBlue text-3xl mb-1 opacity-80"></i>
@@ -162,23 +124,49 @@
                     </div>
                 </a>
 
-                <a href="rituals.html" class="module-card h-32 col-span-2 border-l-2 border-l-white">
-                    <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1494548162494-384bba4ab999?auto=format&fit=crop&q=80&w=800'); opacity: 0.4;"></div>
+                <a href="habits.html" class="module-card h-32 col-span-2 border-l-2 border-l-accentTeal">
+                    <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=800'); opacity: 0.35;"></div>
                     <div class="absolute inset-0 vignette-side"></div>
                     <div class="relative h-full p-6 flex flex-col justify-center">
-                        <i class="ph-fill ph-sun-horizon text-white text-3xl mb-1 opacity-80"></i>
-                        <h2 class="text-xl font-black text-white uppercase tracking-widest">Rituals Hub</h2>
-                        <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em]">Edit AM/PM Protocols</p>
+                        <i class="ph-fill ph-check-square-offset text-accentTeal text-3xl mb-1 opacity-80"></i>
+                        <h2 class="text-xl font-black text-white uppercase tracking-widest">Habit Forge</h2>
+                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">21-Day Arc</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="sector-divider">
+                <div class="sector-line"></div>
+                <span class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Bio & Wealth</span>
+                <div class="sector-line"></div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <a href="health.html" class="module-card h-40 border-t-2 border-t-accentRed">
+                    <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1530497610245-94d3c16cda28?auto=format&fit=crop&q=80&w=800');"></div>
+                    <div class="absolute inset-0 vignette-bottom"></div>
+                    <div class="relative h-full p-4 flex flex-col justify-between">
+                        <i class="ph-fill ph-heartbeat text-accentRed text-3xl opacity-80"></i>
+                        <div><h2 class="text-sm font-black text-white uppercase tracking-widest">Health</h2><p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Metrics</p></div>
                     </div>
                 </a>
 
-                <a href="regular_habits.html" class="module-card h-32 col-span-2 border-l-2 border-l-accentBlue">
-                    <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?auto=format&fit=crop&q=80&w=800'); opacity: 0.2;"></div>
+                <a href="sleep.html" class="module-card h-40 border-t-2 border-t-accentPurple">
+                    <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&fit=crop&q=80&w=800');"></div>
+                    <div class="absolute inset-0 vignette-bottom"></div>
+                    <div class="relative h-full p-4 flex flex-col justify-between">
+                        <i class="ph-fill ph-moon-stars text-accentPurple text-3xl opacity-80"></i>
+                        <div><h2 class="text-sm font-black text-white uppercase tracking-widest">Recovery</h2><p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Sleep Arc</p></div>
+                    </div>
+                </a>
+
+                <a href="budget.html" class="module-card h-32 col-span-2 border-l-2 border-l-accentRed">
+                    <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=800'); opacity: 0.35;"></div>
                     <div class="absolute inset-0 vignette-side"></div>
                     <div class="relative h-full p-6 flex flex-col justify-center">
-                        <i class="ph-fill ph-calendar-check text-accentBlue text-3xl mb-1 opacity-80"></i>
-                        <h2 class="text-xl font-black text-white uppercase tracking-widest">Daily Routines</h2>
-                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Monthly Tracker</p>
+                        <i class="ph-fill ph-wallet text-accentRed text-3xl mb-1 opacity-80"></i>
+                        <h2 class="text-xl font-black text-white uppercase tracking-widest">Finance</h2>
+                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Capital Control</p>
                     </div>
                 </a>
 
@@ -188,56 +176,48 @@
                     <div class="relative h-full p-6 flex flex-col justify-center">
                         <i class="ph-fill ph-books text-accentBlue text-3xl mb-1 opacity-80"></i>
                         <h2 class="text-xl font-black text-white uppercase tracking-widest">Library</h2>
-                        <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em]">Knowledge Backlog</p>
+                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Knowledge Backlog</p>
                     </div>
                 </a>
+            </div>
 
-                <a href="budget.html" class="module-card h-32 col-span-2 border-l-2 border-l-accentRed">
-                    <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=800');"></div>
-                    <div class="absolute inset-0 vignette-side"></div>
-                    <div class="relative h-full p-6 flex flex-col justify-center">
-                        <i class="ph-fill ph-wallet text-accentRed text-3xl mb-1 opacity-80"></i>
-                        <h2 class="text-xl font-black text-white uppercase tracking-widest">Finance</h2>
-                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Capital Control</p>
-                    </div>
-                </a>
+            <div class="sector-divider">
+                <div class="sector-line"></div>
+                <span class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">System & Routine</span>
+                <div class="sector-line"></div>
+            </div>
 
-                <a href="health.html" class="module-card h-40 border-t-2 border-t-accentRed">
-                    <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1530497610245-94d3c16cda28?auto=format&fit=crop&q=80&w=800');"></div>
+            <div class="grid grid-cols-2 gap-4">
+                <a href="regular_habits.html" class="module-card h-40 border-t-2 border-t-accentBlue">
+                    <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?auto=format&fit=crop&q=80&w=800');"></div>
                     <div class="absolute inset-0 vignette-bottom"></div>
                     <div class="relative h-full p-4 flex flex-col justify-between">
-                        <i class="ph-fill ph-heartbeat text-accentRed text-3xl opacity-80"></i>
-                        <div>
-                            <h2 class="text-sm font-black text-white uppercase tracking-widest">Health</h2>
-                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Bio-Metrics</p>
-                        </div>
+                        <i class="ph-fill ph-calendar-check text-accentBlue text-3xl opacity-80"></i>
+                        <div><h2 class="text-sm font-black text-white uppercase tracking-widest">Routines</h2><p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Monthly Tracker</p></div>
                     </div>
                 </a>
 
-                <a href="sleep.html" class="module-card h-40 border-t-2 border-t-accentPurple">
-                    <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&fit=crop&q=80&w=800');"></div>
+                <a href="rituals.html" class="module-card h-40 border-t-2 border-t-white">
+                    <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1494548162494-384bba4ab999?auto=format&fit=crop&q=80&w=800');"></div>
                     <div class="absolute inset-0 vignette-bottom"></div>
                     <div class="relative h-full p-4 flex flex-col justify-between">
-                        <i class="ph-fill ph-moon-stars text-accentPurple text-3xl opacity-80"></i>
-                        <div>
-                            <h2 class="text-sm font-black text-white uppercase tracking-widest">Recovery</h2>
-                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Sleep Arc</p>
-                        </div>
+                        <i class="ph-fill ph-sun-horizon text-white text-3xl opacity-80"></i>
+                        <div><h2 class="text-sm font-black text-white uppercase tracking-widest">Rituals Hub</h2><p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">AM/PM Edits</p></div>
                     </div>
                 </a>
 
                 <a href="analyzer.html" class="module-card h-32 col-span-2 border-l-2 border-l-white">
-                    <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1543286386-713bdd548da4?auto=format&fit=crop&q=80&w=800'); opacity: 0.4;"></div>
+                    <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1543286386-713bdd548da4?auto=format&fit=crop&q=80&w=800'); opacity: 0.35;"></div>
                     <div class="absolute inset-0 vignette-side"></div>
                     <div class="relative h-full p-6 flex flex-col justify-center">
                         <i class="ph-fill ph-chart-line-up text-white text-3xl mb-1 opacity-80"></i>
-                        <h2 class="text-xl font-black text-white uppercase tracking-widest">Analytics</h2>
-                        <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em]">Core Overview</p>
+                        <h2 class="text-xl font-black text-white uppercase tracking-widest">Core Analytics</h2>
+                        <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em]">System Overview</p>
                     </div>
                 </a>
-
-                <div class="col-span-2 h-32"></div>
             </div>
+
+            <div class="h-32"></div>
         </main>
     </div>
 
@@ -256,7 +236,6 @@
         function loadDashboardQuote() {
             const todayStr = new Date().toISOString().split('T')[0];
             const quoteData = JSON.parse(localStorage.getItem('sys_daily_quote'));
-            
             const quoteTextEl = document.getElementById('dashboard-quote-text');
             const quoteCardEl = document.getElementById('dashboard-quote-card');
 
@@ -273,14 +252,10 @@
         // 3. DYNAMIC RITUAL PROTOCOL HUD
         function loadDynamicRituals() {
             const hour = new Date().getHours();
-            
-            // Logic: 4:00 AM to 4:59 PM = Dawn Protocol. 5:00 PM to 3:59 AM = Dusk Protocol.
             const isDawn = hour >= 4 && hour < 17; 
             const phase = isDawn ? 'morning' : 'evening';
-            
             const ritualsData = JSON.parse(localStorage.getItem('sys_rituals')) || { morning: [], evening: [] };
             const activeRituals = ritualsData[phase] || [];
-            
             const container = document.getElementById('dynamic-ritual-container');
             
             if (activeRituals.length === 0) {
@@ -289,29 +264,24 @@
             }
             
             container.style.display = 'block';
-
-            // Theme Setting
             const themeColor = isDawn ? 'accentYellow' : 'accentPurple';
             const themeIcon = isDawn ? 'ph-sun-horizon' : 'ph-moon-stars';
             const themeTitle = isDawn ? 'Dawn Protocol Active' : 'Dusk Protocol Active';
 
-            // Build List HTML
             let listHTML = activeRituals.slice(0, 3).map(r => `
-                <div class="flex items-center gap-3 bg-black/40 border border-white/5 p-3 rounded-xl backdrop-blur-md">
+                <div class="flex items-center gap-3 bg-black/50 border border-white/5 p-3 rounded-xl backdrop-blur-md">
                     <span class="text-[10px] font-black text-${themeColor} w-12 text-right shrink-0">${r.displayTime}</span>
                     <div class="h-3 w-[1px] bg-white/10"></div>
-                    <span class="text-xs font-bold text-gray-300 truncate">${r.name}</span>
+                    <span class="text-xs font-bold text-gray-200 truncate">${r.name}</span>
                 </div>
             `).join('');
 
-            // Indicate overflow if more than 3 rituals exist
             if (activeRituals.length > 3) {
                 listHTML += `<div class="text-center mt-2 opacity-60"><span class="text-[8px] font-black text-white uppercase tracking-widest">+ ${activeRituals.length - 3} More Directives</span></div>`;
             }
 
-            // Inject the complete block
             container.innerHTML = `
-                <a href="rituals.html" class="module-card border-l-2 border-l-${themeColor} p-5 block" style="background: linear-gradient(135deg, rgba(10,10,10,0.9) 0%, rgba(0,0,0,0.6) 100%);">
+                <a href="rituals.html" class="module-card border-l-2 border-l-${themeColor} p-5 block mb-4" style="background: linear-gradient(135deg, rgba(10,10,10,0.9) 0%, rgba(0,0,0,0.6) 100%);">
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-2">
                             <i class="ph-fill ${themeIcon} text-${themeColor} text-xl animate-pulse drop-shadow-[0_0_8px_currentColor]"></i>
@@ -326,9 +296,55 @@
             `;
         }
 
-        // INIT
-        loadDashboardQuote();
-        loadDynamicRituals();
+        // 4. DYNAMIC TO-DO TASKS ENGINE
+        function loadDashboardTodos() {
+            const todos = JSON.parse(localStorage.getItem('sys_todo_list')) || [];
+            const todayStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            
+            const todayTasks = todos.filter(t => t.date === todayStr);
+            const activeTasks = todayTasks.filter(t => t.status !== 'completed' && t.done !== true);
+            
+            const container = document.getElementById('todo-dash-preview');
+            const countEl = document.getElementById('todo-dash-count');
+            
+            countEl.innerText = `${activeTasks.length} Active`;
+            
+            if (todayTasks.length === 0) {
+                container.innerHTML = '<p class="text-[10px] text-gray-500 italic uppercase tracking-widest py-2">No tasks logged for today.</p>';
+                return;
+            }
+            
+            if (activeTasks.length === 0) {
+                container.innerHTML = '<p class="text-[10px] text-accentTeal font-bold italic uppercase tracking-widest py-2">All directives cleared.</p>';
+                return;
+            }
+
+            let html = '';
+            activeTasks.slice(0, 3).forEach(task => {
+                let icon = task.status === 'ongoing' ? 'ph-play-circle text-accentYellow' : 'ph-circle text-gray-500';
+                let textClass = task.status === 'ongoing' ? 'text-white' : 'text-gray-300';
+                
+                html += `
+                    <div class="flex items-center gap-3 bg-black/50 p-2.5 rounded-xl border border-white/5 backdrop-blur-md">
+                        <i class="ph-fill ${icon} text-lg shrink-0"></i>
+                        <p class="text-xs font-bold ${textClass} truncate">${task.text}</p>
+                    </div>
+                `;
+            });
+
+            if (activeTasks.length > 3) {
+                html += `<p class="text-[8px] text-gray-500 font-black uppercase tracking-widest text-center mt-2 pt-1">+ ${activeTasks.length - 3} MORE TASKS</p>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // INIT ALL FUNCTIONS
+        window.onload = () => {
+            loadDashboardQuote();
+            loadDynamicRituals();
+            loadDashboardTodos();
+        };
     </script>
 </body>
 </html>
