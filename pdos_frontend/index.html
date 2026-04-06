@@ -91,6 +91,8 @@
 
         <main>
             <div class="grid grid-cols-2 gap-4">
+
+                <div id="dynamic-ritual-container" class="col-span-2" style="display: none;"></div>
                 
                 <div class="module-card col-span-2 border-l-2 border-l-white bg-black/40 backdrop-blur-md p-5 flex flex-col justify-center min-h-[100px]" id="dashboard-quote-card">
                     <div class="flex items-center gap-2 mb-2">
@@ -154,7 +156,7 @@
                     <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1506784693919-ef06d93c28d2?auto=format&fit=crop&q=80&w=800'); opacity: 0.25;"></div>
                     <div class="absolute inset-0 vignette-side"></div>
                     <div class="relative h-full p-6 flex flex-col justify-center">
-                        <i class="ph-fill ph-calendar-week text-accentBlue text-3xl mb-1 opacity-80"></i>
+                        <i class="ph-fill ph-grid-four text-accentBlue text-3xl mb-1 opacity-80"></i>
                         <h2 class="text-xl font-black text-white uppercase tracking-widest">Weekly Matrix</h2>
                         <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Macro-Plan</p>
                     </div>
@@ -165,8 +167,8 @@
                     <div class="absolute inset-0 vignette-side"></div>
                     <div class="relative h-full p-6 flex flex-col justify-center">
                         <i class="ph-fill ph-sun-horizon text-white text-3xl mb-1 opacity-80"></i>
-                        <h2 class="text-xl font-black text-white uppercase tracking-widest">Rituals</h2>
-                        <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em]">AM / PM Protocols</p>
+                        <h2 class="text-xl font-black text-white uppercase tracking-widest">Rituals Hub</h2>
+                        <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em]">Edit AM/PM Protocols</p>
                     </div>
                 </a>
 
@@ -267,7 +269,66 @@
                 quoteCardEl.classList.add('border-l-accentYellow'); 
             }
         }
+
+        // 3. DYNAMIC RITUAL PROTOCOL HUD
+        function loadDynamicRituals() {
+            const hour = new Date().getHours();
+            
+            // Logic: 4:00 AM to 4:59 PM = Dawn Protocol. 5:00 PM to 3:59 AM = Dusk Protocol.
+            const isDawn = hour >= 4 && hour < 17; 
+            const phase = isDawn ? 'morning' : 'evening';
+            
+            const ritualsData = JSON.parse(localStorage.getItem('sys_rituals')) || { morning: [], evening: [] };
+            const activeRituals = ritualsData[phase] || [];
+            
+            const container = document.getElementById('dynamic-ritual-container');
+            
+            if (activeRituals.length === 0) {
+                container.style.display = 'none';
+                return;
+            }
+            
+            container.style.display = 'block';
+
+            // Theme Setting
+            const themeColor = isDawn ? 'accentYellow' : 'accentPurple';
+            const themeIcon = isDawn ? 'ph-sun-horizon' : 'ph-moon-stars';
+            const themeTitle = isDawn ? 'Dawn Protocol Active' : 'Dusk Protocol Active';
+
+            // Build List HTML
+            let listHTML = activeRituals.slice(0, 3).map(r => `
+                <div class="flex items-center gap-3 bg-black/40 border border-white/5 p-3 rounded-xl backdrop-blur-md">
+                    <span class="text-[10px] font-black text-${themeColor} w-12 text-right shrink-0">${r.displayTime}</span>
+                    <div class="h-3 w-[1px] bg-white/10"></div>
+                    <span class="text-xs font-bold text-gray-300 truncate">${r.name}</span>
+                </div>
+            `).join('');
+
+            // Indicate overflow if more than 3 rituals exist
+            if (activeRituals.length > 3) {
+                listHTML += `<div class="text-center mt-2 opacity-60"><span class="text-[8px] font-black text-white uppercase tracking-widest">+ ${activeRituals.length - 3} More Directives</span></div>`;
+            }
+
+            // Inject the complete block
+            container.innerHTML = `
+                <a href="rituals.html" class="module-card border-l-2 border-l-${themeColor} p-5 block" style="background: linear-gradient(135deg, rgba(10,10,10,0.9) 0%, rgba(0,0,0,0.6) 100%);">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <i class="ph-fill ${themeIcon} text-${themeColor} text-xl animate-pulse drop-shadow-[0_0_8px_currentColor]"></i>
+                            <h3 class="text-[10px] font-black text-white uppercase tracking-widest">${themeTitle}</h3>
+                        </div>
+                        <i class="ph-bold ph-arrow-right text-gray-600"></i>
+                    </div>
+                    <div class="space-y-2">
+                        ${listHTML}
+                    </div>
+                </a>
+            `;
+        }
+
+        // INIT
         loadDashboardQuote();
+        loadDynamicRituals();
     </script>
 </body>
 </html>
