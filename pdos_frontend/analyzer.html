@@ -37,6 +37,9 @@
         .glass-panel { background: rgba(13, 17, 23, 0.85); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.05); }
         .progress-track { height: 4px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
         .progress-fill { height: 100%; transition: width 1s ease-in-out; }
+
+        /* Smooth Chart Animation */
+        .chart-bar { transition: height 1s cubic-bezier(0.4, 0, 0.2, 1); height: 0%; }
     </style>
 </head>
 <body>
@@ -62,15 +65,36 @@
                 <div id="analytics-content" class="space-y-5 p-1">
                     
                     <div class="grid grid-cols-2 gap-4">
-                        <div class="glass-panel p-5 rounded-[2rem] space-y-3">
-                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest">Capital Burn</p>
-                            <h2 class="text-xl font-black text-white" id="core-budget">₹0</h2>
+                        <div class="glass-panel p-5 rounded-[2rem] space-y-3 col-span-2">
+                            <div class="flex justify-between items-end">
+                                <div>
+                                    <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest">Capital Burn</p>
+                                    <h2 class="text-2xl font-black text-white" id="core-budget">₹0</h2>
+                                </div>
+                                <i class="ph-fill ph-wallet text-accentRed text-xl opacity-80"></i>
+                            </div>
                             <div class="progress-track"><div id="budget-bar" class="progress-fill bg-accentRed" style="width: 0%"></div></div>
                         </div>
-                        <div class="glass-panel p-5 rounded-[2rem] space-y-3">
-                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest">Task Yield</p>
-                            <h2 class="text-xl font-black text-white"><span id="task-done">0</span><span class="text-xs text-gray-600 ml-1">Total</span></h2>
-                            <div class="progress-track"><div id="task-bar" class="progress-fill bg-accentTeal" style="width: 0%"></div></div>
+
+                        <div class="glass-panel p-6 rounded-[2.5rem] col-span-2 border-t-2 border-t-accentTeal">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+                                    <i class="ph-fill ph-list-checks text-accentTeal text-lg"></i> Task Protocol Execution
+                                </h3>
+                            </div>
+                            <div class="flex justify-between items-end mb-2">
+                                <div>
+                                    <h2 class="text-3xl font-black text-white" id="todo-pct">0%</h2>
+                                </div>
+                                <div class="text-right">
+                                    <h2 class="text-lg font-bold text-accentTeal"><span id="todo-cleared">0</span> / <span id="todo-total">0</span></h2>
+                                    <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mt-1">Cleared</p>
+                                </div>
+                            </div>
+                            <div class="progress-track mt-4 mb-2">
+                                <div id="todo-bar" class="progress-fill bg-accentTeal" style="width: 0%"></div>
+                            </div>
+                            <p class="text-[9px] text-gray-500 italic uppercase tracking-widest text-center" id="todo-status">Awaiting task input.</p>
                         </div>
                     </div>
 
@@ -94,7 +118,7 @@
                             <span class="text-[9px] font-black text-gray-500 uppercase">Last 7 Logs</span>
                         </div>
                         
-                        <div class="h-32 w-full flex items-end justify-between gap-2 relative pb-6 border-b border-white/10" id="graph-core">
+                        <div class="h-32 w-full flex items-end justify-between gap-1.5 relative pb-2" id="graph-core">
                             </div>
                     </div>
 
@@ -107,7 +131,7 @@
                             <span class="text-[9px] font-black text-gray-500 uppercase">Last 7 Logs</span>
                         </div>
                         
-                        <div class="h-32 w-full flex items-end justify-between gap-2 relative pb-6 border-b border-white/10" id="graph-nap">
+                        <div class="h-32 w-full flex items-end justify-between gap-1.5 relative pb-2" id="graph-nap">
                             </div>
                     </div>
 
@@ -168,7 +192,9 @@
                             <div><p id="books-stat" class="text-sm font-black text-white">0/0</p><p class="text-[7px] text-gray-500 uppercase font-bold mt-1">Books</p></div>
                         </div>
                     </div>
-                </div> <div class="mt-6 glass-panel p-5 rounded-[2rem] border border-white/10 flex gap-3">
+                </div> 
+
+                <div class="mt-6 glass-panel p-5 rounded-[2rem] border border-white/10 flex gap-3">
                     <button onclick="exportTextReport()" class="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-black py-4 rounded-xl uppercase text-[9px] tracking-widest active:scale-95 transition flex justify-center items-center gap-2">
                         <i class="ph-bold ph-file-text text-lg"></i> Text Log
                     </button>
@@ -186,29 +212,50 @@
     <script src="js/sidebar.js"></script>
     <script>
         function syncAnalytics() {
+            const todayStr = new Date().toISOString().split('T')[0];
+
             // -- FINANCE --
             const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
             const spent = expenses.reduce((s, e) => s + e.amount, 0);
             document.getElementById('core-budget').innerText = `₹${spent.toLocaleString('en-IN')}`;
             document.getElementById('budget-bar').style.width = `${Math.min((spent/50000)*100, 100)}%`;
 
-            // -- TASKS --
-            const tasks = JSON.parse(localStorage.getItem('system_tasks')) || [];
-            const tDone = tasks.filter(t => t.done).length;
-            document.getElementById('task-done').innerText = tDone;
-            document.getElementById('task-bar').style.width = `${tasks.length > 0 ? (tDone/tasks.length)*100 : 0}%`;
+            // -- NEW: TO-DO PROTOCOL (Tri-State Synced) --
+            const todos = JSON.parse(localStorage.getItem('sys_todo_list')) || [];
+            const todayTasks = todos.filter(t => t.date === new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }));
+            const totalTasks = todayTasks.length;
+            // Counts tasks marked specifically as 'completed' (or the old 'done' variable)
+            const completedTasks = todayTasks.filter(t => t.status === 'completed' || t.done === true).length;
+            const todoPct = totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
+
+            document.getElementById('todo-pct').innerText = `${todoPct}%`;
+            document.getElementById('todo-cleared').innerText = completedTasks;
+            document.getElementById('todo-total').innerText = totalTasks;
+            document.getElementById('todo-bar').style.width = `${todoPct}%`;
+
+            const statusEl = document.getElementById('todo-status');
+            if (totalTasks === 0) {
+                statusEl.innerText = "No active directives for today.";
+                statusEl.className = "text-[9px] text-gray-500 italic uppercase tracking-widest text-center mt-2";
+            } else if (todoPct === 100) {
+                statusEl.innerText = "All directives successfully executed.";
+                statusEl.className = "text-[9px] text-accentTeal italic uppercase tracking-widest text-center mt-2 font-bold";
+                document.getElementById('todo-bar').classList.replace('bg-accentTeal', 'bg-white');
+            } else {
+                statusEl.innerText = "Protocol execution in progress.";
+                statusEl.className = "text-[9px] text-gray-500 italic uppercase tracking-widest text-center mt-2";
+            }
 
             // -- FOCUS --
             const focusLogs = JSON.parse(localStorage.getItem('sys_focus_logs')) || [];
-            const today = new Date().toISOString().split('T')[0];
-            const todaysLogs = focusLogs.filter(l => l.date === today);
+            const todaysLogs = focusLogs.filter(l => l.date === todayStr);
             const totalMins = todaysLogs.reduce((s, l) => s + l.duration, 0);
             document.getElementById('focus-hours').innerText = Math.floor(totalMins / 60);
             document.getElementById('focus-mins').innerText = totalMins % 60;
             document.getElementById('focus-sessions').innerText = `${todaysLogs.length} Sessions`;
             document.getElementById('focus-bar').style.width = `${Math.min((totalMins/240)*100, 100)}%`;
 
-            // -- RECOVERY & NAP GRAPHS --
+            // -- SLEEP & NAP GRAPHICAL ANIMATIONS --
             const sleepLedger = JSON.parse(localStorage.getItem('sys_sleep_ledger')) || [];
             
             function drawBarGraph(containerId, data, colorClass, isNap) {
@@ -216,32 +263,44 @@
                 container.innerHTML = '';
                 
                 if (data.length === 0) {
-                    container.innerHTML = '<div class="w-full text-center text-[10px] text-gray-600 mb-4 uppercase tracking-widest">No Data Logged</div>';
+                    container.innerHTML = '<div class="w-full text-center text-[10px] text-gray-600 mb-4 uppercase tracking-widest flex items-center justify-center h-full">No Data Logged</div>';
                     return;
                 }
 
-                const recent = data.slice(0, 7).reverse();
+                const recent = data.slice(0, 7).reverse(); 
                 let maxVal = isNap ? 60 : 8; 
                 recent.forEach(log => {
                     let val = parseFloat(log.duration);
                     if (val > maxVal) maxVal = val;
                 });
 
-                recent.forEach(log => {
+                recent.forEach((log, index) => {
                     let val = parseFloat(log.duration);
                     let pct = (val / maxVal) * 100;
                     let unit = isNap ? 'm' : 'h';
+                    
+                    // Display either the day string (Mon/Tue) or D1/D2
                     let dateArr = log.date.split(', ');
-                    let dateLabel = dateArr.length > 1 ? dateArr[1] : log.date;
+                    let dateLabel = dateArr.length > 1 ? dateArr[0].substring(0,3) : `D${index+1}`;
 
                     container.innerHTML += `
-                        <div class="flex flex-col items-center justify-end h-full w-full group relative">
-                            <span class="text-[8px] font-bold text-white mb-1 absolute -top-5 opacity-70">${val}${unit}</span>
-                            <div class="w-full max-w-[14px] ${colorClass} rounded-t-sm transition-all shadow-[0_0_10px_rgba(0,0,0,0.5)]" style="height: ${pct}%"></div>
-                            <span class="text-[7px] font-black text-gray-500 mt-2 absolute -bottom-5 text-center whitespace-nowrap">${dateLabel}</span>
+                        <div class="flex flex-col items-center justify-end h-full w-full group relative gap-1">
+                            <span class="text-[8px] font-bold text-white opacity-80">${val}${unit}</span>
+                            <div class="w-full bg-black/40 rounded-sm h-full relative flex items-end justify-center overflow-hidden border border-white/5">
+                                <div class="w-full ${colorClass} rounded-sm chart-bar" style="height: 0%" data-target-height="${pct}%"></div>
+                            </div>
+                            <span class="text-[7px] font-black text-gray-500 uppercase">${dateLabel}</span>
                         </div>
                     `;
                 });
+
+                // Trigger smooth chart animation after structure is loaded
+                setTimeout(() => {
+                    const bars = container.querySelectorAll('.chart-bar');
+                    bars.forEach(bar => {
+                        bar.style.height = bar.getAttribute('data-target-height');
+                    });
+                }, 100);
             }
 
             const coreLogs = sleepLedger.filter(l => l.type === 'Core');
@@ -250,7 +309,7 @@
             drawBarGraph('graph-core', coreLogs, 'bg-accentPurple', false);
             drawBarGraph('graph-nap', napLogs, 'bg-accentYellow', true);
 
-            // -- NEW: DAILY BIO-METRICS --
+            // -- DAILY BIO-METRICS --
             const dailyHealth = JSON.parse(localStorage.getItem('sys_daily_health')) || { water: 0, caffeine: 0, meditation: 0 };
             document.getElementById('stat-water').innerText = dailyHealth.water || 0;
             document.getElementById('stat-caffeine').innerText = dailyHealth.caffeine || 0;
@@ -302,7 +361,8 @@
             report += `Capital Burn: ${document.getElementById('core-budget').innerText}\n\n`;
             
             report += `[ PRODUCTIVITY ]\n`;
-            report += `Tasks Completed: ${document.getElementById('task-done').innerText}\n`;
+            report += `Task Execution Rate: ${document.getElementById('todo-pct').innerText}\n`;
+            report += `Tasks Cleared: ${document.getElementById('todo-cleared').innerText}/${document.getElementById('todo-total').innerText}\n`;
             report += `Focus Time (Today): ${document.getElementById('focus-hours').innerText}h ${document.getElementById('focus-mins').innerText}m\n\n`;
             
             report += `[ HEALTH & RECOVERY ]\n`;
@@ -316,7 +376,7 @@
 
             report += `[ DAILY BIO-METRICS (TODAY) ]\n`;
             const dailyHealth = JSON.parse(localStorage.getItem('sys_daily_health')) || { water: 0, caffeine: 0, meditation: 0 };
-            report += `Hydration: ${dailyHealth.water || 0} Glasses\n`;
+            report += `Hydration: ${dailyHealth.water || 0} ml\n`;
             report += `Stimulants: ${dailyHealth.caffeine || 0} Doses\n`;
             report += `Meditation & Focus: ${dailyHealth.meditation || 0} Minutes\n\n`;
 

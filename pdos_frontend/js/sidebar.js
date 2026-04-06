@@ -1,4 +1,4 @@
-// SYSTEM OS | AUTO-WRAPPING MOBILE SIDEBAR ENGINE v7.0
+// SYSTEM OS | MASTER MOBILE SIDEBAR ENGINE v10.1 (Icon Fix)
 
 (function() {
     function initSidebar() {
@@ -10,14 +10,12 @@
             viewport = document.createElement('div');
             viewport.className = 'mobile-viewport';
             
-            // Force strict mobile CSS rules directly onto the browser window
             document.documentElement.style.backgroundColor = '#000';
             document.body.style.backgroundColor = '#000';
             document.body.style.margin = '0';
             document.body.style.overflow = 'hidden';
             document.body.style.height = '100dvh';
             
-            // Apply the mobile frame styling
             viewport.style.width = '100%';
             viewport.style.maxWidth = '430px';
             viewport.style.height = '100dvh';
@@ -28,27 +26,24 @@
             viewport.style.flexDirection = 'column';
             viewport.style.overflow = 'hidden';
 
-            // Suck all existing page content into the new mobile frame
             while (document.body.firstChild) {
                 viewport.appendChild(document.body.firstChild);
             }
             document.body.appendChild(viewport);
         }
 
-        // Strictly enforce boundaries so the sidebar cannot escape
         viewport.style.position = 'relative';
         viewport.style.overflow = 'hidden';
 
-        // Prevent duplicate injections
         if (document.getElementById('sys-sidebar-menu')) return;
 
-        // 3. Inject the Overlay (Independent Element)
+        // 3. Inject the Overlay
         const overlay = document.createElement('div');
         overlay.id = 'sys-sidebar-overlay';
         overlay.className = 'absolute inset-0 bg-black/80 backdrop-blur-sm z-[90] hidden opacity-0 transition-opacity duration-300';
         viewport.appendChild(overlay);
 
-        // 4. Inject the Menu (Independent Element)
+        // 4. Inject the Menu
         const menu = document.createElement('nav');
         menu.id = 'sys-sidebar-menu';
         menu.className = 'absolute top-0 left-0 h-full w-[85%] max-w-[340px] bg-[#050505]/95 backdrop-blur-xl border-r border-white/10 z-[100] transform -translate-x-full transition-transform duration-300 flex flex-col shadow-[20px_0_50px_rgba(0,0,0,0.8)]';
@@ -88,14 +83,22 @@
                     <a href="calendar.html" class="flex items-center gap-4 text-gray-400 hover:text-white hover:bg-white/5 active:bg-white/10 p-3.5 rounded-2xl transition-all">
                         <i class="ph-fill ph-calendar-blank text-xl text-white"></i><span class="text-xs font-bold uppercase tracking-widest">Schedule</span>
                     </a>
+                    
                     <a href="weekly.html" class="flex items-center gap-4 text-gray-400 hover:text-white hover:bg-white/5 active:bg-white/10 p-3.5 rounded-2xl transition-all">
-                        <i class="ph-fill ph-calendar-week text-xl text-[#3B82F6]"></i><span class="text-xs font-bold uppercase tracking-widest">Weekly Matrix</span>
+                        <i class="ph-fill ph-grid-four text-xl text-[#3B82F6]"></i><span class="text-xs font-bold uppercase tracking-widest">Weekly Matrix</span>
                     </a>
+                    
                     <a href="focus.html" class="flex items-center gap-4 text-gray-400 hover:text-white hover:bg-white/5 active:bg-white/10 p-3.5 rounded-2xl transition-all">
                         <i class="ph-fill ph-target text-xl text-[#FBBF24]"></i><span class="text-xs font-bold uppercase tracking-widest">Deep Focus</span>
                     </a>
+                    <a href="todo.html" class="flex items-center gap-4 text-gray-400 hover:text-white hover:bg-white/5 active:bg-white/10 p-3.5 rounded-2xl transition-all">
+                        <i class="ph-fill ph-list-checks text-xl text-[#66FCF1]"></i><span class="text-xs font-bold uppercase tracking-widest">To-Do List</span>
+                    </a>
                     <a href="habits.html" class="flex items-center gap-4 text-gray-400 hover:text-white hover:bg-white/5 active:bg-white/10 p-3.5 rounded-2xl transition-all">
                         <i class="ph-fill ph-check-square-offset text-xl text-[#66FCF1]"></i><span class="text-xs font-bold uppercase tracking-widest">Habit Forge</span>
+                    </a>
+                    <a href="rituals.html" class="flex items-center gap-4 text-gray-400 hover:text-white hover:bg-white/5 active:bg-white/10 p-3.5 rounded-2xl transition-all">
+                        <i class="ph-fill ph-sun-horizon text-xl text-white"></i><span class="text-xs font-bold uppercase tracking-widest">Rituals</span>
                     </a>
                     <a href="regular_habits.html" class="flex items-center gap-4 text-gray-400 hover:text-white hover:bg-white/5 active:bg-white/10 p-3.5 rounded-2xl transition-all">
                         <i class="ph-fill ph-calendar-check text-xl text-[#3B82F6]"></i><span class="text-xs font-bold uppercase tracking-widest">Daily Routines</span>
@@ -177,7 +180,6 @@
         }, { passive: true });
     }
 
-    // Ensure DOM is fully parsed before executing
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initSidebar);
     } else {

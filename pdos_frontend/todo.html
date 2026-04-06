@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>System OS | Task Ledger</title>
+    <title>System OS | Task Protocol</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,170 +11,332 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { bgDark: '#020202', accentTeal: '#66FCF1', accentRed: '#FF4C4C', accentYellow: '#FFD700', accentBlue: '#3B82F6' }
+                    colors: { 
+                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6', 
+                        accentPurple: '#A855F7', accentYellow: '#FBBF24', accentRed: '#FF4C4C' 
+                    }
                 }
             }
         }
     </script>
     <style>
-        body { background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; display: flex; justify-content: center; min-height: 100vh; }
-        ::-webkit-scrollbar { display: none; }
-        .mobile-viewport { width: 100%; max-width: 430px; height: 100dvh; position: relative; background-color: #020202; overflow: hidden; display: flex; flex-direction: column; }
-        .task-bg { background-image: url('https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?auto=format&fit=crop&q=80&w=1000'); background-size: cover; background-position: center; position: absolute; inset: 0; opacity: 0.15; z-index: 1; }
-        .vignette { background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.95) 70%, #000 100%); position: absolute; inset: 0; z-index: 2; }
-        .content-layer { position: relative; z-index: 10; flex: 1; display: flex; flex-direction: column; }
-        .glass-panel { background: rgba(13, 17, 23, 0.7); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .task-input { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 12px; color: white; outline: none; font-size: 13px; }
-        .check-circle { width: 22px; height: 22px; border: 2px solid rgba(255,255,255,0.2); border-radius: 50%; transition: 0.3s; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .check-circle.done { background: #66FCF1; border-color: #66FCF1; }
+        /* STRICT MOBILE VIEWPORT LOCKS */
+        body, html { background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; margin: 0; height: 100dvh; overflow: hidden; position: fixed; width: 100%; }
+        .mobile-viewport { width: 100%; max-width: 430px; height: 100dvh; margin: 0 auto; position: relative; background-color: #020202; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* THEMATIC BACKGROUND */
+        .todo-bg { 
+            background-image: url('https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?auto=format&fit=crop&q=80&w=1000'); 
+            background-size: cover; background-position: center; position: absolute; inset: 0; opacity: 0.15; z-index: 1; filter: grayscale(100%) contrast(120%); 
+        }
+        .vignette { background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.98) 80%, #000 100%); position: absolute; inset: 0; z-index: 2; }
+        .content-layer { position: relative; z-index: 10; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* SCROLLABLE AREA */
+        main { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; padding: 1.25rem; }
+        main::-webkit-scrollbar { display: none; }
+
+        .glass-panel { background: rgba(13, 17, 23, 0.75); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .input-dark { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 12px; color: white; outline: none; transition: 0.3s; font-size: 14px; width: 100%; }
+        .input-dark:focus { border-color: rgba(102, 252, 241, 0.5); }
+
+        /* Progress Bar */
+        .progress-bg { height: 6px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; margin-top: 10px; }
+        .progress-fill { height: 100%; transition: width 0.5s ease-out, background-color 0.3s; }
+
+        /* Task Animations */
+        .task-row { transition: all 0.2s ease-in-out; }
+        .task-row:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
 
     <div class="mobile-viewport">
-        <div class="task-bg"></div>
+        <div class="todo-bg"></div>
         <div class="vignette"></div>
 
         <div class="content-layer">
-            <div id="sidebar-injector"></div>
-
-            <header class="p-6 pb-2 flex justify-between items-center">
+            <header class="p-6 pb-2 flex justify-between items-center border-b border-white/5 bg-black/20 backdrop-blur-md">
                 <div class="flex items-center gap-4">
-                    <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:text-accentTeal transition"></i>
-                    <h1 class="text-xl font-bold text-white tracking-widest uppercase">Task Engine</h1>
+                    <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
+                    <h1 class="text-xl font-black text-white tracking-widest uppercase">Tasks</h1>
                 </div>
-                <div class="text-[9px] font-black text-accentTeal bg-accentTeal/5 border border-accentTeal/20 px-3 py-1 rounded-full">APRIL 2026</div>
+                <div class="text-[9px] font-black text-accentTeal border border-accentTeal/20 bg-accentTeal/5 px-3 py-1 rounded-full uppercase">Tactical</div>
             </header>
 
-            <main class="flex-1 overflow-y-auto p-5 space-y-6 pb-24">
-                
-                <div class="glass-panel p-5 rounded-[2.5rem] grid grid-cols-3 gap-2 text-center">
-                    <div>
-                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-tighter mb-1">Pending</p>
-                        <p id="stat-pending" class="text-xl font-black text-white">0</p>
+            <main>
+                <div class="glass-panel p-6 rounded-[2.5rem] mb-6 border-t-2 border-t-accentTeal shadow-2xl">
+                    <div class="flex justify-between items-end mb-2">
+                        <div>
+                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Overall Progress</p>
+                            <h2 class="text-3xl font-black text-white" id="progress-text">0%</h2>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Total</p>
+                            <p class="text-sm font-bold text-gray-300" id="total-count-text">0 Directives</p>
+                        </div>
                     </div>
-                    <div class="border-x border-white/5">
-                        <p class="text-[8px] font-black text-accentRed uppercase tracking-tighter mb-1">Ongoing</p>
-                        <p id="stat-ongoing" class="text-xl font-black text-white">0</p>
+                    
+                    <div class="progress-bg mb-4">
+                        <div id="progress-bar" class="progress-fill bg-accentTeal" style="width: 0%"></div>
                     </div>
-                    <div>
-                        <p class="text-[8px] font-black text-accentTeal uppercase tracking-tighter mb-1">Done</p>
-                        <p id="stat-done" class="text-xl font-black text-white">0</p>
+
+                    <div class="flex gap-2">
+                        <div class="flex-1 bg-black/40 border border-white/5 rounded-xl p-2 text-center">
+                            <p class="text-[8px] font-black text-gray-600 uppercase tracking-widest mb-0.5">Pending</p>
+                            <p class="text-sm font-bold text-white" id="count-pending">0</p>
+                        </div>
+                        <div class="flex-1 bg-accentYellow/10 border border-accentYellow/20 rounded-xl p-2 text-center">
+                            <p class="text-[8px] font-black text-accentYellow uppercase tracking-widest mb-0.5">Ongoing</p>
+                            <p class="text-sm font-bold text-accentYellow" id="count-ongoing">0</p>
+                        </div>
+                        <div class="flex-1 bg-accentTeal/10 border border-accentTeal/20 rounded-xl p-2 text-center">
+                            <p class="text-[8px] font-black text-accentTeal uppercase tracking-widest mb-0.5">Cleared</p>
+                            <p class="text-sm font-bold text-accentTeal" id="count-completed">0</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="glass-panel p-6 rounded-[2.5rem] space-y-4">
-                    <input type="text" id="task-name" placeholder="Define Objective..." class="w-full task-input">
-                    <div class="grid grid-cols-2 gap-3">
-                        <select id="task-priority" class="task-input">
-                            <option value="low">Low Priority</option>
-                            <option value="medium">Medium</option>
-                            <option value="high">Critical</option>
-                        </select>
-                        <button onclick="addTask()" class="bg-accentTeal text-black font-black rounded-xl text-[10px] uppercase tracking-widest active:scale-95 transition-all shadow-xl">Deploy</button>
+                <div class="glass-panel p-5 rounded-[2rem] mb-8 space-y-3">
+                    <div class="flex gap-2">
+                        <input type="text" id="task-input" placeholder="Initiate new directive..." class="flex-1 input-dark !text-xs font-bold text-white">
+                        <button onclick="addTask()" class="bg-accentTeal text-black px-5 rounded-xl font-black uppercase text-[10px] tracking-widest active:scale-95 transition flex justify-center items-center">
+                            <i class="ph-bold ph-plus text-lg"></i>
+                        </button>
                     </div>
                 </div>
 
-                <div id="ledger-container" class="space-y-8">
+                <div class="space-y-4 mb-10">
+                    <div class="flex justify-between items-end px-2">
+                        <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em] flex items-center gap-2">
+                            <i class="ph-fill ph-target text-accentTeal"></i> Active Directives
+                        </h3>
+                        <p class="text-[7px] font-bold text-gray-500 uppercase tracking-widest">(Tap Card to Cycle)</p>
                     </div>
+                    
+                    <div id="today-tasks-list" class="space-y-2">
+                        </div>
+                </div>
 
+                <div class="space-y-4 opacity-80">
+                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-2 flex items-center gap-2 border-t border-white/10 pt-6">
+                        <i class="ph-fill ph-archive text-gray-500"></i> Registration Logs
+                    </h3>
+                    <div id="past-tasks-list" class="space-y-6">
+                        </div>
+                </div>
+
+                <div class="h-32"></div>
             </main>
         </div>
     </div>
 
     <script src="js/sidebar.js"></script>
+
     <script>
-        const SYSTEM_TODAY = "2026-04-04";
-        let tasks = JSON.parse(localStorage.getItem('ledger_tasks')) || [];
+        // --- STATE MANAGEMENT ---
+        let tasks = JSON.parse(localStorage.getItem('sys_todo_list')) || [];
+        const todayDateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 
+        // MIGRATION & REPAIR SCRIPT
+        // Fixes any glitchy tasks that don't have the proper 'status' assigned
+        let requiresSync = false;
+        tasks.forEach(task => {
+            if (!task.status) {
+                task.status = task.done ? 'completed' : 'pending';
+                requiresSync = true;
+            }
+            // Ensure the old 'done' boolean perfectly mirrors the new status for backward compatibility
+            if (task.status === 'completed' && !task.done) { task.done = true; requiresSync = true; }
+            if (task.status !== 'completed' && task.done) { task.done = false; requiresSync = true; }
+        });
+        if (requiresSync) localStorage.setItem('sys_todo_list', JSON.stringify(tasks));
+
+        // --- CORE FUNCTIONS ---
         function addTask() {
-            const name = document.getElementById('task-name').value;
-            const priority = document.getElementById('task-priority').value;
-            if (!name) return;
+            const input = document.getElementById('task-input');
+            const text = input.value.trim();
+            if (!text) return;
 
-            tasks.push({
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+            const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+
+            tasks.unshift({
                 id: Date.now(),
-                name: name,
-                priority: priority,
-                done: false,
-                date: SYSTEM_TODAY
+                text: text,
+                status: 'pending',
+                done: false, // Legacy fallback
+                date: dateStr,
+                time: timeStr
             });
 
-            syncAndRender();
-            document.getElementById('task-name').value = '';
+            input.value = '';
+            sync();
         }
 
-        function toggleTask(id) {
+        // NEW: Bulletproof Tri-State Cycle
+        function cycleStatus(id, event) {
+            // Prevent double-firing if a child element triggers the click
+            if (event) event.stopPropagation();
+
             const task = tasks.find(t => t.id === id);
-            if (task) { task.done = !task.done; syncAndRender(); }
+            if (task) {
+                if (task.status === 'pending') {
+                    task.status = 'ongoing';
+                    task.done = false;
+                } else if (task.status === 'ongoing') {
+                    task.status = 'completed';
+                    task.done = true; // Signals completion to Analytics
+                } else {
+                    task.status = 'pending';
+                    task.done = false;
+                }
+                sync();
+            }
         }
 
-        function deleteTask(id) {
-            if(confirm("Purge this objective?")) { tasks = tasks.filter(t => t.id !== id); syncAndRender(); }
+        function deleteTask(id, event) {
+            // Stops the click from triggering a status cycle when trying to delete
+            if (event) event.stopPropagation();
+            tasks = tasks.filter(t => t.id !== id);
+            sync();
         }
 
-        function syncAndRender() {
-            localStorage.setItem('ledger_tasks', JSON.stringify(tasks));
+        // --- RENDER ENGINE ---
+        function sync() {
+            localStorage.setItem('sys_todo_list', JSON.stringify(tasks));
             render();
         }
 
         function render() {
-            const container = document.getElementById('ledger-container');
-            container.innerHTML = '';
+            const todayContainer = document.getElementById('today-tasks-list');
+            const pastContainer = document.getElementById('past-tasks-list');
+            
+            todayContainer.innerHTML = '';
+            pastContainer.innerHTML = '';
 
-            // Update Top Analytics
-            const doneCount = tasks.filter(t => t.done).length;
-            const ongoingCount = tasks.filter(t => !t.done && t.priority === 'high').length;
-            const pendingCount = tasks.filter(t => !t.done && t.priority !== 'high').length;
+            let todayTasks = [];
+            let groupedPastTasks = {};
 
-            document.getElementById('stat-done').innerText = doneCount;
-            document.getElementById('stat-ongoing').innerText = ongoingCount;
-            document.getElementById('stat-pending').innerText = pendingCount;
-
-            // Group tasks by date
-            const groups = tasks.reduce((acc, t) => {
-                acc[t.date] = [...(acc[t.date] || []), t];
-                return acc;
-            }, {});
-
-            // Render groups (Newest date first)
-            Object.keys(groups).sort((a,b) => new Date(b) - new Date(a)).forEach(date => {
-                const section = document.createElement('section');
-                section.className = "space-y-3";
-                
-                const isToday = date === SYSTEM_TODAY;
-                const dateLabel = isToday ? "TODAY'S LOG" : date.toUpperCase();
-
-                section.innerHTML = `
-                    <div class="flex items-center gap-3 px-2">
-                        <span class="text-[9px] font-black text-gray-600 uppercase tracking-[0.3em]">${dateLabel}</span>
-                        <div class="flex-1 h-[1px] bg-white/5"></div>
-                    </div>
-                    <div class="space-y-3">
-                        ${groups[date].map(t => `
-                            <div class="glass-panel p-4 rounded-2xl flex items-center justify-between group">
-                                <div class="flex items-center gap-4">
-                                    <div onclick="toggleTask(${t.id})" class="check-circle ${t.done ? 'done' : ''}">
-                                        ${t.done ? '<i class="ph-bold ph-check text-black text-[10px]"></i>' : ''}
-                                    </div>
-                                    <div>
-                                        <h4 class="text-sm font-semibold text-white ${t.done ? 'line-through text-gray-600' : ''}">${t.name}</h4>
-                                        <p class="text-[8px] font-black uppercase tracking-widest ${t.priority === 'high' ? 'text-accentRed' : 'text-gray-500'} mt-0.5">
-                                            ${t.priority}
-                                        </p>
-                                    </div>
-                                </div>
-                                <button onclick="deleteTask(${t.id})" class="text-gray-800 hover:text-red-500 transition-colors">
-                                    <i class="ph ph-trash text-lg"></i>
-                                </button>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-                container.appendChild(section);
+            // Sort & Group Tasks
+            tasks.forEach(task => {
+                if (task.date === todayDateStr) {
+                    todayTasks.push(task);
+                } else {
+                    if (!groupedPastTasks[task.date]) {
+                        groupedPastTasks[task.date] = [];
+                    }
+                    groupedPastTasks[task.date].push(task);
+                }
             });
+
+            // 1. RENDER HUD PROGRESS
+            const totalToday = todayTasks.length;
+            const pendingToday = todayTasks.filter(t => t.status === 'pending').length;
+            const ongoingToday = todayTasks.filter(t => t.status === 'ongoing').length;
+            const completedToday = todayTasks.filter(t => t.status === 'completed').length;
+            
+            const progressPct = totalToday === 0 ? 0 : Math.round((completedToday / totalToday) * 100);
+
+            document.getElementById('progress-text').innerText = `${progressPct}%`;
+            document.getElementById('total-count-text').innerText = `${totalToday} Directives`;
+            
+            document.getElementById('count-pending').innerText = pendingToday;
+            document.getElementById('count-ongoing').innerText = ongoingToday;
+            document.getElementById('count-completed').innerText = completedToday;
+            
+            const bar = document.getElementById('progress-bar');
+            bar.style.width = `${progressPct}%`;
+            if (progressPct === 100 && totalToday > 0) {
+                bar.classList.replace('bg-accentTeal', 'bg-white');
+            } else {
+                bar.classList.replace('bg-white', 'bg-accentTeal');
+            }
+
+            // 2. RENDER TODAY'S TASKS
+            if (todayTasks.length === 0) {
+                todayContainer.innerHTML = `<p class="text-[10px] text-gray-700 italic text-center py-6 uppercase tracking-widest border border-dashed border-white/10 rounded-2xl">No Active Directives</p>`;
+            } else {
+                todayTasks.forEach(task => {
+                    // Visual State Logic
+                    let iconClass = 'ph-circle text-gray-600';
+                    let textStyle = 'text-white';
+                    let borderStyle = 'border-l-gray-600';
+                    let bgStyle = 'bg-transparent hover:bg-white/5';
+
+                    if (task.status === 'ongoing') {
+                        iconClass = 'ph-play-circle text-accentYellow drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]';
+                        borderStyle = 'border-l-accentYellow';
+                        bgStyle = 'bg-accentYellow/5';
+                    } else if (task.status === 'completed') {
+                        iconClass = 'ph-check-circle text-accentTeal';
+                        borderStyle = 'border-l-accentTeal/50';
+                        bgStyle = 'bg-accentTeal/5';
+                        textStyle = 'line-through text-gray-500';
+                    }
+
+                    // Card is a single clickable block
+                    todayContainer.innerHTML += `
+                        <div class="task-row glass-panel p-3.5 rounded-2xl flex justify-between items-center border-l-2 ${borderStyle} ${bgStyle} gap-3 cursor-pointer" onclick="cycleStatus(${task.id}, event)">
+                            <i class="ph-fill ${iconClass} text-2xl shrink-0 transition duration-300"></i>
+                            <div class="flex-1 min-w-0 pr-2">
+                                <p class="text-sm font-bold ${textStyle} leading-tight break-words transition-colors duration-300">${task.text}</p>
+                                <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mt-1">${task.time}</p>
+                            </div>
+                            <i class="ph ph-trash text-gray-600 hover:text-red-500 active:text-red-500 transition shrink-0 text-lg p-2 -mr-2" onclick="deleteTask(${task.id}, event)"></i>
+                        </div>
+                    `;
+                });
+            }
+
+            // 3. RENDER PAST ARCHIVES
+            const pastDates = Object.keys(groupedPastTasks).sort((a, b) => new Date(b) - new Date(a));
+
+            if (pastDates.length === 0) {
+                pastContainer.innerHTML = `<p class="text-[9px] text-gray-800 italic uppercase tracking-widest px-2">No historical logs.</p>`;
+            } else {
+                pastDates.forEach(date => {
+                    let dateHTML = `<div class="space-y-2"><h4 class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] pl-1">${date}</h4>`;
+                    
+                    groupedPastTasks[date].forEach(task => {
+                        let icon = 'ph-minus text-gray-600';
+                        let textDeco = 'text-gray-400';
+                        
+                        if (task.status === 'ongoing') {
+                            icon = 'ph-play text-accentYellow/70';
+                            textDeco = 'text-accentYellow/70';
+                        } else if (task.status === 'completed') {
+                            icon = 'ph-check text-gray-600';
+                            textDeco = 'line-through text-gray-600';
+                        }
+
+                        dateHTML += `
+                            <div class="task-row bg-black/40 border border-white/5 p-3 rounded-xl flex justify-between items-center gap-3 cursor-pointer hover:bg-white/5 transition" onclick="cycleStatus(${task.id}, event)">
+                                <i class="ph-bold ${icon} text-lg shrink-0"></i>
+                                <div class="flex-1 min-w-0 pr-2">
+                                    <p class="text-xs font-bold ${textDeco} leading-tight truncate">${task.text}</p>
+                                    <p class="text-[7px] font-black text-gray-600 uppercase tracking-widest mt-0.5">${task.time}</p>
+                                </div>
+                                <i class="ph ph-trash text-gray-700 hover:text-red-500 active:text-red-500 transition shrink-0 text-sm p-2 -mr-2" onclick="deleteTask(${task.id}, event)"></i>
+                            </div>
+                        `;
+                    });
+                    
+                    dateHTML += `</div>`;
+                    pastContainer.innerHTML += dateHTML;
+                });
+            }
         }
 
+        // --- Keyboard Support for Input ---
+        document.getElementById('task-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTask();
+            }
+        });
+
+        // Initialize
         window.onload = render;
     </script>
 </body>

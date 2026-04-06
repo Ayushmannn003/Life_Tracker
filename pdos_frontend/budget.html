@@ -20,7 +20,7 @@
         body, html { background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; margin: 0; height: 100dvh; overflow: hidden; position: fixed; width: 100%; }
         .mobile-viewport { width: 100%; max-width: 430px; height: 100dvh; margin: 0 auto; position: relative; background-color: #020202; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* UPGRADED BACKGROUND: High-tech financial data terminal */
+        /* THEMATIC FINANCIAL BACKGROUND */
         .budget-bg { 
             background-image: url('https://images.unsplash.com/photo-1642543492481-44e81e391452?auto=format&fit=crop&q=80&w=1000'); 
             background-size: cover; background-position: center; position: absolute; inset: 0; opacity: 0.2; z-index: 1; filter: grayscale(100%) contrast(110%); 
@@ -53,8 +53,7 @@
         <div class="vignette"></div>
 
         <div class="content-layer">
-            <div id="sidebar-injector"></div>
-
+            
             <header class="p-6 pb-2 flex justify-between items-center border-b border-white/5 bg-black/20 backdrop-blur-md">
                 <div class="flex items-center gap-4">
                     <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
@@ -105,9 +104,16 @@
                     </div>
 
                     <div>
-                        <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em] px-2 mb-3 flex items-center gap-2">
-                            Current Ledger <span id="ledger-month-label" class="text-accentRed"></span>
-                        </h3>
+                        <div class="flex justify-between items-end px-2 mb-3">
+                            <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em] flex items-center gap-2">
+                                Today's Logs
+                            </h3>
+                            <div class="text-right">
+                                <p class="text-[7px] font-black text-gray-500 uppercase tracking-widest">Today's Burn</p>
+                                <p class="text-sm font-black text-accentRed" id="today-burn-counter">₹0</p>
+                            </div>
+                        </div>
+                        
                         <div id="current-expense-list" class="space-y-3">
                             </div>
                     </div>
@@ -133,11 +139,12 @@
                         </div>
                 </div>
 
-                <div class="space-y-4 opacity-70">
-                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-2 flex items-center gap-2 border-t border-white/10 pt-4">
-                        <i class="ph-fill ph-archive text-gray-500"></i> Previous Records
+                <div class="space-y-4 opacity-80">
+                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-2 flex items-center gap-2 border-t border-white/10 pt-4 mb-4">
+                        <i class="ph-fill ph-archive text-gray-500"></i> Historical Ledger
                     </h3>
-                    <div id="previous-expense-list" class="space-y-3">
+                    
+                    <div id="previous-expense-list" class="space-y-4">
                         </div>
                 </div>
 
@@ -153,15 +160,17 @@
         let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
         let subscriptions = JSON.parse(localStorage.getItem('sys_subscriptions')) || [];
 
-        const todayStr = new Date().toISOString().split('T')[0];
+        // Ensures Date Picker accounts for local time zone to avoid 1-day offset errors
+        const todayObj = new Date();
+        const localOffset = todayObj.getTimezoneOffset() * 60000;
+        const todayStr = new Date(todayObj.getTime() - localOffset).toISOString().split('T')[0];
         document.getElementById('exp-date').value = todayStr;
 
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         const currentMonthName = monthNames[new Date().getMonth()];
         document.getElementById('current-month-badge').innerText = currentMonthName;
-        document.getElementById('ledger-month-label').innerText = `(${currentMonthName})`;
 
-        // --- UPDATE DYNAMIC LIMIT ---
+        // --- CORE FUNCTIONS ---
         function updateLimit() {
             const inputField = document.getElementById('monthly-limit-input');
             let newVal = parseFloat(inputField.value);
@@ -173,7 +182,6 @@
             render();
         }
 
-        // --- ADD ITEMS ---
         function addExpense() {
             const dateVal = document.getElementById('exp-date').value;
             const name = document.getElementById('exp-name').value.trim();
@@ -182,12 +190,12 @@
             
             if (!dateVal || !name || isNaN(amount) || amount <= 0) return;
 
-            const d = new Date(dateVal);
-            const formattedDate = d.toLocaleDateString('en-US', { timeZone: 'UTC', year: 'numeric', month: 'short', day: 'numeric' });
-
             expenses.unshift({ 
-                id: Date.now(), name: name, amount: amount, 
-                date: formattedDate, rawDate: dateVal, note: note 
+                id: Date.now(), 
+                name: name, 
+                amount: amount, 
+                rawDate: dateVal, 
+                note: note 
             });
             
             document.getElementById('exp-name').value = '';
@@ -212,7 +220,6 @@
             sync();
         }
 
-        // --- DELETE ITEMS ---
         function deleteItem(id, type) {
             if (type === 'exp') expenses = expenses.filter(e => e.id !== id);
             else subscriptions = subscriptions.filter(s => s.id !== id);
@@ -229,33 +236,45 @@
         function render() {
             document.getElementById('monthly-limit-input').value = monthlyLimit;
 
-            const today = new Date();
-            const currentMonth = today.getMonth();
-            const currentYear = today.getFullYear();
+            const currentMonth = parseInt(todayStr.split('-')[1]);
+            const currentYear = parseInt(todayStr.split('-')[0]);
 
-            let currentMonthExpenses = [];
-            let previousExpenses = [];
+            let todayExpenses = [];
+            let groupedPastExpenses = {}; // Groups items by date
+            let totalMonthlyEx = 0; // Calculates the master month burn
 
             expenses.forEach(e => {
-                if (e.rawDate) {
-                    const eDate = new Date(e.rawDate);
-                    if (eDate.getUTCMonth() === currentMonth && eDate.getUTCFullYear() === currentYear) {
-                        currentMonthExpenses.push(e);
-                    } else {
-                        previousExpenses.push(e);
-                    }
+                // Backward compatibility for old records
+                const eDateStr = e.rawDate || todayStr; 
+                
+                const eMonth = parseInt(eDateStr.split('-')[1]);
+                const eYear = parseInt(eDateStr.split('-')[0]);
+
+                // 1. Calculate Monthly HUD Total
+                if (eMonth === currentMonth && eYear === currentYear) {
+                    totalMonthlyEx += e.amount;
+                }
+
+                // 2. Route to Today OR Past Archive
+                if (eDateStr === todayStr) {
+                    todayExpenses.push(e);
                 } else {
-                    previousExpenses.push(e);
+                    if (!groupedPastExpenses[eDateStr]) {
+                        groupedPastExpenses[eDateStr] = [];
+                    }
+                    groupedPastExpenses[eDateStr].push(e);
                 }
             });
 
-            // CURRENT LEDGER
+            // ==========================================
+            // RENDER TODAY'S LEDGER
+            // ==========================================
             const cContainer = document.getElementById('current-expense-list');
             cContainer.innerHTML = '';
-            let totalEx = 0;
+            let todayBurn = 0;
             
-            currentMonthExpenses.forEach(e => {
-                totalEx += e.amount;
+            todayExpenses.forEach(e => {
+                todayBurn += e.amount;
                 let noteHTML = e.note ? `<p class="text-[9px] text-gray-400 italic truncate mt-0.5">${e.note}</p>` : '';
                 
                 cContainer.innerHTML += `
@@ -263,7 +282,6 @@
                         <div class="flex-1 min-w-0 pr-2">
                             <p class="text-xs font-bold text-white uppercase truncate">${e.name}</p>
                             ${noteHTML}
-                            <p class="text-[8px] font-black text-gray-500 uppercase mt-1 tracking-widest">${e.date}</p>
                         </div>
                         <div class="flex items-center gap-3 shrink-0">
                             <span class="text-sm font-black text-white text-right w-16 truncate">₹${e.amount}</span>
@@ -273,37 +291,70 @@
                     </div>`;
             });
 
-            if(currentMonthExpenses.length === 0) {
-                cContainer.innerHTML = `<p class="text-[10px] text-gray-700 italic text-center py-6 uppercase tracking-widest">No Logged Expenses This Month</p>`;
+            // Update Today's Burn Counter
+            document.getElementById('today-burn-counter').innerText = `₹${todayBurn.toLocaleString()}`;
+
+            if(todayExpenses.length === 0) {
+                cContainer.innerHTML = `<p class="text-[10px] text-gray-700 italic text-center py-6 uppercase tracking-widest">No Transactions Logged Today</p>`;
             }
 
-            // PREVIOUS LEDGER
+
+            // ==========================================
+            // RENDER HISTORICAL LEDGER (Grouped Blocks)
+            // ==========================================
             const pContainer = document.getElementById('previous-expense-list');
             pContainer.innerHTML = '';
             
-            previousExpenses.forEach(e => {
-                let noteHTML = e.note ? `<p class="text-[8px] text-gray-500 italic truncate mt-0.5">${e.note}</p>` : '';
+            // Sort dates from newest to oldest
+            const sortedPastDates = Object.keys(groupedPastExpenses).sort((a, b) => b.localeCompare(a));
 
-                pContainer.innerHTML += `
-                    <div class="glass-panel p-3.5 rounded-2xl flex justify-between items-center border border-white/5 bg-black/40 gap-2">
-                        <div class="flex-1 min-w-0 pr-2">
-                            <p class="text-[10px] font-bold text-gray-300 uppercase truncate">${e.name}</p>
-                            ${noteHTML}
-                            <p class="text-[7px] font-black text-gray-600 uppercase mt-1 tracking-widest">${e.date}</p>
-                        </div>
-                        <div class="flex items-center gap-3 shrink-0">
-                            <span class="text-xs font-black text-gray-400 text-right w-14 truncate">₹${e.amount}</span>
-                            <div class="h-5 w-[1px] bg-white/10"></div>
-                            <i onclick="deleteItem(${e.id}, 'exp')" class="ph ph-trash text-gray-600 hover:text-red-500 active:text-red-500 transition text-sm cursor-pointer"></i>
-                        </div>
-                    </div>`;
-            });
+            if(sortedPastDates.length === 0) {
+                pContainer.innerHTML = `<p class="text-[9px] text-gray-800 italic uppercase tracking-widest px-2">No historical data found.</p>`;
+            } else {
+                sortedPastDates.forEach(dateStr => {
+                    const dayItems = groupedPastExpenses[dateStr];
+                    
+                    // Calculate Day's Total
+                    const dayTotal = dayItems.reduce((sum, item) => sum + item.amount, 0);
+                    
+                    // Format Date nicely (e.g., "Monday, Apr 5")
+                    const d = new Date(dateStr);
+                    const niceDate = d.toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'long', month: 'short', day: 'numeric' });
 
-            if(previousExpenses.length === 0) {
-                pContainer.innerHTML = `<p class="text-[9px] text-gray-800 italic uppercase tracking-widest px-2">No Historical Data Found.</p>`;
+                    let blockHTML = `
+                        <div class="glass-panel p-4 rounded-[1.5rem] bg-black/40 border border-white/5 shadow-lg">
+                            <div class="flex justify-between items-center border-b border-white/10 pb-3 mb-3">
+                                <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest">${niceDate}</h4>
+                                <div class="bg-accentRed/10 px-2 py-1 rounded text-[10px] font-black text-accentRed tracking-widest">TOTAL: ₹${dayTotal.toLocaleString()}</div>
+                            </div>
+                            <div class="space-y-2">
+                    `;
+                    
+                    dayItems.forEach(e => {
+                        let noteHTML = e.note ? `<p class="text-[8px] text-gray-500 italic truncate mt-0.5">${e.note}</p>` : '';
+                        blockHTML += `
+                            <div class="flex justify-between items-center gap-2 pl-1">
+                                <div class="flex-1 min-w-0 pr-2">
+                                    <p class="text-[10px] font-bold text-gray-300 uppercase truncate">${e.name}</p>
+                                    ${noteHTML}
+                                </div>
+                                <div class="flex items-center gap-3 shrink-0">
+                                    <span class="text-xs font-black text-gray-400 text-right w-14 truncate">₹${e.amount}</span>
+                                    <div class="h-4 w-[1px] bg-white/10"></div>
+                                    <i onclick="deleteItem(${e.id}, 'exp')" class="ph ph-trash text-gray-700 hover:text-red-500 active:text-red-500 transition text-sm cursor-pointer"></i>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    blockHTML += `</div></div>`;
+                    pContainer.innerHTML += blockHTML;
+                });
             }
 
-            // SUBSCRIPTIONS
+            // ==========================================
+            // RENDER SUBSCRIPTIONS
+            // ==========================================
             const sContainer = document.getElementById('sub-list');
             sContainer.innerHTML = '';
             let totalSub = 0;
@@ -320,8 +371,10 @@
                     </div>`;
             });
 
-            // MATH ENGINE
-            const combinedBurn = totalEx + totalSub;
+            // ==========================================
+            // MATH ENGINE (HUD)
+            // ==========================================
+            const combinedBurn = totalMonthlyEx + totalSub;
             document.getElementById('total-spent').innerText = `₹${combinedBurn.toLocaleString()}`;
             
             const remaining = monthlyLimit - combinedBurn;
