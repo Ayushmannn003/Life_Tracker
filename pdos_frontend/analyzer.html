@@ -249,7 +249,7 @@
             document.getElementById('focus-sessions').innerText = `${todaysLogs.length} Sessions`;
             document.getElementById('focus-bar').style.width = `${Math.min((totalMins/240)*100, 100)}%`;
 
-            // -- NEW: SVG LINE GRAPH ENGINE (Sleep & Nap) --
+            // -- SVG LINE GRAPH ENGINE (Sleep & Nap with Date Stamps) --
             const sleepLedger = JSON.parse(localStorage.getItem('sys_sleep_ledger')) || [];
             
             function drawLineGraph(containerId, data, colorHex, isNap) {
@@ -268,7 +268,6 @@
                     if (val > maxVal) maxVal = val;
                 });
 
-                // Add padding to max bounds so the line doesn't hit the absolute top of the container
                 maxVal = maxVal * 1.2; 
 
                 const svgWidth = 300;
@@ -281,7 +280,6 @@
                         <svg viewBox="-15 -20 330 120" class="w-full h-full overflow-visible drop-shadow-[0_0_8px_${colorHex}40]">
                 `;
 
-                // Calculate exact X,Y coordinates for the data points
                 recent.forEach((log, index) => {
                     let val = parseFloat(log.duration);
                     let x = index * xStep;
@@ -291,10 +289,8 @@
 
                 let pathD = `M ${points.join(' L ')}`;
 
-                // 1. Draw the actual line connecting the points
                 svgHTML += `<path d="${pathD}" fill="none" stroke="${colorHex}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="chart-line" stroke-dasharray="1000" stroke-dashoffset="1000" />`;
 
-                // 2. Draw the plot dots and text values above them
                 recent.forEach((log, index) => {
                     let val = parseFloat(log.duration);
                     let x = index * xStep;
@@ -305,19 +301,34 @@
                     svgHTML += `<text x="${x}" y="${y - 12}" fill="white" font-size="11" font-family="Inter" font-weight="bold" text-anchor="middle" class="chart-point opacity-0" style="transition-delay: ${index * 80}ms;">${val}${unit}</text>`;
                 });
 
-                svgHTML += `</svg><div class="flex justify-between w-full mt-2">`;
+                svgHTML += `</svg><div class="flex justify-between w-full mt-3">`;
 
-                // 3. Render X-Axis (Days)
+                // Render X-Axis (Days + Date Stamp)
                 recent.forEach((log, index) => {
-                    let dateArr = log.date.split(', ');
-                    let dateLabel = dateArr.length > 1 ? dateArr[0].substring(0,3) : `D${index+1}`;
-                    svgHTML += `<span class="text-[8px] font-black text-gray-500 uppercase text-center w-8 shrink-0">${dateLabel}</span>`;
+                    let d = new Date(log.date);
+                    let dayLabel = "D" + (index + 1);
+                    let dateStamp = "";
+
+                    // Safe fallback if date string parsing fails
+                    if (!isNaN(d.getTime())) {
+                        dayLabel = d.toLocaleDateString('en-US', { weekday: 'short' });
+                        dateStamp = d.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' }); // Generates '4/15' format
+                    } else {
+                        let dateArr = log.date.split(', ');
+                        dayLabel = dateArr.length > 1 ? dateArr[0].substring(0,3) : `D${index+1}`;
+                    }
+
+                    svgHTML += `
+                        <div class="flex flex-col items-center w-8 shrink-0">
+                            <span class="text-[8px] font-black text-gray-400 uppercase text-center leading-none">${dayLabel}</span>
+                            <span class="text-[6px] font-bold text-gray-600 uppercase text-center mt-1 leading-none">${dateStamp}</span>
+                        </div>
+                    `;
                 });
 
                 svgHTML += `</div></div>`;
                 container.innerHTML = svgHTML;
 
-                // Trigger smooth path drawing animation after HTML injection
                 setTimeout(() => {
                     const lines = container.querySelectorAll('.chart-line');
                     lines.forEach(line => {
@@ -336,7 +347,6 @@
             const coreLogs = sleepLedger.filter(l => l.type === 'Core');
             const napLogs = sleepLedger.filter(l => l.type === 'Nap');
             
-            // Pass specific hex codes into the SVG renderer
             drawLineGraph('graph-core', coreLogs, '#A855F7', false);
             drawLineGraph('graph-nap', napLogs, '#FBBF24', true);
 
