@@ -249,7 +249,7 @@
             document.getElementById('focus-sessions').innerText = `${todaysLogs.length} Sessions`;
             document.getElementById('focus-bar').style.width = `${Math.min((totalMins/240)*100, 100)}%`;
 
-            // -- SVG LINE GRAPH ENGINE (Sleep & Nap with Date Stamps) --
+            // -- SVG LINE GRAPH ENGINE (Aligned Date Stamps) --
             const sleepLedger = JSON.parse(localStorage.getItem('sys_sleep_ledger')) || [];
             
             function drawLineGraph(containerId, data, colorHex, isNap) {
@@ -275,9 +275,10 @@
                 const xStep = recent.length > 1 ? svgWidth / (recent.length - 1) : svgWidth;
 
                 let points = [];
+                // Adjusted viewBox from 0 to exactly svgWidth
                 let svgHTML = `
                     <div class="relative w-full h-full flex flex-col justify-end pt-4">
-                        <svg viewBox="-15 -20 330 120" class="w-full h-full overflow-visible drop-shadow-[0_0_8px_${colorHex}40]">
+                        <svg viewBox="0 -20 ${svgWidth} 120" class="w-full h-full overflow-visible drop-shadow-[0_0_8px_${colorHex}40]">
                 `;
 
                 recent.forEach((log, index) => {
@@ -301,25 +302,27 @@
                     svgHTML += `<text x="${x}" y="${y - 12}" fill="white" font-size="11" font-family="Inter" font-weight="bold" text-anchor="middle" class="chart-point opacity-0" style="transition-delay: ${index * 80}ms;">${val}${unit}</text>`;
                 });
 
-                svgHTML += `</svg><div class="flex justify-between w-full mt-3">`;
+                // Start Absolute Positioned Date Container
+                svgHTML += `</svg><div class="relative w-full mt-4 h-6">`;
 
-                // Render X-Axis (Days + Date Stamp)
                 recent.forEach((log, index) => {
                     let d = new Date(log.date);
                     let dayLabel = "D" + (index + 1);
                     let dateStamp = "";
 
-                    // Safe fallback if date string parsing fails
                     if (!isNaN(d.getTime())) {
                         dayLabel = d.toLocaleDateString('en-US', { weekday: 'short' });
-                        dateStamp = d.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' }); // Generates '4/15' format
+                        dateStamp = d.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' }); 
                     } else {
                         let dateArr = log.date.split(', ');
                         dayLabel = dateArr.length > 1 ? dateArr[0].substring(0,3) : `D${index+1}`;
                     }
 
+                    // Calculate absolute position matching the exact SVG x-coordinates
+                    let leftPct = recent.length > 1 ? (index / (recent.length - 1)) * 100 : 50;
+
                     svgHTML += `
-                        <div class="flex flex-col items-center w-8 shrink-0">
+                        <div class="absolute flex flex-col items-center w-12" style="left: ${leftPct}%; transform: translateX(-50%);">
                             <span class="text-[8px] font-black text-gray-400 uppercase text-center leading-none">${dayLabel}</span>
                             <span class="text-[6px] font-bold text-gray-600 uppercase text-center mt-1 leading-none">${dateStamp}</span>
                         </div>
