@@ -17,6 +17,7 @@ from features.analyzer.router import router as analyzer_router
 from features.sleep.router import router as sleep_router
 from features.habits.router import router as habits_router
 from features.calendar.router import router as calendar_router
+from features.academics import router as academics_router
 
 # Initialize the SQLite database tables
 models.Base.metadata.create_all(bind=engine)
@@ -46,6 +47,7 @@ app.include_router(analyzer_router, prefix="/api/v1/analyzer", tags=["Analyzer"]
 app.include_router(sleep_router, prefix="/api/v1/sleep", tags=["Sleep"])
 app.include_router(habits_router, prefix="/api/v1/habits", tags=["Habits"])
 app.include_router(calendar_router, prefix="/api/v1/calendar", tags=["Calendar"])
+app.include_router(academics_router.router)
 
 # --- Core Endpoints ---
 
