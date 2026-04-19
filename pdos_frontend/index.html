@@ -90,7 +90,7 @@
             </a>
 
             <div id="habit-arc-panel" class="mb-4 pt-2" style="display: none;">
-                <h3 class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] text-center mb-4">Daily Habit Trackers</h3>
+                <h3 class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] text-center mb-4">Habit Trackers</h3>
                 <div id="habit-dot-blocks" class="grid grid-cols-2 gap-3">
                     </div>
             </div>
@@ -221,6 +221,16 @@
                         <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em]">System Overview</p>
                     </div>
                 </a>
+
+                <a href="academics.html" class="module-card h-32 col-span-2 border-l-2 border-l-accentPurple mt-1">
+                    <div class="module-bg" style="background-image: url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=800'); opacity: 0.35;"></div>
+                    <div class="absolute inset-0 vignette-side"></div>
+                    <div class="relative h-full p-6 flex flex-col justify-center">
+                        <i class="ph-fill ph-graduation-cap text-accentPurple text-3xl mb-1 opacity-80"></i>
+                        <h2 class="text-xl font-black text-white uppercase tracking-widest">Academic Hub</h2>
+                        <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em]">Coursework & Projects</p>
+                    </div>
+                </a>
             </div>
 
             <div class="h-32"></div>
@@ -345,7 +355,7 @@
             container.innerHTML = html;
         }
 
-        // 5. DYNAMIC HABIT DOT MATRIX HUD (Dashboard Clone)
+        // 5. DYNAMIC HABIT DOT MATRIX HUD
         function loadDashboardHabits() {
             const sysHabits = JSON.parse(localStorage.getItem('sys_habits')) || [];
             const habitDotContainer = document.getElementById('habit-dot-blocks');
@@ -380,7 +390,7 @@
                     let streak = 0;
                     for(let i=27; i>=0; i--) {
                         if(history[i]) streak++;
-                        else if (i !== 27) break;
+                        else break;
                     }
 
                     habitDotContainer.innerHTML += `

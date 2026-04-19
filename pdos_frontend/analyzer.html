@@ -2,579 +2,359 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>System OS | Core Analytics</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: { 
                         bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6', 
-                        accentPurple: '#A855F7', accentYellow: '#FBBF24', accentRed: '#FF4C4C' 
+                        accentPurple: '#A855F7', accentRed: '#FF4C4C', accentYellow: '#FBBF24' 
                     }
                 }
             }
         }
     </script>
     <style>
-        /* UNIVERSAL MOBILE SCROLL LOCK */
-        body, html { background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; margin: 0; height: 100%; height: 100dvh; overflow: hidden; position: fixed; width: 100%; }
-        .mobile-viewport { width: 100%; max-width: 430px; height: 100dvh; margin: 0 auto; position: relative; background-color: #020202; display: flex; flex-direction: column; overflow: hidden; }
+        /* NATIVE MOBILE SCROLLING FIX */
+        body, html { 
+            background-color: #000; 
+            color: #C5C6C7; 
+            font-family: 'Inter', sans-serif; 
+            margin: 0; 
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .mobile-viewport { 
+            width: 100%; 
+            max-width: 430px; 
+            margin: 0 auto; 
+            position: relative; 
+            background-color: #020202; 
+            min-height: 100dvh; 
+            display: flex; 
+            flex-direction: column; 
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        main { padding: 1.25rem; flex: 1; padding-bottom: 6rem; }
+        ::-webkit-scrollbar { display: none; }
+        * { -ms-overflow-style: none; scrollbar-width: none; }
         
-        .analyzer-bg { background-image: url('https://images.unsplash.com/photo-1543286386-713bdd548da4?auto=format&fit=crop&q=80&w=1000'); background-size: cover; background-position: center; position: absolute; inset: 0; opacity: 0.1; z-index: 1; filter: grayscale(100%); }
-        .vignette { background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.98) 80%, #000 100%); position: absolute; inset: 0; z-index: 2; }
-        .content-layer { position: relative; z-index: 10; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        /* GLASSMORPHIC PANELS */
+        .glass-panel { 
+            background: rgba(10, 12, 16, 0.65); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); 
+            border-radius: 1.75rem;
+        }
         
-        main { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; padding: 1.25rem; }
-        main::-webkit-scrollbar { display: none; }
-        
-        .glass-panel { background: rgba(13, 17, 23, 0.85); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .progress-track { height: 4px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
-        .progress-fill { height: 100%; transition: width 1s ease-in-out; }
+        /* Background Tech Mesh */
+        .analytics-bg {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            position: absolute; inset: 0; z-index: 0; opacity: 0.5; pointer-events: none;
+        }
+
+        /* Custom Graph Bar Animation */
+        .graph-bar {
+            transition: height 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .progress-fill {
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
     </style>
 </head>
 <body>
 
     <div class="mobile-viewport">
-        <div class="analyzer-bg"></div>
-        <div class="vignette"></div>
+        <div class="analytics-bg"></div>
 
-        <div class="content-layer">
-            <div id="sidebar-injector"></div>
+        <header class="sticky top-0 p-6 pb-4 flex justify-between items-center z-50 bg-[#020202]/90 backdrop-blur-xl border-b border-white/5">
+            <div class="flex items-center gap-4">
+                <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]"></i>
+                <h1 class="text-xl font-black text-white tracking-widest uppercase">Analytics</h1>
+            </div>
+            <div class="text-[10px] font-black text-white uppercase tracking-widest bg-white/10 border border-white/10 px-3 py-1.5 rounded-full flex items-center gap-2">
+                <i class="ph-bold ph-chart-line-up"></i> Live
+            </div>
+        </header>
 
-            <header class="p-6 pb-2 flex justify-between items-center z-20 bg-black/30 backdrop-blur-md border-b border-white/5">
-                <div class="flex items-center gap-4">
-                    <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
-                    <h1 class="text-xl font-black text-white tracking-widest uppercase">Analytics</h1>
+        <main class="relative z-10 space-y-4">
+
+            <div class="glass-panel p-5 border-t-2 border-t-accentTeal relative overflow-hidden">
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-accentTeal/10 blur-3xl rounded-full pointer-events-none"></div>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-[11px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+                        <i class="ph-fill ph-cpu text-accentTeal text-lg"></i> Output Efficiency
+                    </h2>
+                    <span class="text-[9px] font-bold text-accentTeal bg-accentTeal/10 px-2 py-0.5 rounded border border-accentTeal/20">Last 7 Days</span>
                 </div>
-                <div class="text-[9px] font-black text-accentTeal border border-accentTeal/20 bg-accentTeal/5 px-3 py-1 rounded-full uppercase flex items-center gap-1.5">
-                    <div class="w-1.5 h-1.5 bg-accentTeal rounded-full animate-pulse"></div> Live
+                
+                <div class="flex items-end gap-3 mb-2">
+                    <h3 class="text-4xl font-black text-white leading-none">84<span class="text-xl text-gray-500">%</span></h3>
+                    <p class="text-[10px] text-accentTeal font-bold uppercase tracking-widest mb-1 flex items-center gap-1"><i class="ph-bold ph-trend-up"></i> +12%</p>
                 </div>
-            </header>
+                <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Tasks & Routines Cleared vs. Planned</p>
+            </div>
 
-            <main>
-                <div id="analytics-content" class="space-y-5 p-1">
+            <div class="grid grid-cols-2 gap-3">
+                <div class="glass-panel p-4 flex flex-col justify-between h-28 border-t-2 border-t-accentBlue">
+                    <i class="ph-fill ph-check-circle text-accentBlue text-2xl opacity-80 mb-2"></i>
+                    <div>
+                        <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Tasks Done</h4>
+                        <p class="text-xl font-black text-white">124</p>
+                    </div>
+                </div>
+                <div class="glass-panel p-4 flex flex-col justify-between h-28 border-t-2 border-t-accentYellow">
+                    <i class="ph-fill ph-target text-accentYellow text-2xl opacity-80 mb-2"></i>
+                    <div>
+                        <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Flow State</h4>
+                        <p class="text-xl font-black text-white">18<span class="text-sm text-gray-500">h</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-[#0a0a0a] p-5 rounded-[1.75rem] border border-white/5 shadow-[0_8px_30px_rgba(0,0,0,0.5)] relative overflow-hidden mt-2">
+                <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-accentPurple/10 blur-3xl rounded-full pointer-events-none"></div>
+                
+                <div class="flex items-center justify-between mb-4 relative z-10">
+                    <div class="flex items-center gap-2">
+                        <i class="ph-fill ph-graduation-cap text-accentPurple text-xl drop-shadow-[0_0_5px_rgba(168,85,247,0.5)]"></i>
+                        <h2 class="text-[11px] font-black text-white uppercase tracking-widest">Academic Overview</h2>
+                    </div>
+                    <a href="academics.html" class="text-[9px] font-black text-gray-400 hover:text-white uppercase tracking-widest transition active:scale-90 flex items-center gap-1 bg-white/5 px-2 py-1 rounded-full border border-white/5">
+                        Hub <i class="ph-bold ph-caret-right"></i>
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 relative z-10">
+                    <div class="bg-black/50 p-3.5 rounded-2xl border border-white/5 backdrop-blur-md">
+                        <p class="text-[8px] text-gray-500 font-bold uppercase tracking-widest mb-1">Active Deadlines</p>
+                        <p class="text-2xl font-black text-accentRed leading-none drop-shadow-[0_0_5px_rgba(255,76,76,0.3)]" id="analytics-deadlines-count">-</p>
+                    </div>
                     
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="glass-panel p-5 rounded-[2rem] space-y-3 col-span-2">
-                            <div class="flex justify-between items-end">
-                                <div>
-                                    <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest">Capital Burn</p>
-                                    <h2 class="text-2xl font-black text-white" id="core-budget">₹0</h2>
-                                </div>
-                                <i class="ph-fill ph-wallet text-accentRed text-xl opacity-80"></i>
-                            </div>
-                            <div class="progress-track"><div id="budget-bar" class="progress-fill bg-accentRed" style="width: 0%"></div></div>
+                    <div class="bg-black/50 p-3.5 rounded-2xl border border-white/5 backdrop-blur-md">
+                        <p class="text-[8px] text-gray-500 font-bold uppercase tracking-widest mb-1">Safe Courses</p>
+                        <p class="text-2xl font-black text-accentBlue leading-none" id="analytics-safe-courses">-<span class="text-xs text-gray-600">/-</span></p>
+                    </div>
+                    
+                    <div class="col-span-2 bg-black/50 p-4 rounded-2xl border border-white/5 backdrop-blur-md mt-1">
+                        <div class="flex justify-between items-end mb-2.5">
+                            <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Semester Progression</p>
+                            <span class="text-[10px] font-black text-accentPurple bg-accentPurple/10 border border-accentPurple/20 px-2 py-0.5 rounded" id="analytics-semester-pct">0%</span>
                         </div>
-
-                        <div class="glass-panel p-6 rounded-[2.5rem] col-span-2 border-t-2 border-t-accentTeal">
-                            <div class="flex justify-between items-center mb-4">
-                                <h3 class="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
-                                    <i class="ph-fill ph-list-checks text-accentTeal text-lg"></i> Task Protocol Execution
-                                </h3>
-                            </div>
-                            <div class="flex justify-between items-end mb-2">
-                                <div>
-                                    <h2 class="text-3xl font-black text-white" id="todo-pct">0%</h2>
-                                </div>
-                                <div class="text-right">
-                                    <h2 class="text-lg font-bold text-accentTeal"><span id="todo-cleared">0</span> / <span id="todo-total">0</span></h2>
-                                    <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mt-1">Cleared</p>
-                                </div>
-                            </div>
-                            <div class="progress-track mt-4 mb-2">
-                                <div id="todo-bar" class="progress-fill bg-accentTeal" style="width: 0%"></div>
-                            </div>
-                            <p class="text-[9px] text-gray-500 italic uppercase tracking-widest text-center" id="todo-status">Awaiting task input.</p>
+                        <div class="h-1.5 bg-[#020202] rounded-full overflow-hidden border border-white/5">
+                            <div id="analytics-semester-bar" class="h-full bg-accentPurple w-[0%] progress-fill shadow-[0_0_8px_rgba(168,85,247,0.8)]"></div>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <div class="glass-panel p-6 rounded-[2.5rem] border-t-2 border-t-accentYellow">
-                        <div class="flex justify-between items-end mb-4">
-                            <div>
-                                <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Deep Focus Yield (Today)</p>
-                                <h2 class="text-2xl font-black text-white"><span id="focus-hours">0</span>h <span id="focus-mins">0</span>m</h2>
-                            </div>
-                            <span id="focus-sessions" class="text-[10px] font-black text-accentYellow uppercase border border-accentYellow/20 px-2 py-0.5 rounded">0 Sessions</span>
-                        </div>
-                        <div class="progress-track"><div id="focus-bar" class="progress-fill bg-accentYellow" style="width: 0%"></div></div>
+            <div class="glass-panel p-5 border-t-2 border-t-accentPurple relative overflow-hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-[11px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+                        <i class="ph-fill ph-moon-stars text-accentPurple text-lg"></i> Sleep Vector
+                    </h2>
+                    <span class="text-[9px] font-bold text-gray-400 bg-white/5 px-2 py-0.5 rounded border border-white/10">7-Day Avg: 7.2h</span>
+                </div>
+                
+                <div class="flex items-end justify-between h-24 gap-2 border-b border-white/10 pb-2" id="sleep-graph-bars">
                     </div>
-
-                    <div class="glass-panel p-6 rounded-[2.5rem] border-t-2 border-t-accentPurple">
-                        <div class="flex justify-between items-center mb-4">
-                            <div class="flex items-center gap-2">
-                                <i class="ph-fill ph-moon-stars text-accentPurple text-lg"></i>
-                                <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em]">Core Sleep Yield</h3>
-                            </div>
-                            <span class="text-[9px] font-black text-gray-500 uppercase">Last 7 Logs</span>
-                        </div>
-                        <div class="h-32 w-full relative" id="graph-core">
-                            </div>
+                <div class="flex justify-between text-[8px] text-gray-500 font-bold uppercase tracking-widest mt-2" id="sleep-graph-labels">
                     </div>
+            </div>
 
-                    <div class="glass-panel p-6 rounded-[2.5rem] border-t-2 border-t-accentYellow">
-                        <div class="flex justify-between items-center mb-4">
-                            <div class="flex items-center gap-2">
-                                <i class="ph-fill ph-battery-charging text-accentYellow text-lg"></i>
-                                <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em]">Power Nap Yield</h3>
-                            </div>
-                            <span class="text-[9px] font-black text-gray-500 uppercase">Last 7 Logs</span>
-                        </div>
-                        <div class="h-32 w-full relative" id="graph-nap">
-                            </div>
+            <div class="glass-panel p-5 border-t-2 border-t-accentBlue relative overflow-hidden mt-2">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-[11px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+                        <i class="ph-fill ph-clock-zzz text-accentBlue text-lg"></i> Power Naps
+                    </h2>
+                    <span class="text-[9px] font-bold text-gray-400 bg-white/5 px-2 py-0.5 rounded border border-white/10">Weekly Total: 135m</span>
+                </div>
+                
+                <div class="flex items-end justify-between h-20 gap-2 border-b border-white/10 pb-2" id="nap-graph-bars">
                     </div>
+                <div class="flex justify-between text-[8px] text-gray-500 font-bold uppercase tracking-widest mt-2" id="nap-graph-labels">
+                    </div>
+            </div>
 
-                    <div class="glass-panel p-6 rounded-[2.5rem] border-t-2 border-t-accentRed space-y-4">
-                        <div class="flex justify-between items-center">
-                            <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em] flex items-center gap-2">
-                                <i class="ph-fill ph-heartbeat text-accentRed text-lg"></i> Daily Bio-Metrics
-                            </h3>
-                            <span class="text-[9px] font-black text-gray-500 uppercase">Today's Log</span>
-                        </div>
-                        <div class="grid grid-cols-3 gap-2 text-center">
-                            <div class="bg-black/30 p-3 rounded-xl border border-white/5 flex flex-col items-center">
-                                <i class="ph-fill ph-drop text-accentBlue mb-2 text-xl opacity-80"></i>
-                                <p id="stat-water" class="text-lg font-black text-white leading-none">0</p>
-                                <p class="text-[7px] text-gray-500 uppercase font-bold mt-1">Water</p>
-                            </div>
-                            <div class="bg-black/30 p-3 rounded-xl border border-white/5 flex flex-col items-center">
-                                <i class="ph-fill ph-coffee text-accentYellow mb-2 text-xl opacity-80"></i>
-                                <p id="stat-caffeine" class="text-lg font-black text-white leading-none">0</p>
-                                <p class="text-[7px] text-gray-500 uppercase font-bold mt-1">Caffeine</p>
-                            </div>
-                            <div class="bg-black/30 p-3 rounded-xl border border-white/5 flex flex-col items-center">
-                                <i class="ph-fill ph-flower-lotus text-accentTeal mb-2 text-xl opacity-80"></i>
-                                <p id="stat-meditation" class="text-lg font-black text-white leading-none">0<span class="text-[10px] text-gray-500 ml-0.5">m</span></p>
-                                <p class="text-[7px] text-gray-500 uppercase font-bold mt-1">Meditation</p>
-                            </div>
+            <div class="grid grid-cols-2 gap-3 mt-2">
+                <div class="glass-panel p-4 flex flex-col justify-between h-32 border-t-2 border-t-accentRed">
+                    <div class="flex justify-between items-start mb-2">
+                        <i class="ph-fill ph-barbell text-accentRed text-2xl opacity-80"></i>
+                        <span class="text-[8px] font-bold text-accentRed bg-accentRed/10 px-1.5 py-0.5 rounded border border-accentRed/20">Muscle Gain</span>
+                    </div>
+                    <div>
+                        <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Protein Target</h4>
+                        <div class="flex items-end gap-1">
+                            <p class="text-xl font-black text-white">120<span class="text-xs text-gray-500">g</span></p>
                         </div>
                     </div>
-
-                    <div class="glass-panel p-6 rounded-[2.5rem] border-t-2 border-t-accentTeal space-y-4" id="habit-arc-panel">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em] flex items-center gap-2">
-                                <i class="ph-fill ph-check-square-offset text-accentTeal text-lg"></i> Habit Trackers
-                            </h3>
-                            <span class="text-[9px] font-black text-gray-500 uppercase">28-Day Arc</span>
-                        </div>
-                        <div id="habit-dot-blocks" class="grid grid-cols-2 gap-3">
-                            </div>
-                    </div>
-
-                    <div class="glass-panel p-6 rounded-[2.5rem] border-t-2 border-t-accentBlue space-y-5">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-2">
-                                <i class="ph-fill ph-calendar-check text-accentBlue text-lg"></i>
-                                <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em]">Routine Adherence</h3>
-                            </div>
-                            <span id="habit-pct" class="text-xs font-black text-accentBlue">0%</span>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="bg-black/30 p-3 rounded-xl border border-white/5">
-                                <p class="text-[7px] font-bold text-gray-500 uppercase tracking-widest mb-1">Active Routines</p>
-                                <p id="habit-active" class="text-lg font-black text-white">0</p>
-                            </div>
-                            <div class="bg-black/30 p-3 rounded-xl border border-white/5">
-                                <p class="text-[7px] font-bold text-gray-500 uppercase tracking-widest mb-1">MTD Checks</p>
-                                <p id="habit-hits" class="text-lg font-black text-white">0</p>
-                            </div>
-                        </div>
-
-                        <div class="progress-track mt-2"><div id="habit-bar" class="progress-fill bg-accentBlue" style="width: 0%"></div></div>
-
-                        <div id="routine-dot-blocks" class="grid grid-cols-2 gap-3 pt-3 border-t border-white/10 mt-4">
-                            </div>
-                    </div>
-
-                    <div class="glass-panel p-6 rounded-[2.5rem] border-t-2 border-t-white/30 space-y-4">
-                        <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em]">Media Yield</h3>
-                        <div class="grid grid-cols-3 gap-2 text-center">
-                            <div><p id="movies-stat" class="text-sm font-black text-white">0/0</p><p class="text-[7px] text-gray-500 uppercase font-bold mt-1">Movies</p></div>
-                            <div><p id="shows-stat" class="text-sm font-black text-white">0/0</p><p class="text-[7px] text-gray-500 uppercase font-bold mt-1">Series</p></div>
-                            <div><p id="books-stat" class="text-sm font-black text-white">0/0</p><p class="text-[7px] text-gray-500 uppercase font-bold mt-1">Books</p></div>
-                        </div>
-                    </div>
-                </div> 
-
-                <div class="mt-6 glass-panel p-5 rounded-[2rem] border border-white/10 flex gap-3">
-                    <button onclick="exportTextReport()" class="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-black py-4 rounded-xl uppercase text-[9px] tracking-widest active:scale-95 transition flex justify-center items-center gap-2">
-                        <i class="ph-bold ph-file-text text-lg"></i> Text Log
-                    </button>
-                    <button id="btn-img-export" onclick="exportImageReport()" class="flex-1 bg-accentTeal text-black font-black py-4 rounded-xl uppercase text-[9px] tracking-widest active:scale-95 transition flex justify-center items-center gap-2">
-                        <i class="ph-bold ph-image text-lg"></i> Image Export
-                    </button>
                 </div>
 
-                <div class="h-32"></div>
+                <div class="glass-panel p-4 flex flex-col justify-between h-32 border-t-2 border-t-accentRed">
+                    <div class="flex justify-between items-start mb-2">
+                        <i class="ph-fill ph-wallet text-accentRed text-2xl opacity-80"></i>
+                        <span class="text-[8px] font-bold text-gray-400 bg-white/10 px-1.5 py-0.5 rounded border border-white/10">OCR Sync</span>
+                    </div>
+                    <div>
+                        <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Capital Limit</h4>
+                        <div class="flex items-end gap-1">
+                            <p class="text-xl font-black text-white"><span class="text-sm text-gray-500">₹</span>4.5k</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-            </main>
-        </div>
+            <div class="glass-panel p-5 border-l-2 border-l-accentBlue relative overflow-hidden mt-2">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-[11px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+                        <i class="ph-fill ph-books text-accentBlue text-lg"></i> Knowledge Backlog
+                    </h2>
+                </div>
+                <div class="flex justify-between items-center bg-black/50 p-3 rounded-xl border border-white/5 backdrop-blur-md">
+                    <div>
+                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Currently Reading</p>
+                        <p class="text-xs font-bold text-white truncate pr-4">Systematic Literature Review</p>
+                    </div>
+                    <div class="shrink-0 w-10 h-10 rounded-full border-2 border-accentBlue/30 flex justify-center items-center shadow-[0_0_8px_rgba(59,130,246,0.3)]">
+                        <span class="text-[10px] font-black text-accentBlue">45%</span>
+                    </div>
+                </div>
+            </div>
+
+        </main>
     </div>
 
+    <div id="sidebar-injector"></div>
     <script src="js/sidebar.js"></script>
+    <script src="js/api.js"></script>
+    
     <script>
-        function syncAnalytics() {
-            const todayStr = new Date().toISOString().split('T')[0];
+        // --- 1. SLEEP GRAPH RENDER ENGINE ---
+        function renderSleepGraph() {
+            // Simulated 7-day data (Will link to sleep.html local storage later)
+            const sleepData = [6.5, 7.2, 5.8, 8.1, 7.5, 6.9, 7.8]; 
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            const maxSleep = 10; // Max Y-axis value
 
-            // -- FINANCE --
-            const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
-            const spent = expenses.reduce((s, e) => s + e.amount, 0);
-            document.getElementById('core-budget').innerText = `₹${spent.toLocaleString('en-IN')}`;
-            document.getElementById('budget-bar').style.width = `${Math.min((spent/50000)*100, 100)}%`;
-
-            // -- TO-DO PROTOCOL --
-            const todos = JSON.parse(localStorage.getItem('sys_todo_list')) || [];
-            const todayTasks = todos.filter(t => t.date === new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }));
-            const totalTasks = todayTasks.length;
-            const completedTasks = todayTasks.filter(t => t.status === 'completed' || t.done === true).length;
-            const todoPct = totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
-
-            document.getElementById('todo-pct').innerText = `${todoPct}%`;
-            document.getElementById('todo-cleared').innerText = completedTasks;
-            document.getElementById('todo-total').innerText = totalTasks;
-            document.getElementById('todo-bar').style.width = `${todoPct}%`;
-
-            const statusEl = document.getElementById('todo-status');
-            if (totalTasks === 0) {
-                statusEl.innerText = "No active directives for today.";
-                statusEl.className = "text-[9px] text-gray-500 italic uppercase tracking-widest text-center mt-2";
-            } else if (todoPct === 100) {
-                statusEl.innerText = "All directives successfully executed.";
-                statusEl.className = "text-[9px] text-accentTeal italic uppercase tracking-widest text-center mt-2 font-bold";
-                document.getElementById('todo-bar').classList.replace('bg-accentTeal', 'bg-white');
-            } else {
-                statusEl.innerText = "Protocol execution in progress.";
-                statusEl.className = "text-[9px] text-gray-500 italic uppercase tracking-widest text-center mt-2";
-            }
-
-            // -- FOCUS --
-            const focusLogs = JSON.parse(localStorage.getItem('sys_focus_logs')) || [];
-            const todaysLogs = focusLogs.filter(l => l.date === todayStr);
-            const totalMins = todaysLogs.reduce((s, l) => s + l.duration, 0);
-            document.getElementById('focus-hours').innerText = Math.floor(totalMins / 60);
-            document.getElementById('focus-mins').innerText = totalMins % 60;
-            document.getElementById('focus-sessions').innerText = `${todaysLogs.length} Sessions`;
-            document.getElementById('focus-bar').style.width = `${Math.min((totalMins/240)*100, 100)}%`;
-
-            // -- SVG LINE GRAPH ENGINE (Date Stamps Only) --
-            const sleepLedger = JSON.parse(localStorage.getItem('sys_sleep_ledger')) || [];
+            const barContainer = document.getElementById('sleep-graph-bars');
+            const labelContainer = document.getElementById('sleep-graph-labels');
             
-            function drawLineGraph(containerId, data, colorHex, isNap) {
-                const container = document.getElementById(containerId);
-                container.innerHTML = '';
+            barContainer.innerHTML = '';
+            labelContainer.innerHTML = '';
+
+            sleepData.forEach((hours, index) => {
+                const heightPct = (hours / maxSleep) * 100;
                 
-                if (data.length === 0) {
-                    container.innerHTML = '<div class="w-full text-center text-[10px] text-gray-600 mt-10 uppercase tracking-widest">No Data Logged</div>';
-                    return;
-                }
+                // Highlight good sleep vs bad sleep
+                const barColor = hours < 6 ? 'bg-accentRed shadow-[0_0_8px_rgba(255,76,76,0.6)]' : 'bg-accentPurple shadow-[0_0_8px_rgba(168,85,247,0.6)]';
 
-                const recent = data.slice(0, 7).reverse(); 
-                let maxVal = isNap ? 60 : 8; 
-                recent.forEach(log => {
-                    let val = parseFloat(log.duration);
-                    if (val > maxVal) maxVal = val;
-                });
-
-                maxVal = maxVal * 1.2; 
-
-                const svgWidth = 300;
-                const svgHeight = 80;
-                const xStep = recent.length > 1 ? svgWidth / (recent.length - 1) : svgWidth;
-
-                let points = [];
-                let svgHTML = `
-                    <div class="relative w-full h-full flex flex-col justify-end pt-4">
-                        <svg viewBox="0 -20 ${svgWidth} 120" class="w-full h-full overflow-visible drop-shadow-[0_0_8px_${colorHex}40]">
+                barContainer.innerHTML += `
+                    <div class="flex flex-col justify-end items-center w-full group">
+                        <span class="text-[8px] font-bold text-white mb-1 opacity-0 group-hover:opacity-100 transition-opacity">${hours}h</span>
+                        <div class="w-full max-w-[24px] ${barColor} rounded-t-sm graph-bar" style="height: 0%;" data-target="${heightPct}%"></div>
+                    </div>
                 `;
-
-                recent.forEach((log, index) => {
-                    let val = parseFloat(log.duration);
-                    let x = index * xStep;
-                    let y = svgHeight - ((val / maxVal) * svgHeight);
-                    points.push(`${x},${y}`);
-                });
-
-                let pathD = `M ${points.join(' L ')}`;
-
-                svgHTML += `<path d="${pathD}" fill="none" stroke="${colorHex}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="chart-line" stroke-dasharray="1000" stroke-dashoffset="1000" />`;
-
-                recent.forEach((log, index) => {
-                    let val = parseFloat(log.duration);
-                    let x = index * xStep;
-                    let y = svgHeight - ((val / maxVal) * svgHeight);
-                    let unit = isNap ? 'm' : 'h';
-
-                    svgHTML += `<circle cx="${x}" cy="${y}" r="4" fill="#000" stroke="${colorHex}" stroke-width="2.5" class="chart-point opacity-0" style="transition-delay: ${index * 80}ms;" />`;
-                    svgHTML += `<text x="${x}" y="${y - 12}" fill="white" font-size="11" font-family="Inter" font-weight="bold" text-anchor="middle" class="chart-point opacity-0" style="transition-delay: ${index * 80}ms;">${val}${unit}</text>`;
-                });
-
-                svgHTML += `</svg><div class="relative w-full mt-4 h-6">`;
-
-                recent.forEach((log, index) => {
-                    let d = new Date(log.date);
-                    let dateStamp = "";
-
-                    if (!isNaN(d.getTime())) {
-                        dateStamp = d.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' }); 
-                    } else {
-                        let dateArr = log.date.split(', ');
-                        dateStamp = dateArr.length > 1 ? dateArr[1].trim() : log.date;
-                    }
-
-                    let leftPct = recent.length > 1 ? (index / (recent.length - 1)) * 100 : 50;
-
-                    svgHTML += `
-                        <div class="absolute flex flex-col items-center w-12" style="left: ${leftPct}%; transform: translateX(-50%);">
-                            <span class="text-[8px] font-black text-gray-400 uppercase text-center leading-none">${dateStamp}</span>
-                        </div>
-                    `;
-                });
-
-                svgHTML += `</div></div>`;
-                container.innerHTML = svgHTML;
-
-                setTimeout(() => {
-                    const lines = container.querySelectorAll('.chart-line');
-                    lines.forEach(line => {
-                        line.style.transition = "stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1)";
-                        line.style.strokeDashoffset = "0";
-                    });
-                    const pts = container.querySelectorAll('.chart-point');
-                    pts.forEach(pt => {
-                        pt.style.transitionProperty = "opacity";
-                        pt.style.transitionDuration = "0.5s";
-                        pt.classList.remove('opacity-0');
-                    });
-                }, 50);
-            }
-
-            const coreLogs = sleepLedger.filter(l => l.type === 'Core');
-            const napLogs = sleepLedger.filter(l => l.type === 'Nap');
-            
-            drawLineGraph('graph-core', coreLogs, '#A855F7', false);
-            drawLineGraph('graph-nap', napLogs, '#FBBF24', true);
-
-            // -- DAILY BIO-METRICS --
-            const dailyHealth = JSON.parse(localStorage.getItem('sys_daily_health')) || { water: 0, caffeine: 0, meditation: 0 };
-            document.getElementById('stat-water').innerText = dailyHealth.water || 0;
-            document.getElementById('stat-caffeine').innerText = dailyHealth.caffeine || 0;
-            document.getElementById('stat-meditation').innerHTML = `${dailyHealth.meditation || 0}<span class="text-[10px] text-gray-500 ml-0.5">m</span>`;
-
-            // -- 28-DOT MATRIX FOR DAILY HABITS --
-            const sysHabits = JSON.parse(localStorage.getItem('sys_habits')) || [];
-            const habitDotContainer = document.getElementById('habit-dot-blocks');
-            const habitPanel = document.getElementById('habit-arc-panel');
-            habitDotContainer.innerHTML = '';
-
-            if (sysHabits.length > 0) {
-                habitPanel.style.display = 'block';
-                sysHabits.forEach(habit => {
-                    let dotsHTML = '';
-                    let history = Array(28).fill(false);
-                    
-                    if (habit.progress && Array.isArray(habit.progress)) {
-                        for(let i=0; i<Math.min(28, habit.progress.length); i++) {
-                            history[27-i] = habit.progress[i];
-                        }
-                    } else if (habit.logs) {
-                        const tempD = new Date();
-                        for (let i = 27; i >= 0; i--) {
-                            const d = new Date(tempD.getTime() - (i * 24 * 60 * 60 * 1000));
-                            const dateKey = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-                            history[27-i] = !!habit.logs[dateKey];
-                        }
-                    }
-
-                    history.forEach(isDone => {
-                        const dotColor = isDone ? 'bg-white' : 'bg-white/15';
-                        dotsHTML += `<div class="w-1.5 h-1.5 rounded-full ${dotColor}"></div>`;
-                    });
-
-                    const todayDone = history[27] ? 'Done' : '-';
-                    let streak = 0;
-                    for(let i=27; i>=0; i--) {
-                        if(history[i]) streak++;
-                        else break;
-                    }
-
-                    habitDotContainer.innerHTML += `
-                        <div class="bg-[#050505] p-3.5 rounded-[1.25rem] border border-white/5 shadow-lg flex flex-col items-start min-h-[110px]">
-                            <h4 class="text-[10px] font-black text-white uppercase tracking-widest mb-1.5 w-full truncate">${habit.name || habit.text || 'Habit'}</h4>
-                            <p class="text-[8px] text-gray-400 font-bold leading-none mb-1">Today: ${todayDone}</p>
-                            <p class="text-[8px] text-gray-400 font-bold leading-none mb-3">Streak: ${streak} Days</p>
-                            <div class="grid grid-cols-7 gap-1.5 self-center mt-auto">
-                                ${dotsHTML}
-                            </div>
-                        </div>
-                    `;
-                });
-            } else {
-                habitPanel.style.display = 'none';
-            }
-
-            // -- ROUTINE ADHERENCE (MONTHLY) --
-            const regHabits = JSON.parse(localStorage.getItem('sys_reg_habits')) || [];
-            let activeRegCount = regHabits.length;
-            let regTotalHits = 0;
-            
-            const dateObj = new Date();
-            const currentYear = dateObj.getFullYear();
-            const currentMonth = dateObj.getMonth();
-            const currentDay = dateObj.getDate();
-            let possibleRegHits = activeRegCount * currentDay;
-
-            regHabits.forEach(habit => {
-                if(habit.logs) {
-                    for (let d = 1; d <= currentDay; d++) {
-                        const dateKey = `${currentYear}-${currentMonth}-${d}`;
-                        if (habit.logs[dateKey]) regTotalHits++;
-                    }
-                }
+                labelContainer.innerHTML += `<span class="flex-1 text-center">${days[index]}</span>`;
             });
 
-            const regHabitPct = possibleRegHits > 0 ? Math.round((regTotalHits / possibleRegHits) * 100) : 0;
-            document.getElementById('habit-active').innerText = activeRegCount;
-            document.getElementById('habit-hits').innerText = regTotalHits;
-            document.getElementById('habit-pct').innerText = `${regHabitPct}%`;
-            document.getElementById('habit-bar').style.width = `${regHabitPct}%`;
-
-            // -- 28-DOT MATRIX FOR ROUTINE ADHERENCE --
-            const routineDotContainer = document.getElementById('routine-dot-blocks');
-            routineDotContainer.innerHTML = '';
-            
-            if (regHabits.length > 0) {
-                regHabits.forEach(routine => {
-                    let dotsHTML = '';
-                    let history = Array(28).fill(false);
-                    const tempD = new Date();
-                    
-                    for (let i = 27; i >= 0; i--) {
-                        const d = new Date(tempD.getTime() - (i * 24 * 60 * 60 * 1000));
-                        const dateKey = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-                        history[27-i] = !!(routine.logs && routine.logs[dateKey]);
-                    }
-
-                    history.forEach(isDone => {
-                        const dotColor = isDone ? 'bg-white' : 'bg-white/15';
-                        dotsHTML += `<div class="w-1.5 h-1.5 rounded-full ${dotColor}"></div>`;
-                    });
-
-                    const todayDone = history[27] ? 'Done' : '-';
-                    let streak = 0;
-                    for(let i=27; i>=0; i--) {
-                        if(history[i]) streak++;
-                        else break;
-                    }
-
-                    routineDotContainer.innerHTML += `
-                        <div class="bg-[#050505] p-3.5 rounded-[1.25rem] border border-white/5 shadow-lg flex flex-col items-start min-h-[110px]">
-                            <h4 class="text-[10px] font-black text-white uppercase tracking-widest mb-1.5 w-full truncate">${routine.name || 'Routine'}</h4>
-                            <p class="text-[8px] text-gray-400 font-bold leading-none mb-1">Today: ${todayDone}</p>
-                            <p class="text-[8px] text-gray-400 font-bold leading-none mb-3">Streak: ${streak} Days</p>
-                            <div class="grid grid-cols-7 gap-1.5 self-center mt-auto">
-                                ${dotsHTML}
-                            </div>
-                        </div>
-                    `;
+            // Trigger Animation
+            setTimeout(() => {
+                document.querySelectorAll('#sleep-graph-bars .graph-bar').forEach(bar => {
+                    bar.style.height = bar.getAttribute('data-target');
                 });
-            } else {
-                routineDotContainer.style.display = 'none';
-            }
-
-            // -- LIBRARY SYNC --
-            const cats = ['movies', 'shows', 'books'];
-            cats.forEach(c => {
-                const data = JSON.parse(localStorage.getItem(`sys_${c}`)) || [];
-                document.getElementById(`${c}-stat`).innerText = `${data.filter(i => i.done).length}/${data.length}`;
-            });
+            }, 100);
         }
 
-        // --- EXPORT ENGINES ---
-        function exportTextReport() {
-            // ... (Export Code Unchanged) ...
-            const now = new Date().toLocaleString('en-US');
-            let report = `=================================\n`;
-            report += `  SYSTEM OS: CORE ANALYTICS LOG\n`;
-            report += `  Generated: ${now}\n`;
-            report += `=================================\n\n`;
-            
-            report += `[ FINANCE ]\n`;
-            report += `Capital Burn: ${document.getElementById('core-budget').innerText}\n\n`;
-            
-            report += `[ PRODUCTIVITY ]\n`;
-            report += `Task Execution Rate: ${document.getElementById('todo-pct').innerText}\n`;
-            report += `Tasks Cleared: ${document.getElementById('todo-cleared').innerText}/${document.getElementById('todo-total').innerText}\n`;
-            report += `Focus Time (Today): ${document.getElementById('focus-hours').innerText}h ${document.getElementById('focus-mins').innerText}m\n\n`;
-            
-            report += `[ HEALTH & RECOVERY ]\n`;
-            const sleepLedger = JSON.parse(localStorage.getItem('sys_sleep_ledger')) || [];
-            const cLogs = sleepLedger.filter(l => l.type === 'Core');
-            const nLogs = sleepLedger.filter(l => l.type === 'Nap');
-            const cAvg = cLogs.length > 0 ? (cLogs.reduce((s, l) => s + parseFloat(l.duration), 0) / cLogs.length).toFixed(1) : 0;
-            const nTotal = nLogs.reduce((s, l) => s + parseFloat(l.duration), 0);
-            report += `Core Sleep Avg (Lifetime): ${cAvg}h\n`;
-            report += `Total Nap Time (Lifetime): ${nTotal}m\n\n`;
+        // --- 2. NAP GRAPH RENDER ENGINE ---
+        function renderNapGraph() {
+            // Simulated 7-day nap data in minutes
+            const napData = [30, 0, 45, 20, 0, 40, 0]; 
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            const maxNap = 60; // Max Y-axis value in minutes
 
-            report += `[ DAILY BIO-METRICS (TODAY) ]\n`;
-            const dailyHealth = JSON.parse(localStorage.getItem('sys_daily_health')) || { water: 0, caffeine: 0, meditation: 0 };
-            report += `Hydration: ${dailyHealth.water || 0} ml\n`;
-            report += `Stimulants: ${dailyHealth.caffeine || 0} Doses\n`;
-            report += `Meditation & Focus: ${dailyHealth.meditation || 0} Minutes\n\n`;
-
-            report += `[ ROUTINE ADHERENCE ]\n`;
-            report += `Active Routines: ${document.getElementById('habit-active').innerText}\n`;
-            report += `Month-to-Date Hits: ${document.getElementById('habit-hits').innerText}\n`;
-            report += `Hit Rate: ${document.getElementById('habit-pct').innerText}\n\n`;
-
-            report += `[ MEDIA YIELD ]\n`;
-            report += `Movies (Completed/Total): ${document.getElementById('movies-stat').innerText}\n`;
-            report += `Shows (Completed/Total): ${document.getElementById('shows-stat').innerText}\n`;
-            report += `Books (Completed/Total): ${document.getElementById('books-stat').innerText}\n`;
-
-            const blob = new Blob([report], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `SystemOS_Log_${new Date().toISOString().split('T')[0]}.txt`;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        function exportImageReport() {
-            const btn = document.getElementById('btn-img-export');
-            const originalHTML = btn.innerHTML;
-            btn.innerHTML = `<i class="ph ph-spinner animate-spin text-lg"></i> Processing...`;
+            const barContainer = document.getElementById('nap-graph-bars');
+            const labelContainer = document.getElementById('nap-graph-labels');
             
-            const contentToCapture = document.getElementById('analytics-content');
-            
-            html2canvas(contentToCapture, {
-                backgroundColor: '#020202',
-                scale: 2, 
-                useCORS: true
-            }).then(canvas => {
-                const url = canvas.toDataURL('image/png');
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `SystemOS_Dashboard_${new Date().toISOString().split('T')[0]}.png`;
-                a.click();
+            barContainer.innerHTML = '';
+            labelContainer.innerHTML = '';
+
+            napData.forEach((mins, index) => {
+                const heightPct = Math.min(100, (mins / maxNap) * 100);
                 
-                btn.innerHTML = originalHTML;
-            }).catch(err => {
-                console.error("Screenshot failed:", err);
-                btn.innerHTML = originalHTML;
-                alert("Failed to export image.");
+                // Only show blue shadow if a nap was taken
+                const barColor = mins > 0 ? 'bg-accentBlue shadow-[0_0_8px_rgba(59,130,246,0.6)]' : 'bg-white/5';
+                const labelText = mins > 0 ? `${mins}m` : '';
+
+                barContainer.innerHTML += `
+                    <div class="flex flex-col justify-end items-center w-full group relative">
+                        <span class="absolute -top-4 text-[8px] font-bold text-white opacity-0 group-hover:opacity-100 transition-opacity">${labelText}</span>
+                        <div class="w-full max-w-[24px] ${barColor} rounded-t-sm graph-bar" style="height: 0%;" data-target="${heightPct}%"></div>
+                    </div>
+                `;
+                labelContainer.innerHTML += `<span class="flex-1 text-center">${days[index]}</span>`;
             });
+
+            // Trigger Animation
+            setTimeout(() => {
+                document.querySelectorAll('#nap-graph-bars .graph-bar').forEach(bar => {
+                    bar.style.height = bar.getAttribute('data-target');
+                });
+            }, 200);
         }
 
-        window.onload = syncAnalytics;
-        setInterval(syncAnalytics, 5000);
+        // --- 3. ACADEMIC ANALYTICS ENGINE ---
+        async function loadAcademicAnalytics() {
+            try {
+                let config = JSON.parse(localStorage.getItem('sys_semester_config')) || {
+                    start: '2026-01-15', end: '2026-06-30'
+                };
+                const now = new Date();
+                const start = new Date(config.start);
+                const end = new Date(config.end);
+                
+                const totalDays = (end - start) / (1000 * 60 * 60 * 24);
+                const daysPassed = (now - start) / (1000 * 60 * 60 * 24);
+                let pct = Math.max(0, Math.min(100, (daysPassed / totalDays) * 100));
+                
+                setTimeout(() => {
+                    document.getElementById('analytics-semester-pct').innerText = `${Math.round(pct)}%`;
+                    document.getElementById('analytics-semester-bar').style.width = `${pct}%`;
+                }, 300);
+
+                if (typeof AcademicsAPI !== 'undefined') {
+                    const deadlines = await AcademicsAPI.getDeadlines();
+                    const activeDeadlines = deadlines.filter(d => d.status !== 'completed').length;
+                    document.getElementById('analytics-deadlines-count').innerText = activeDeadlines;
+                    
+                    const courses = await AcademicsAPI.getCourses();
+                    let safeCount = 0;
+                    courses.forEach(c => {
+                        let cpct = c.total_classes > 0 ? (c.attended_classes / c.total_classes) * 100 : 0;
+                        if(cpct >= c.minimum_required) safeCount++;
+                    });
+                    document.getElementById('analytics-safe-courses').innerHTML = `${safeCount}<span class="text-sm text-gray-600">/${courses.length}</span>`;
+                }
+            } catch(e) {
+                console.error("Could not load academic analytics data", e);
+            }
+        }
+
+        // --- 4. BOOT SEQUENCE ---
+        window.onload = () => {
+            renderSleepGraph();
+            renderNapGraph();
+            setTimeout(loadAcademicAnalytics, 150); 
+        };
     </script>
 </body>
 </html>

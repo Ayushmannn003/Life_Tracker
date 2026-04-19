@@ -111,3 +111,120 @@ document.addEventListener('DOMContentLoaded', () => {
     // Slight delay to ensure sidebar.js has injected the HTML first
     setTimeout(checkEngineStatus, 200);
 });
+
+
+// ==========================================
+// 4. ACADEMICS HUB API ENDPOINTS
+// ==========================================
+const ACADEMICS_BASE = "http://127.0.0.1:8000/api/academics";
+
+const AcademicsAPI = {
+    
+    // --- COURSES ---
+    getCourses: async () => {
+        if (!isCloudConnected) return StorageEngine.load('courses', []);
+        const response = await fetch(`${ACADEMICS_BASE}/courses`);
+        return response.json();
+    },
+    
+    createCourse: async (courseData) => {
+        if (isCloudConnected) {
+            const response = await fetch(`${ACADEMICS_BASE}/courses`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(courseData)
+            });
+            return response.json();
+        }
+    },
+    
+    updateAttendance: async (courseId, attended, total) => {
+        if (isCloudConnected) {
+            const response = await fetch(`${ACADEMICS_BASE}/courses/${courseId}/attendance?attended=${attended}&total=${total}`, {
+                method: 'PUT'
+            });
+            return response.json();
+        }
+    },
+
+    deleteCourse: async (courseId) => {
+        if (isCloudConnected) {
+            const response = await fetch(`${ACADEMICS_BASE}/courses/${courseId}`, {
+                method: 'DELETE'
+            });
+            return response.json();
+        }
+    },
+
+    // --- DEADLINES ---
+    getDeadlines: async () => {
+        if (!isCloudConnected) return StorageEngine.load('deadlines', []);
+        const response = await fetch(`${ACADEMICS_BASE}/deadlines`);
+        return response.json();
+    },
+
+    createDeadline: async (deadlineData) => {
+        if (isCloudConnected) {
+            const response = await fetch(`${ACADEMICS_BASE}/deadlines`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(deadlineData)
+            });
+            return response.json();
+        }
+    },
+
+    updateDeadlineStatus: async (deadlineId, status) => {
+        if (isCloudConnected) {
+            const response = await fetch(`${ACADEMICS_BASE}/deadlines/${deadlineId}/status?status=${status}`, {
+                method: 'PUT'
+            });
+            return response.json();
+        }
+    },
+
+    deleteDeadline: async (deadlineId) => {
+        if (isCloudConnected) {
+            const response = await fetch(`${ACADEMICS_BASE}/deadlines/${deadlineId}`, {
+                method: 'DELETE'
+            });
+            return response.json();
+        }
+    },
+
+    // --- PROJECTS ---
+    getProjects: async () => {
+        if (!isCloudConnected) return StorageEngine.load('projects', []);
+        const response = await fetch(`${ACADEMICS_BASE}/projects`);
+        return response.json();
+    },
+
+    createProject: async (projectData) => {
+        if (isCloudConnected) {
+            const response = await fetch(`${ACADEMICS_BASE}/projects`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(projectData)
+            });
+            return response.json();
+        }
+    },
+
+    updateProjectStage: async (projectId, stage) => {
+        if (isCloudConnected) {
+            const response = await fetch(`${ACADEMICS_BASE}/projects/${projectId}/stage?stage=${stage}`, {
+                method: 'PUT'
+            });
+            return response.json();
+        }
+    },
+
+    deleteProject: async (projectId) => {
+        if (isCloudConnected) {
+            const response = await fetch(`${ACADEMICS_BASE}/projects/${projectId}`, {
+                method: 'DELETE'
+            });
+            return response.json();
+        }
+    }
+};
