@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -13,7 +14,7 @@
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
-                        darkStart: '#0B0C10', 
+                        darkStart: '#0B0C10',
                         darkEnd: '#1F2833',
                         accentTeal: '#66FCF1',
                         accentBlue: '#45A29E',
@@ -24,25 +25,30 @@
         }
     </script>
     <style>
-        body { 
-            background-color: #050505; 
-            color: #C5C6C7; 
-            font-family: 'Inter', sans-serif; 
+        body {
+            background-color: #050505;
+            color: #C5C6C7;
+            font-family: 'Inter', sans-serif;
             min-height: 100vh;
         }
-        ::-webkit-scrollbar { display: none; }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
         .glass-card {
             background: rgba(31, 40, 51, 0.4);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        
+
         /* Mobile-Optimized Calendar Grid */
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, minmax(0, 1fr));
             gap: 0.25rem;
         }
+
         .calendar-day {
             aspect-ratio: 1;
             display: flex;
@@ -55,15 +61,18 @@
             transition: all 0.2s;
             position: relative;
         }
+
         .calendar-day.has-event {
             background: rgba(255, 255, 255, 0.05);
         }
+
         .calendar-day.active {
             background: rgba(102, 252, 241, 0.2);
             border: 1px solid #66FCF1;
             color: white;
             font-weight: bold;
         }
+
         .event-dot {
             width: 4px;
             height: 4px;
@@ -74,82 +83,102 @@
         }
     </style>
 </head>
+
 <body class="flex justify-center min-h-screen">
 
-    <div class="w-full max-w-md bg-gradient-to-br from-[#0B0C10] to-[#1F2833] relative shadow-2xl overflow-x-hidden min-h-[100dvh] flex flex-col">
-        
+    <div
+        class="w-full max-w-md bg-gradient-to-br from-[#0B0C10] to-[#1F2833] relative shadow-2xl overflow-x-hidden min-h-[100dvh] flex flex-col">
+
         <div id="sidebar-injector" class="z-50"></div>
 
         <header class="flex justify-between items-center p-6 pb-2">
             <div class="flex items-center gap-4">
-                <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer hover:text-accentTeal transition"></i>
+                <i id="menu-btn"
+                    class="ph ph-list text-2xl text-white cursor-pointer hover:text-accentTeal transition"></i>
                 <h1 class="text-xl font-bold text-white tracking-wide">Calendar</h1>
             </div>
-            <div class="glass-card px-3 py-1.5 rounded-lg flex items-center gap-2 font-bold text-white text-sm" id="header-date">
+            <div class="glass-card px-3 py-1.5 rounded-lg flex items-center gap-2 font-bold text-white text-sm"
+                id="header-date">
                 Apr '26
             </div>
         </header>
 
         <main class="flex-1 overflow-y-auto p-6 space-y-6 pb-12">
-            
+
             <div>
                 <h2 class="text-3xl font-bold text-white mb-1">Planner</h2>
                 <p class="text-textMain text-sm">Select a date to view or add events.</p>
             </div>
 
             <div class="glass-card p-5 rounded-2xl flex flex-col">
-                
+
                 <div class="flex justify-between items-center mb-4 border-b border-surfaceBorder pb-3">
-                    <button onclick="changeMonth(-1)" class="w-8 h-8 rounded-lg bg-black/40 border border-surfaceBorder hover:border-accentTeal flex items-center justify-center transition">
+                    <button onclick="changeMonth(-1)"
+                        class="w-8 h-8 rounded-lg bg-black/40 border border-surfaceBorder hover:border-accentTeal flex items-center justify-center transition">
                         <i class="ph-bold ph-caret-left"></i>
                     </button>
                     <h3 class="text-lg font-bold text-white" id="month-display">April 2026</h3>
-                    <button onclick="changeMonth(1)" class="w-8 h-8 rounded-lg bg-black/40 border border-surfaceBorder hover:border-accentTeal flex items-center justify-center transition">
+                    <button onclick="changeMonth(1)"
+                        class="w-8 h-8 rounded-lg bg-black/40 border border-surfaceBorder hover:border-accentTeal flex items-center justify-center transition">
                         <i class="ph-bold ph-caret-right"></i>
                     </button>
                 </div>
 
-                <div class="calendar-grid mb-2 text-center text-[10px] text-textMain uppercase tracking-wider font-bold">
-                    <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+                <div
+                    class="calendar-grid mb-2 text-center text-[10px] text-textMain uppercase tracking-wider font-bold">
+                    <div>Sun</div>
+                    <div>Mon</div>
+                    <div>Tue</div>
+                    <div>Wed</div>
+                    <div>Thu</div>
+                    <div>Fri</div>
+                    <div>Sat</div>
                 </div>
 
                 <div id="calendar-body" class="calendar-grid flex-1 text-textMain font-medium">
-                    </div>
+                </div>
 
             </div>
 
             <div class="glass-card p-5 rounded-2xl flex-1">
                 <div class="flex justify-between items-center border-b border-surfaceBorder pb-3 mb-4">
-                    <h3 class="text-sm font-bold text-accentTeal uppercase tracking-wider" id="selected-date-title">April 4, 2026</h3>
+                    <h3 class="text-sm font-bold text-accentTeal uppercase tracking-wider" id="selected-date-title">
+                        April 4, 2026</h3>
                     <span class="text-[10px] text-textMain bg-black/40 px-2 py-1 rounded">Agenda</span>
                 </div>
-                
+
                 <div class="space-y-3" id="daily-agenda">
-                    </div>
+                </div>
             </div>
 
             <div class="glass-card p-5 rounded-2xl">
-                <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-4 border-b border-surfaceBorder pb-3 flex items-center gap-2">
+                <h3
+                    class="text-sm font-bold text-white uppercase tracking-wider mb-4 border-b border-surfaceBorder pb-3 flex items-center gap-2">
                     <i class="ph-bold ph-plus-circle text-accentTeal"></i> Add to Selected Date
                 </h3>
-                
+
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Event Note / Title</label>
-                        <input type="text" id="event-note" placeholder="e.g., Cleaning room" class="w-full bg-black/20 border border-surfaceBorder rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
+                        <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Event Note /
+                            Title</label>
+                        <input type="text" id="event-note" placeholder="e.g., Cleaning room"
+                            class="w-full bg-black/20 border border-surfaceBorder rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
                     </div>
-                    
+
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Type</label>
-                            <select id="event-type" class="w-full bg-[#1F2833] border border-surfaceBorder rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
+                            <select id="event-type"
+                                class="w-full bg-[#1F2833] border border-surfaceBorder rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
                                 <option value="Event">Event / Task</option>
                                 <option value="Holiday">Holiday</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Priority</label>
-                            <select id="event-priority" class="w-full bg-[#1F2833] border border-surfaceBorder rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
+                            <label
+                                class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Priority</label>
+                            <select id="event-priority"
+                                class="w-full bg-[#1F2833] border border-surfaceBorder rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
                                 <option value="Very High">Very High</option>
                                 <option value="High">High</option>
                                 <option value="Normal">Normal</option>
@@ -157,7 +186,8 @@
                         </div>
                     </div>
 
-                    <button onclick="addCalendarEvent()" class="w-full bg-accentTeal/20 hover:bg-accentTeal/30 text-accentTeal border border-accentTeal/30 font-bold py-3 rounded-lg transition mt-2 flex items-center justify-center gap-2">
+                    <button onclick="addCalendarEvent()"
+                        class="w-full bg-accentTeal/20 hover:bg-accentTeal/30 text-accentTeal border border-accentTeal/30 font-bold py-3 rounded-lg transition mt-2 flex items-center justify-center gap-2">
                         <i class="ph-bold ph-plus"></i> Add Event
                     </button>
                 </div>
@@ -168,15 +198,15 @@
 
     <script src="js/api.js"></script>
     <script src="js/sidebar.js"></script>
-    
+
     <script>
         // State variables
         const now = new Date();
         document.getElementById('header-date').innerText = now.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
-        
+
         let currentDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // Match current date
         let selectedDateStr = formatISODate(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
-        let eventsData = {}; 
+        let eventsData = {};
 
         function loadFromDevice() {
             const saved = localStorage.getItem('pdos_calendar_data');
@@ -186,11 +216,11 @@
                 // Initialize with wireframe mockup data (adjusting to current month for visibility)
                 const mockDay1 = formatISODate(currentDate.getFullYear(), currentDate.getMonth(), 4);
                 const mockDay2 = formatISODate(currentDate.getFullYear(), currentDate.getMonth(), 10);
-                
+
                 eventsData = {};
                 eventsData[mockDay1] = [{ id: "1", note: "Cleaning room", type: "Event", priority: "Very High" }];
                 eventsData[mockDay2] = [{ id: "2", note: "Company Holiday", type: "Holiday", priority: "Normal" }];
-                
+
                 saveToDevice();
             }
         }
@@ -274,7 +304,7 @@
                 let borderClass = "border-surfaceBorder";
                 let textClass = "text-textMain";
                 let icon = "ph-calendar-blank";
-                
+
                 if (ev.type === "Holiday") {
                     borderClass = "border-accentBlue/40";
                     textClass = "text-accentBlue";
@@ -330,11 +360,11 @@
 
         function deleteEvent(idStr) {
             eventsData[selectedDateStr] = eventsData[selectedDateStr].filter(ev => ev.id !== idStr);
-            
+
             if (eventsData[selectedDateStr].length === 0) {
                 delete eventsData[selectedDateStr];
             }
-            
+
             saveToDevice();
             renderCalendar();
         }
@@ -345,5 +375,19 @@
             renderCalendar();
         };
     </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('System OS Service Worker registered!', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -11,9 +12,9 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { 
-                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6', 
-                        accentPurple: '#A855F7', accentRed: '#FF4C4C', accentYellow: '#FBBF24' 
+                    colors: {
+                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6',
+                        accentPurple: '#A855F7', accentRed: '#FF4C4C', accentYellow: '#FBBF24'
                     }
                 }
             }
@@ -21,37 +22,147 @@
     </script>
     <style>
         /* STRICT MOBILE VIEWPORT LOCKS */
-        body, html { background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; margin: 0; height: 100dvh; overflow: hidden; position: fixed; width: 100%; }
-        .mobile-viewport { width: 100%; max-width: 430px; height: 100dvh; margin: 0 auto; position: relative; background-color: #020202; display: flex; flex-direction: column; overflow: hidden; }
+        body,
+        html {
+            background-color: #000;
+            color: #C5C6C7;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            height: 100dvh;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+        }
+
+        .mobile-viewport {
+            width: 100%;
+            max-width: 430px;
+            height: 100dvh;
+            margin: 0 auto;
+            position: relative;
+            background-color: #020202;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
 
         /* THEMATIC BACKGROUND */
-        .matrix-bg { 
-            background-image: url('https://images.unsplash.com/photo-1506784693919-ef06d93c28d2?auto=format&fit=crop&q=80&w=1000'); 
-            background-size: cover; background-position: center; position: absolute; inset: 0; opacity: 0.15; z-index: 1; filter: grayscale(100%) contrast(120%); 
+        .matrix-bg {
+            background-image: url('https://images.unsplash.com/photo-1506784693919-ef06d93c28d2?auto=format&fit=crop&q=80&w=1000');
+            background-size: cover;
+            background-position: center;
+            position: absolute;
+            inset: 0;
+            opacity: 0.15;
+            z-index: 1;
+            filter: grayscale(100%) contrast(120%);
         }
-        .vignette { background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.98) 80%, #000 100%); position: absolute; inset: 0; z-index: 2; }
-        .content-layer { position: relative; z-index: 10; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+        .vignette {
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.98) 80%, #000 100%);
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+        }
+
+        .content-layer {
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
 
         /* SCROLLABLE AREA */
-        main { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; padding: 1.25rem; }
-        main::-webkit-scrollbar { display: none; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
+        main {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            padding: 1.25rem;
+        }
 
-        .glass-panel { background: rgba(13, 17, 23, 0.75); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .input-dark { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 12px; color: white; outline: none; transition: 0.3s; font-size: 14px; width: 100%; }
-        .input-dark:focus { border-color: rgba(59, 130, 246, 0.5); }
-        
-        input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.6; cursor: pointer; }
+        main::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .glass-panel {
+            background: rgba(13, 17, 23, 0.75);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .input-dark {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px;
+            color: white;
+            outline: none;
+            transition: 0.3s;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .input-dark:focus {
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        input[type="time"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            opacity: 0.6;
+            cursor: pointer;
+        }
 
         /* Day Selector Styles */
-        .day-btn { padding: 12px 0; min-width: 60px; text-align: center; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.4); color: #6b7280; font-weight: 900; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.3s ease; cursor: pointer; flex-shrink: 0; }
-        .day-btn.active { background: rgba(59, 130, 246, 0.2); color: #3B82F6; border-color: rgba(59, 130, 246, 0.5); box-shadow: 0 4px 15px rgba(59, 130, 246, 0.15); }
-        
+        .day-btn {
+            padding: 12px 0;
+            min-width: 60px;
+            text-align: center;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.4);
+            color: #6b7280;
+            font-weight: 900;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .day-btn.active {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3B82F6;
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.15);
+        }
+
         /* Time Block Animation */
-        .time-block { animation: fadeIn 0.3s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .time-block {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
+
 <body>
 
     <div class="mobile-viewport">
@@ -61,12 +172,16 @@
         <div class="content-layer">
             <div id="sidebar-injector"></div>
 
-            <header class="p-6 pb-2 flex justify-between items-center border-b border-white/5 bg-black/20 backdrop-blur-md">
+            <header
+                class="p-6 pb-2 flex justify-between items-center border-b border-white/5 bg-black/20 backdrop-blur-md">
                 <div class="flex items-center gap-4">
-                    <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
+                    <i id="menu-btn"
+                        class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
                     <h1 class="text-xl font-black text-white tracking-widest uppercase">Weekly Matrix</h1>
                 </div>
-                <div class="text-[9px] font-black text-accentBlue border border-accentBlue/20 bg-accentBlue/5 px-3 py-1 rounded-full uppercase">Time-Block</div>
+                <div
+                    class="text-[9px] font-black text-accentBlue border border-accentBlue/20 bg-accentBlue/5 px-3 py-1 rounded-full uppercase">
+                    Time-Block</div>
             </header>
 
             <main>
@@ -83,37 +198,46 @@
                 <div class="mb-8 relative">
                     <div class="flex items-center gap-2 mb-4">
                         <i class="ph-fill ph-clock text-accentBlue text-lg opacity-80"></i>
-                        <h3 class="text-[10px] font-black text-white uppercase tracking-widest" id="timeline-title">Monday Protocol</h3>
+                        <h3 class="text-[10px] font-black text-white uppercase tracking-widest" id="timeline-title">
+                            Monday Protocol</h3>
                     </div>
-                    
-                    <div class="absolute left-[39px] top-[40px] bottom-0 w-[2px] bg-gradient-to-b from-accentBlue/50 to-transparent z-0"></div>
+
+                    <div
+                        class="absolute left-[39px] top-[40px] bottom-0 w-[2px] bg-gradient-to-b from-accentBlue/50 to-transparent z-0">
+                    </div>
 
                     <div id="timeline-container" class="space-y-4 relative z-10">
-                        </div>
+                    </div>
                 </div>
 
                 <div class="glass-panel p-5 rounded-[2rem] mb-6 space-y-4 border-t-2 border-t-white shadow-2xl">
                     <h3 class="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
                         <i class="ph-bold ph-plus-circle text-white text-lg"></i> Allocate Block
                     </h3>
-                    
+
                     <div>
-                        <input type="text" id="in-title" placeholder="Block Title (e.g. Deep Work)..." class="input-dark !text-xs font-bold text-white mb-3">
+                        <input type="text" id="in-title" placeholder="Block Title (e.g. Deep Work)..."
+                            class="input-dark !text-xs font-bold text-white mb-3">
                     </div>
 
                     <div class="flex gap-3">
                         <div class="flex-1">
-                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 pl-1">Start Time</p>
-                            <input type="time" id="in-start" class="input-dark !text-[11px] font-bold text-gray-300 !px-2 text-center">
+                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 pl-1">Start
+                                Time</p>
+                            <input type="time" id="in-start"
+                                class="input-dark !text-[11px] font-bold text-gray-300 !px-2 text-center">
                         </div>
                         <div class="flex-1">
-                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 pl-1">End Time</p>
-                            <input type="time" id="in-end" class="input-dark !text-[11px] font-bold text-gray-300 !px-2 text-center">
+                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 pl-1">End Time
+                            </p>
+                            <input type="time" id="in-end"
+                                class="input-dark !text-[11px] font-bold text-gray-300 !px-2 text-center">
                         </div>
                     </div>
 
                     <div>
-                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 pl-1 mt-1">Category</p>
+                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 pl-1 mt-1">Category
+                        </p>
                         <select id="in-category" class="input-dark !text-xs font-bold text-gray-300 appearance-none">
                             <option value="work">Focus / Deep Work (Blue)</option>
                             <option value="study">Study / Academic (Purple)</option>
@@ -123,7 +247,8 @@
                         </select>
                     </div>
 
-                    <button onclick="addBlock()" class="w-full bg-accentBlue text-black font-black py-3.5 rounded-xl uppercase text-[10px] tracking-widest active:scale-95 transition flex justify-center items-center gap-2 mt-2">
+                    <button onclick="addBlock()"
+                        class="w-full bg-accentBlue text-black font-black py-3.5 rounded-xl uppercase text-[10px] tracking-widest active:scale-95 transition flex justify-center items-center gap-2 mt-2">
                         <i class="ph-bold ph-push-pin text-lg"></i> Lock to Matrix
                     </button>
                 </div>
@@ -139,7 +264,7 @@
         // --- DATA STATE ---
         let weeklyMatrix = JSON.parse(localStorage.getItem('sys_weekly_matrix')) || [];
         const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-        
+
         // Auto-detect current day to set as default active tab
         const d = new Date();
         // Convert JS day (0 = Sun, 1 = Mon) to our array index
@@ -158,11 +283,11 @@
         // --- CORE FUNCTIONS ---
         function setActiveDay(day) {
             activeDay = day;
-            
+
             // Update UI Tabs
             daysOfWeek.forEach(d => {
                 const btn = document.getElementById(`btn-${d}`);
-                if(d === day) {
+                if (d === day) {
                     btn.classList.add('active');
                 } else {
                     btn.classList.remove('active');
@@ -170,7 +295,7 @@
             });
 
             document.getElementById('timeline-title').innerText = `${day} Protocol`;
-            
+
             // Scroll selected button into view smoothly
             document.getElementById(`btn-${day}`).scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 
@@ -215,10 +340,10 @@
             };
 
             weeklyMatrix.push(newBlock);
-            
+
             // Reset fields
             document.getElementById('in-title').value = '';
-            
+
             sync();
         }
 
@@ -285,5 +410,19 @@
             setActiveDay(activeDay);
         };
     </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('System OS Service Worker registered!', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
 </body>
+
 </html>

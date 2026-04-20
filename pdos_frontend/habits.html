@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -18,69 +19,128 @@
     </script>
     <style>
         /* VIEWPORT LOCK */
-        body, html { background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; margin: 0; height: 100dvh; overflow: hidden; position: fixed; width: 100%; }
-        .mobile-viewport { width: 100%; max-width: 430px; height: 100dvh; margin: 0 auto; position: relative; background-color: #020202; display: flex; flex-direction: column; overflow: hidden; }
+        body,
+        html {
+            background-color: #000;
+            color: #C5C6C7;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            height: 100dvh;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+        }
+
+        .mobile-viewport {
+            width: 100%;
+            max-width: 430px;
+            height: 100dvh;
+            margin: 0 auto;
+            position: relative;
+            background-color: #020202;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
 
         /* SCROLLABLE AREA */
-        main { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 1.25rem; }
-        main::-webkit-scrollbar { display: none; }
+        main {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 1.25rem;
+        }
 
-        .glass-panel { background: rgba(13, 17, 23, 0.8); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        
+        main::-webkit-scrollbar {
+            display: none;
+        }
+
+        .glass-panel {
+            background: rgba(13, 17, 23, 0.8);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
         /* 21-DAY GRID STYLING */
-        .day-grid { 
-            display: flex; 
-            gap: 8px; 
-            overflow-x: auto; 
-            padding-bottom: 10px; 
+        .day-grid {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 10px;
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
         }
-        .day-grid::-webkit-scrollbar { height: 2px; }
-        .day-grid::-webkit-scrollbar-thumb { background: rgba(102, 252, 241, 0.2); border-radius: 10px; }
 
-        .day-bubble { 
-            flex: 0 0 35px; 
-            height: 35px; 
-            border-radius: 10px; 
-            border: 1px solid rgba(255,255,255,0.1); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 10px; 
-            font-weight: 900; 
-            transition: 0.2s; 
-            scroll-snap-align: start;
-            background: rgba(0,0,0,0.3);
+        .day-grid::-webkit-scrollbar {
+            height: 2px;
         }
-        .day-bubble.active { background: #66FCF1; color: #000; border-color: #66FCF1; box-shadow: 0 0 15px rgba(102, 252, 241, 0.3); }
-        
-        .input-dark { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 12px; color: white; outline: none; font-size: 14px; }
+
+        .day-grid::-webkit-scrollbar-thumb {
+            background: rgba(102, 252, 241, 0.2);
+            border-radius: 10px;
+        }
+
+        .day-bubble {
+            flex: 0 0 35px;
+            height: 35px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 900;
+            transition: 0.2s;
+            scroll-snap-align: start;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .day-bubble.active {
+            background: #66FCF1;
+            color: #000;
+            border-color: #66FCF1;
+            box-shadow: 0 0 15px rgba(102, 252, 241, 0.3);
+        }
+
+        .input-dark {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px;
+            color: white;
+            outline: none;
+            font-size: 14px;
+        }
     </style>
 </head>
+
 <body>
 
     <div class="mobile-viewport">
-        <header class="p-6 pb-2 flex justify-between items-center z-50 bg-black/20 backdrop-blur-md border-b border-white/5">
+        <header
+            class="p-6 pb-2 flex justify-between items-center z-50 bg-black/20 backdrop-blur-md border-b border-white/5">
             <div class="flex items-center gap-4">
                 <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
                 <h1 class="text-xl font-black text-white tracking-widest uppercase">Forge</h1>
             </div>
-            <div class="text-[9px] font-black text-accentTeal border border-accentTeal/20 bg-accentTeal/5 px-3 py-1 rounded-full uppercase">21-Day Loop</div>
+            <div
+                class="text-[9px] font-black text-accentTeal border border-accentTeal/20 bg-accentTeal/5 px-3 py-1 rounded-full uppercase">
+                21-Day Loop</div>
         </header>
 
         <main>
             <div class="glass-panel p-4 rounded-3xl mb-8">
                 <div class="flex gap-2">
                     <input type="text" id="habit-name" placeholder="Protocol Name..." class="flex-1 input-dark">
-                    <button onclick="addHabit()" class="bg-accentTeal text-black font-black px-5 rounded-xl active:scale-95 transition">
+                    <button onclick="addHabit()"
+                        class="bg-accentTeal text-black font-black px-5 rounded-xl active:scale-95 transition">
                         <i class="ph-bold ph-plus text-lg"></i>
                     </button>
                 </div>
             </div>
 
             <div id="habit-list" class="space-y-6">
-                </div>
+            </div>
 
             <div class="h-32"></div>
         </main>
@@ -98,13 +158,13 @@
             // Capture the exact date of creation
             const startDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
-            habits.push({ 
-                id: Date.now(), 
-                name: name, 
+            habits.push({
+                id: Date.now(),
+                name: name,
                 createdOn: startDate,
                 days: Array(21).fill(false) // Create an array of 21 "false" slots
             });
-            
+
             nameInput.value = '';
             sync();
         }
@@ -116,7 +176,7 @@
         }
 
         function deleteHabit(id) {
-            if(confirm("Permanently delete this 21-day protocol?")) {
+            if (confirm("Permanently delete this 21-day protocol?")) {
                 habits = habits.filter(h => h.id !== id);
                 sync();
             }
@@ -134,7 +194,7 @@
             habits.forEach(habit => {
                 const card = document.createElement('div');
                 card.className = "glass-panel p-5 rounded-[2.5rem] space-y-4 border-l-2 border-l-accentTeal";
-                
+
                 // Build the 21-day scrollable grid
                 let gridHTML = `<div class="day-grid">`;
                 habit.days.forEach((done, index) => {
@@ -164,12 +224,26 @@
                 container.appendChild(card);
             });
 
-            if(habits.length === 0) {
+            if (habits.length === 0) {
                 container.innerHTML = `<p class="text-[10px] text-gray-700 italic text-center py-10 uppercase tracking-widest">No 21-Day Protocols Initialized</p>`;
             }
         }
 
         window.onload = render;
     </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('System OS Service Worker registered!', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
 </body>
+
 </html>

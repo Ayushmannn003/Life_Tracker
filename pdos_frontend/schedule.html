@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -13,7 +14,7 @@
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
-                        darkStart: '#0B0C10', 
+                        darkStart: '#0B0C10',
                         darkEnd: '#1F2833',
                         accentTeal: '#66FCF1',
                         accentBlue: '#45A29E',
@@ -24,71 +25,91 @@
         }
     </script>
     <style>
-        body { 
-            background-color: #050505; 
-            color: #C5C6C7; 
-            font-family: 'Inter', sans-serif; 
+        body {
+            background-color: #050505;
+            color: #C5C6C7;
+            font-family: 'Inter', sans-serif;
             min-height: 100vh;
         }
-        ::-webkit-scrollbar { display: none; }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
         .glass-card {
             background: rgba(31, 40, 51, 0.4);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        input[type="time"]::-webkit-calendar-picker-indicator { 
-            filter: invert(1); opacity: 0.6; cursor: pointer; 
+
+        input[type="time"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            opacity: 0.6;
+            cursor: pointer;
         }
     </style>
 </head>
+
 <body class="flex justify-center min-h-screen">
 
-    <div class="w-full max-w-md bg-gradient-to-br from-[#0B0C10] to-[#1F2833] relative shadow-2xl overflow-x-hidden min-h-[100dvh] flex flex-col">
-        
+    <div
+        class="w-full max-w-md bg-gradient-to-br from-[#0B0C10] to-[#1F2833] relative shadow-2xl overflow-x-hidden min-h-[100dvh] flex flex-col">
+
         <div id="sidebar-injector" class="z-50"></div>
 
         <header class="flex justify-between items-center p-6 pb-2">
             <div class="flex items-center gap-4">
-                <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer hover:text-accentTeal transition"></i>
+                <i id="menu-btn"
+                    class="ph ph-list text-2xl text-white cursor-pointer hover:text-accentTeal transition"></i>
                 <h1 class="text-xl font-bold text-white tracking-wide">Schedule</h1>
             </div>
-            <div class="glass-card px-3 py-1.5 rounded-lg flex items-center gap-2 font-bold text-white text-sm" id="header-date">
+            <div class="glass-card px-3 py-1.5 rounded-lg flex items-center gap-2 font-bold text-white text-sm"
+                id="header-date">
                 Apr 4
             </div>
         </header>
 
         <main class="flex-1 overflow-y-auto p-6 space-y-6 pb-12">
-            
+
             <div>
                 <h2 class="text-3xl font-bold text-white mb-1">Time Blocks</h2>
                 <p class="text-textMain text-sm">Structure your day and rate activities.</p>
             </div>
 
             <div class="glass-card p-5 rounded-2xl">
-                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-surfaceBorder pb-3">
+                <h3
+                    class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-surfaceBorder pb-3">
                     <i class="ph-fill ph-plus-circle text-accentTeal"></i> Add Activity
                 </h3>
-                
+
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Activity Name</label>
-                        <input type="text" id="event-name" placeholder="e.g., Deep Work, Lunch" class="w-full bg-black/20 border border-surfaceBorder rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
+                        <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Activity
+                            Name</label>
+                        <input type="text" id="event-name" placeholder="e.g., Deep Work, Lunch"
+                            class="w-full bg-black/20 border border-surfaceBorder rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
                     </div>
-                    
+
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Start Time</label>
-                            <input type="time" id="event-start" class="w-full bg-black/20 border border-surfaceBorder rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
+                            <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Start
+                                Time</label>
+                            <input type="time" id="event-start"
+                                class="w-full bg-black/20 border border-surfaceBorder rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
                         </div>
                         <div>
-                            <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">End Time</label>
-                            <input type="time" id="event-end" class="w-full bg-black/20 border border-surfaceBorder rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
+                            <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">End
+                                Time</label>
+                            <input type="time" id="event-end"
+                                class="w-full bg-black/20 border border-surfaceBorder rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
                         </div>
                     </div>
 
                     <div>
-                        <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Energy / Rating</label>
-                        <select id="event-rating" class="w-full bg-[#1F2833] border border-surfaceBorder rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
+                        <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Energy /
+                            Rating</label>
+                        <select id="event-rating"
+                            class="w-full bg-[#1F2833] border border-surfaceBorder rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
                             <option value="High Energy">High Energy</option>
                             <option value="Neutral">Neutral</option>
                             <option value="Restorative">Restorative</option>
@@ -96,7 +117,8 @@
                         </select>
                     </div>
 
-                    <button onclick="addEvent()" class="w-full bg-accentTeal/20 hover:bg-accentTeal/30 text-accentTeal border border-accentTeal/30 font-bold py-3 rounded-lg transition mt-2 flex justify-center items-center gap-2">
+                    <button onclick="addEvent()"
+                        class="w-full bg-accentTeal/20 hover:bg-accentTeal/30 text-accentTeal border border-accentTeal/30 font-bold py-3 rounded-lg transition mt-2 flex justify-center items-center gap-2">
                         <i class="ph-bold ph-plus"></i> Log Activity
                     </button>
                 </div>
@@ -108,7 +130,7 @@
                 </div>
 
                 <div class="space-y-3" id="schedule-list">
-                    </div>
+                </div>
             </div>
 
         </main>
@@ -116,7 +138,7 @@
 
     <script src="js/api.js"></script>
     <script src="js/sidebar.js"></script>
-    
+
     <script>
         // Set dynamic date in header
         const options = { month: 'short', day: 'numeric' };
@@ -145,13 +167,13 @@
                 // Determine rating color
                 let ratingColor = "text-textMain border-surfaceBorder";
                 let ratingBg = "bg-black/40";
-                
+
                 if (ev.rating === "High Energy") { ratingColor = "text-accentTeal border-accentTeal/30"; ratingBg = "bg-accentTeal/10"; }
                 if (ev.rating === "Restorative") { ratingColor = "text-accentBlue border-accentBlue/30"; ratingBg = "bg-accentBlue/10"; }
                 if (ev.rating === "Draining") { ratingColor = "text-red-400 border-red-400/30"; ratingBg = "bg-red-400/10"; }
 
                 // Show merge button only if there is a block right after this one
-                const mergeBtnHTML = (index < scheduleEvents.length - 1) 
+                const mergeBtnHTML = (index < scheduleEvents.length - 1)
                     ? `<button onclick="mergeEvent(${index})" class="text-textMain hover:text-accentTeal transition p-1" title="Merge next block"><i class="ph-bold ph-arrows-merge text-lg"></i></button>`
                     : ``;
 
@@ -218,15 +240,29 @@
             current.end = next.end;
             // Append titles together cleanly
             current.activity = `${current.activity} & ${next.activity}`;
-            
+
             // Remove the next event from the array since it has been absorbed
             scheduleEvents.splice(index + 1, 1);
-            
+
             renderSchedule();
         }
 
         // Initialize UI
         window.onload = renderSchedule;
     </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('System OS Service Worker registered!', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
 </body>
+
 </html>

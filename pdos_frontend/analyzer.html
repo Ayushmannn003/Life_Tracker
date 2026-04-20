@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>System OS | Core Analytics</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -11,9 +13,9 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { 
-                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6', 
-                        accentPurple: '#A855F7', accentRed: '#FF4C4C', accentYellow: '#FBBF24' 
+                    colors: {
+                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6',
+                        accentPurple: '#A855F7', accentRed: '#FF4C4C', accentYellow: '#FBBF24'
                     }
                 }
             }
@@ -21,68 +23,89 @@
     </script>
     <style>
         /* NATIVE MOBILE SCROLLING FIX */
-        body, html { 
-            background-color: #000; 
-            color: #C5C6C7; 
-            font-family: 'Inter', sans-serif; 
-            margin: 0; 
+        body,
+        html {
+            background-color: #000;
+            color: #C5C6C7;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
             padding: 0;
             -webkit-font-smoothing: antialiased;
         }
 
-        .mobile-viewport { 
-            width: 100%; 
-            max-width: 430px; 
-            margin: 0 auto; 
-            position: relative; 
-            background-color: #020202; 
-            min-height: 100dvh; 
-            display: flex; 
-            flex-direction: column; 
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        .mobile-viewport {
+            width: 100%;
+            max-width: 430px;
+            margin: 0 auto;
+            position: relative;
+            background-color: #020202;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
         }
 
-        main { padding: 1.25rem; flex: 1; padding-bottom: 6rem; }
-        ::-webkit-scrollbar { display: none; }
-        * { -ms-overflow-style: none; scrollbar-width: none; }
-        
+        main {
+            padding: 1.25rem;
+            flex: 1;
+            padding-bottom: 6rem;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        * {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
         /* GLASSMORPHIC PANELS */
-        .glass-panel { 
-            background: rgba(10, 12, 16, 0.65); 
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px); 
-            border: 1px solid rgba(255, 255, 255, 0.05); 
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); 
+        .glass-panel {
+            background: rgba(10, 12, 16, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
             border-radius: 1.75rem;
         }
-        
+
         /* Background Tech Mesh */
         .analytics-bg {
             background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
             background-size: 20px 20px;
-            position: absolute; inset: 0; z-index: 0; opacity: 0.5; pointer-events: none;
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            opacity: 0.5;
+            pointer-events: none;
         }
 
         /* Custom Graph Bar Animation */
         .graph-bar {
             transition: height 1s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
         .progress-fill {
             transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
         }
     </style>
 </head>
+
 <body>
 
     <div class="mobile-viewport">
         <div class="analytics-bg"></div>
 
-        <header class="sticky top-0 p-6 pb-4 flex justify-between items-center z-50 bg-[#020202]/90 backdrop-blur-xl border-b border-white/5">
+        <header
+            class="sticky top-0 p-6 pb-4 flex justify-between items-center z-50 bg-[#020202]/90 backdrop-blur-xl border-b border-white/5">
             <div class="flex items-center gap-4">
-                <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]"></i>
+                <i id="menu-btn"
+                    class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]"></i>
                 <h1 class="text-xl font-black text-white tracking-widest uppercase">Analytics</h1>
             </div>
-            <div class="text-[10px] font-black text-white uppercase tracking-widest bg-white/10 border border-white/10 px-3 py-1.5 rounded-full flex items-center gap-2">
+            <div
+                class="text-[10px] font-black text-white uppercase tracking-widest bg-white/10 border border-white/10 px-3 py-1.5 rounded-full flex items-center gap-2">
                 <i class="ph-bold ph-chart-line-up"></i> Live
             </div>
         </header>
@@ -90,69 +113,92 @@
         <main class="relative z-10 space-y-4">
 
             <div class="glass-panel p-5 border-t-2 border-t-accentTeal relative overflow-hidden">
-                <div class="absolute -top-10 -right-10 w-32 h-32 bg-accentTeal/10 blur-3xl rounded-full pointer-events-none"></div>
+                <div
+                    class="absolute -top-10 -right-10 w-32 h-32 bg-accentTeal/10 blur-3xl rounded-full pointer-events-none">
+                </div>
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-[11px] font-black text-white uppercase tracking-widest flex items-center gap-2">
                         <i class="ph-fill ph-cpu text-accentTeal text-lg"></i> Output Efficiency
                     </h2>
-                    <span class="text-[9px] font-bold text-accentTeal bg-accentTeal/10 px-2 py-0.5 rounded border border-accentTeal/20">Last 7 Days</span>
+                    <span
+                        class="text-[9px] font-bold text-accentTeal bg-accentTeal/10 px-2 py-0.5 rounded border border-accentTeal/20">Last
+                        7 Days</span>
                 </div>
-                
+
                 <div class="flex items-end gap-3 mb-2">
-                    <h3 class="text-4xl font-black text-white leading-none">84<span class="text-xl text-gray-500">%</span></h3>
-                    <p class="text-[10px] text-accentTeal font-bold uppercase tracking-widest mb-1 flex items-center gap-1"><i class="ph-bold ph-trend-up"></i> +12%</p>
+                    <h3 class="text-4xl font-black text-white leading-none">84<span
+                            class="text-xl text-gray-500">%</span></h3>
+                    <p
+                        class="text-[10px] text-accentTeal font-bold uppercase tracking-widest mb-1 flex items-center gap-1">
+                        <i class="ph-bold ph-trend-up"></i> +12%</p>
                 </div>
-                <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Tasks & Routines Cleared vs. Planned</p>
+                <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Tasks & Routines Cleared vs.
+                    Planned</p>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
                 <div class="glass-panel p-4 flex flex-col justify-between h-28 border-t-2 border-t-accentBlue">
                     <i class="ph-fill ph-check-circle text-accentBlue text-2xl opacity-80 mb-2"></i>
                     <div>
-                        <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Tasks Done</h4>
+                        <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Tasks Done
+                        </h4>
                         <p class="text-xl font-black text-white">124</p>
                     </div>
                 </div>
                 <div class="glass-panel p-4 flex flex-col justify-between h-28 border-t-2 border-t-accentYellow">
                     <i class="ph-fill ph-target text-accentYellow text-2xl opacity-80 mb-2"></i>
                     <div>
-                        <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Flow State</h4>
+                        <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Flow State
+                        </h4>
                         <p class="text-xl font-black text-white">18<span class="text-sm text-gray-500">h</span></p>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-[#0a0a0a] p-5 rounded-[1.75rem] border border-white/5 shadow-[0_8px_30px_rgba(0,0,0,0.5)] relative overflow-hidden mt-2">
-                <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-accentPurple/10 blur-3xl rounded-full pointer-events-none"></div>
-                
+            <div
+                class="bg-[#0a0a0a] p-5 rounded-[1.75rem] border border-white/5 shadow-[0_8px_30px_rgba(0,0,0,0.5)] relative overflow-hidden mt-2">
+                <div
+                    class="absolute -bottom-10 -left-10 w-32 h-32 bg-accentPurple/10 blur-3xl rounded-full pointer-events-none">
+                </div>
+
                 <div class="flex items-center justify-between mb-4 relative z-10">
                     <div class="flex items-center gap-2">
-                        <i class="ph-fill ph-graduation-cap text-accentPurple text-xl drop-shadow-[0_0_5px_rgba(168,85,247,0.5)]"></i>
+                        <i
+                            class="ph-fill ph-graduation-cap text-accentPurple text-xl drop-shadow-[0_0_5px_rgba(168,85,247,0.5)]"></i>
                         <h2 class="text-[11px] font-black text-white uppercase tracking-widest">Academic Overview</h2>
                     </div>
-                    <a href="academics.html" class="text-[9px] font-black text-gray-400 hover:text-white uppercase tracking-widest transition active:scale-90 flex items-center gap-1 bg-white/5 px-2 py-1 rounded-full border border-white/5">
+                    <a href="academics.html"
+                        class="text-[9px] font-black text-gray-400 hover:text-white uppercase tracking-widest transition active:scale-90 flex items-center gap-1 bg-white/5 px-2 py-1 rounded-full border border-white/5">
                         Hub <i class="ph-bold ph-caret-right"></i>
                     </a>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3 relative z-10">
                     <div class="bg-black/50 p-3.5 rounded-2xl border border-white/5 backdrop-blur-md">
-                        <p class="text-[8px] text-gray-500 font-bold uppercase tracking-widest mb-1">Active Deadlines</p>
-                        <p class="text-2xl font-black text-accentRed leading-none drop-shadow-[0_0_5px_rgba(255,76,76,0.3)]" id="analytics-deadlines-count">-</p>
+                        <p class="text-[8px] text-gray-500 font-bold uppercase tracking-widest mb-1">Active Deadlines
+                        </p>
+                        <p class="text-2xl font-black text-accentRed leading-none drop-shadow-[0_0_5px_rgba(255,76,76,0.3)]"
+                            id="analytics-deadlines-count">-</p>
                     </div>
-                    
+
                     <div class="bg-black/50 p-3.5 rounded-2xl border border-white/5 backdrop-blur-md">
                         <p class="text-[8px] text-gray-500 font-bold uppercase tracking-widest mb-1">Safe Courses</p>
-                        <p class="text-2xl font-black text-accentBlue leading-none" id="analytics-safe-courses">-<span class="text-xs text-gray-600">/-</span></p>
+                        <p class="text-2xl font-black text-accentBlue leading-none" id="analytics-safe-courses">-<span
+                                class="text-xs text-gray-600">/-</span></p>
                     </div>
-                    
+
                     <div class="col-span-2 bg-black/50 p-4 rounded-2xl border border-white/5 backdrop-blur-md mt-1">
                         <div class="flex justify-between items-end mb-2.5">
-                            <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Semester Progression</p>
-                            <span class="text-[10px] font-black text-accentPurple bg-accentPurple/10 border border-accentPurple/20 px-2 py-0.5 rounded" id="analytics-semester-pct">0%</span>
+                            <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Semester Progression
+                            </p>
+                            <span
+                                class="text-[10px] font-black text-accentPurple bg-accentPurple/10 border border-accentPurple/20 px-2 py-0.5 rounded"
+                                id="analytics-semester-pct">0%</span>
                         </div>
                         <div class="h-1.5 bg-[#020202] rounded-full overflow-hidden border border-white/5">
-                            <div id="analytics-semester-bar" class="h-full bg-accentPurple w-[0%] progress-fill shadow-[0_0_8px_rgba(168,85,247,0.8)]"></div>
+                            <div id="analytics-semester-bar"
+                                class="h-full bg-accentPurple w-[0%] progress-fill shadow-[0_0_8px_rgba(168,85,247,0.8)]">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -163,13 +209,17 @@
                     <h2 class="text-[11px] font-black text-white uppercase tracking-widest flex items-center gap-2">
                         <i class="ph-fill ph-moon-stars text-accentPurple text-lg"></i> Sleep Vector
                     </h2>
-                    <span class="text-[9px] font-bold text-gray-400 bg-white/5 px-2 py-0.5 rounded border border-white/10">7-Day Avg: 7.2h</span>
+                    <span
+                        class="text-[9px] font-bold text-gray-400 bg-white/5 px-2 py-0.5 rounded border border-white/10">7-Day
+                        Avg: 7.2h</span>
                 </div>
-                
-                <div class="flex items-end justify-between h-24 gap-2 border-b border-white/10 pb-2" id="sleep-graph-bars">
-                    </div>
-                <div class="flex justify-between text-[8px] text-gray-500 font-bold uppercase tracking-widest mt-2" id="sleep-graph-labels">
-                    </div>
+
+                <div class="flex items-end justify-between h-24 gap-2 border-b border-white/10 pb-2"
+                    id="sleep-graph-bars">
+                </div>
+                <div class="flex justify-between text-[8px] text-gray-500 font-bold uppercase tracking-widest mt-2"
+                    id="sleep-graph-labels">
+                </div>
             </div>
 
             <div class="glass-panel p-5 border-t-2 border-t-accentBlue relative overflow-hidden mt-2">
@@ -177,23 +227,30 @@
                     <h2 class="text-[11px] font-black text-white uppercase tracking-widest flex items-center gap-2">
                         <i class="ph-fill ph-clock-zzz text-accentBlue text-lg"></i> Power Naps
                     </h2>
-                    <span class="text-[9px] font-bold text-gray-400 bg-white/5 px-2 py-0.5 rounded border border-white/10">Weekly Total: 135m</span>
+                    <span
+                        class="text-[9px] font-bold text-gray-400 bg-white/5 px-2 py-0.5 rounded border border-white/10">Weekly
+                        Total: 135m</span>
                 </div>
-                
-                <div class="flex items-end justify-between h-20 gap-2 border-b border-white/10 pb-2" id="nap-graph-bars">
-                    </div>
-                <div class="flex justify-between text-[8px] text-gray-500 font-bold uppercase tracking-widest mt-2" id="nap-graph-labels">
-                    </div>
+
+                <div class="flex items-end justify-between h-20 gap-2 border-b border-white/10 pb-2"
+                    id="nap-graph-bars">
+                </div>
+                <div class="flex justify-between text-[8px] text-gray-500 font-bold uppercase tracking-widest mt-2"
+                    id="nap-graph-labels">
+                </div>
             </div>
 
             <div class="grid grid-cols-2 gap-3 mt-2">
                 <div class="glass-panel p-4 flex flex-col justify-between h-32 border-t-2 border-t-accentRed">
                     <div class="flex justify-between items-start mb-2">
                         <i class="ph-fill ph-barbell text-accentRed text-2xl opacity-80"></i>
-                        <span class="text-[8px] font-bold text-accentRed bg-accentRed/10 px-1.5 py-0.5 rounded border border-accentRed/20">Muscle Gain</span>
+                        <span
+                            class="text-[8px] font-bold text-accentRed bg-accentRed/10 px-1.5 py-0.5 rounded border border-accentRed/20">Muscle
+                            Gain</span>
                     </div>
                     <div>
-                        <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Protein Target</h4>
+                        <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Protein Target
+                        </h4>
                         <div class="flex items-end gap-1">
                             <p class="text-xl font-black text-white">120<span class="text-xs text-gray-500">g</span></p>
                         </div>
@@ -203,12 +260,16 @@
                 <div class="glass-panel p-4 flex flex-col justify-between h-32 border-t-2 border-t-accentRed">
                     <div class="flex justify-between items-start mb-2">
                         <i class="ph-fill ph-wallet text-accentRed text-2xl opacity-80"></i>
-                        <span class="text-[8px] font-bold text-gray-400 bg-white/10 px-1.5 py-0.5 rounded border border-white/10">OCR Sync</span>
+                        <span
+                            class="text-[8px] font-bold text-gray-400 bg-white/10 px-1.5 py-0.5 rounded border border-white/10">OCR
+                            Sync</span>
                     </div>
                     <div>
-                        <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Capital Limit</h4>
+                        <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Capital Limit
+                        </h4>
                         <div class="flex items-end gap-1">
-                            <p class="text-xl font-black text-white"><span class="text-sm text-gray-500">₹</span>4.5k</p>
+                            <p class="text-xl font-black text-white"><span class="text-sm text-gray-500">₹</span>4.5k
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -220,12 +281,15 @@
                         <i class="ph-fill ph-books text-accentBlue text-lg"></i> Knowledge Backlog
                     </h2>
                 </div>
-                <div class="flex justify-between items-center bg-black/50 p-3 rounded-xl border border-white/5 backdrop-blur-md">
+                <div
+                    class="flex justify-between items-center bg-black/50 p-3 rounded-xl border border-white/5 backdrop-blur-md">
                     <div>
-                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Currently Reading</p>
+                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Currently
+                            Reading</p>
                         <p class="text-xs font-bold text-white truncate pr-4">Systematic Literature Review</p>
                     </div>
-                    <div class="shrink-0 w-10 h-10 rounded-full border-2 border-accentBlue/30 flex justify-center items-center shadow-[0_0_8px_rgba(59,130,246,0.3)]">
+                    <div
+                        class="shrink-0 w-10 h-10 rounded-full border-2 border-accentBlue/30 flex justify-center items-center shadow-[0_0_8px_rgba(59,130,246,0.3)]">
                         <span class="text-[10px] font-black text-accentBlue">45%</span>
                     </div>
                 </div>
@@ -237,24 +301,24 @@
     <div id="sidebar-injector"></div>
     <script src="js/sidebar.js"></script>
     <script src="js/api.js"></script>
-    
+
     <script>
         // --- 1. SLEEP GRAPH RENDER ENGINE ---
         function renderSleepGraph() {
             // Simulated 7-day data (Will link to sleep.html local storage later)
-            const sleepData = [6.5, 7.2, 5.8, 8.1, 7.5, 6.9, 7.8]; 
+            const sleepData = [6.5, 7.2, 5.8, 8.1, 7.5, 6.9, 7.8];
             const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
             const maxSleep = 10; // Max Y-axis value
 
             const barContainer = document.getElementById('sleep-graph-bars');
             const labelContainer = document.getElementById('sleep-graph-labels');
-            
+
             barContainer.innerHTML = '';
             labelContainer.innerHTML = '';
 
             sleepData.forEach((hours, index) => {
                 const heightPct = (hours / maxSleep) * 100;
-                
+
                 // Highlight good sleep vs bad sleep
                 const barColor = hours < 6 ? 'bg-accentRed shadow-[0_0_8px_rgba(255,76,76,0.6)]' : 'bg-accentPurple shadow-[0_0_8px_rgba(168,85,247,0.6)]';
 
@@ -278,19 +342,19 @@
         // --- 2. NAP GRAPH RENDER ENGINE ---
         function renderNapGraph() {
             // Simulated 7-day nap data in minutes
-            const napData = [30, 0, 45, 20, 0, 40, 0]; 
+            const napData = [30, 0, 45, 20, 0, 40, 0];
             const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
             const maxNap = 60; // Max Y-axis value in minutes
 
             const barContainer = document.getElementById('nap-graph-bars');
             const labelContainer = document.getElementById('nap-graph-labels');
-            
+
             barContainer.innerHTML = '';
             labelContainer.innerHTML = '';
 
             napData.forEach((mins, index) => {
                 const heightPct = Math.min(100, (mins / maxNap) * 100);
-                
+
                 // Only show blue shadow if a nap was taken
                 const barColor = mins > 0 ? 'bg-accentBlue shadow-[0_0_8px_rgba(59,130,246,0.6)]' : 'bg-white/5';
                 const labelText = mins > 0 ? `${mins}m` : '';
@@ -321,11 +385,11 @@
                 const now = new Date();
                 const start = new Date(config.start);
                 const end = new Date(config.end);
-                
+
                 const totalDays = (end - start) / (1000 * 60 * 60 * 24);
                 const daysPassed = (now - start) / (1000 * 60 * 60 * 24);
                 let pct = Math.max(0, Math.min(100, (daysPassed / totalDays) * 100));
-                
+
                 setTimeout(() => {
                     document.getElementById('analytics-semester-pct').innerText = `${Math.round(pct)}%`;
                     document.getElementById('analytics-semester-bar').style.width = `${pct}%`;
@@ -335,16 +399,16 @@
                     const deadlines = await AcademicsAPI.getDeadlines();
                     const activeDeadlines = deadlines.filter(d => d.status !== 'completed').length;
                     document.getElementById('analytics-deadlines-count').innerText = activeDeadlines;
-                    
+
                     const courses = await AcademicsAPI.getCourses();
                     let safeCount = 0;
                     courses.forEach(c => {
                         let cpct = c.total_classes > 0 ? (c.attended_classes / c.total_classes) * 100 : 0;
-                        if(cpct >= c.minimum_required) safeCount++;
+                        if (cpct >= c.minimum_required) safeCount++;
                     });
                     document.getElementById('analytics-safe-courses').innerHTML = `${safeCount}<span class="text-sm text-gray-600">/${courses.length}</span>`;
                 }
-            } catch(e) {
+            } catch (e) {
                 console.error("Could not load academic analytics data", e);
             }
         }
@@ -353,8 +417,22 @@
         window.onload = () => {
             renderSleepGraph();
             renderNapGraph();
-            setTimeout(loadAcademicAnalytics, 150); 
+            setTimeout(loadAcademicAnalytics, 150);
         };
     </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('System OS Service Worker registered!', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
 </body>
+
 </html>

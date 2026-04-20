@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -9,48 +10,134 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            theme: { 
-                extend: { 
-                    colors: { bgDark: '#020202', accentPurple: '#A855F7', accentYellow: '#FBBF24', accentBlue: '#3B82F6' } 
-                } 
+            theme: {
+                extend: {
+                    colors: { bgDark: '#020202', accentPurple: '#A855F7', accentYellow: '#FBBF24', accentBlue: '#3B82F6' }
+                }
             }
         }
     </script>
     <style>
         /* UNIVERSAL MOBILE SCROLL LOCK */
-        body, html { background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; margin: 0; height: 100%; height: 100dvh; overflow: hidden; position: fixed; width: 100%; }
-        .mobile-viewport { width: 100%; max-width: 430px; height: 100dvh; margin: 0 auto; position: relative; background-color: #020202; display: flex; flex-direction: column; overflow: hidden; }
-        
-        /* NEW: THEMATIC DEEP SPACE NIGHT SKY BACKGROUND */
-        .sleep-bg { 
-            background-image: url('https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&fit=crop&q=80&w=1000'); 
-            background-size: cover; 
-            background-position: center; 
-            position: absolute; 
-            inset: 0; 
-            opacity: 0.25; /* Slightly brighter for the stars to pop */
-            z-index: 1; 
-            filter: grayscale(80%) hue-rotate(250deg); /* Gives it a subtle, moody purple/blue space tint */
+        body,
+        html {
+            background-color: #000;
+            color: #C5C6C7;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            height: 100%;
+            height: 100dvh;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
         }
-        .vignette { background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.98) 75%, #000 100%); position: absolute; inset: 0; z-index: 2; }
-        .content-layer { position: relative; z-index: 10; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
-        main { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; padding: 1.25rem; }
-        main::-webkit-scrollbar { display: none; }
+        .mobile-viewport {
+            width: 100%;
+            max-width: 430px;
+            height: 100dvh;
+            margin: 0 auto;
+            position: relative;
+            background-color: #020202;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
 
-        .glass-panel { background: rgba(13, 17, 23, 0.75); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        
+        /* NEW: THEMATIC DEEP SPACE NIGHT SKY BACKGROUND */
+        .sleep-bg {
+            background-image: url('https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&fit=crop&q=80&w=1000');
+            background-size: cover;
+            background-position: center;
+            position: absolute;
+            inset: 0;
+            opacity: 0.25;
+            /* Slightly brighter for the stars to pop */
+            z-index: 1;
+            filter: grayscale(80%) hue-rotate(250deg);
+            /* Gives it a subtle, moody purple/blue space tint */
+        }
+
+        .vignette {
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.98) 75%, #000 100%);
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+        }
+
+        .content-layer {
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        main {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            padding: 1.25rem;
+        }
+
+        main::-webkit-scrollbar {
+            display: none;
+        }
+
+        .glass-panel {
+            background: rgba(13, 17, 23, 0.75);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
         /* Form Inputs */
-        .input-dark { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 12px; color: white; outline: none; transition: 0.3s; font-size: 14px; width: 100%; }
-        .input-dark:focus { border-color: #A855F7; }
-        
+        .input-dark {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px;
+            color: white;
+            outline: none;
+            transition: 0.3s;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .input-dark:focus {
+            border-color: #A855F7;
+        }
+
         /* Override Calendar Icon Filter for Dark Mode */
-        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.6; cursor: pointer; }
-        
-        .quality-btn { flex: 1; padding: 10px; border-radius: 10px; font-size: 10px; font-weight: 900; text-transform: uppercase; text-align: center; border: 1px solid rgba(255,255,255,0.1); transition: 0.2s; cursor: pointer; }
-        .quality-btn.active { background: #A855F7; color: #000; border-color: #A855F7; box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); }
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            opacity: 0.6;
+            cursor: pointer;
+        }
+
+        .quality-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .quality-btn.active {
+            background: #A855F7;
+            color: #000;
+            border-color: #A855F7;
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+        }
     </style>
 </head>
+
 <body>
 
     <div class="mobile-viewport">
@@ -60,12 +147,16 @@
         <div class="content-layer">
             <div id="sidebar-injector"></div>
 
-            <header class="p-6 pb-2 flex justify-between items-center border-b border-white/5 bg-black/20 backdrop-blur-md">
+            <header
+                class="p-6 pb-2 flex justify-between items-center border-b border-white/5 bg-black/20 backdrop-blur-md">
                 <div class="flex items-center gap-4">
-                    <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
+                    <i id="menu-btn"
+                        class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
                     <h1 class="text-xl font-black text-white tracking-widest uppercase">Recovery</h1>
                 </div>
-                <div class="text-[9px] font-black text-accentPurple border border-accentPurple/20 bg-accentPurple/5 px-3 py-1 rounded-full uppercase">Sleep Arc</div>
+                <div
+                    class="text-[9px] font-black text-accentPurple border border-accentPurple/20 bg-accentPurple/5 px-3 py-1 rounded-full uppercase">
+                    Sleep Arc</div>
             </header>
 
             <main>
@@ -74,13 +165,14 @@
                         <i class="ph-fill ph-moon-stars text-accentPurple text-lg"></i>
                         <h3 class="text-[10px] font-black text-white uppercase tracking-widest">Log Core Sleep</h3>
                     </div>
-                    
+
                     <div class="space-y-3">
                         <div class="grid grid-cols-2 gap-3">
                             <input type="date" id="core-date" class="input-dark text-xs font-bold text-gray-300">
-                            <input type="number" id="core-hours" placeholder="Hours (e.g. 7.5)" step="0.5" class="input-dark">
+                            <input type="number" id="core-hours" placeholder="Hours (e.g. 7.5)" step="0.5"
+                                class="input-dark">
                         </div>
-                        
+
                         <div>
                             <div class="flex gap-2 mt-1" id="quality-selector">
                                 <div class="quality-btn" onclick="selectQuality('Poor')">Poor</div>
@@ -89,7 +181,9 @@
                             </div>
                         </div>
 
-                        <button onclick="saveCore()" class="w-full bg-accentPurple/20 text-accentPurple border border-accentPurple/30 font-black py-3.5 mt-2 rounded-xl uppercase text-[10px] tracking-widest active:scale-95 transition">Save Core Record</button>
+                        <button onclick="saveCore()"
+                            class="w-full bg-accentPurple/20 text-accentPurple border border-accentPurple/30 font-black py-3.5 mt-2 rounded-xl uppercase text-[10px] tracking-widest active:scale-95 transition">Save
+                            Core Record</button>
                     </div>
                 </div>
 
@@ -98,20 +192,22 @@
                         <i class="ph-fill ph-battery-charging text-accentYellow text-lg"></i>
                         <h3 class="text-[10px] font-black text-white uppercase tracking-widest">Power Nap</h3>
                     </div>
-                    
+
                     <div class="space-y-3">
                         <div class="grid grid-cols-2 gap-3">
                             <input type="date" id="nap-date" class="input-dark text-xs font-bold text-gray-300">
                             <input type="number" id="nap-mins" placeholder="Minutes (e.g. 45)" class="input-dark">
                         </div>
-                        <button onclick="saveNap()" class="w-full bg-accentYellow/20 text-accentYellow border border-accentYellow/30 font-black py-3.5 rounded-xl uppercase text-[10px] tracking-widest active:scale-95 transition">Inject Nap</button>
+                        <button onclick="saveNap()"
+                            class="w-full bg-accentYellow/20 text-accentYellow border border-accentYellow/30 font-black py-3.5 rounded-xl uppercase text-[10px] tracking-widest active:scale-95 transition">Inject
+                            Nap</button>
                     </div>
                 </div>
 
                 <div class="space-y-4">
                     <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em] px-2">Recovery Ledger</h3>
                     <div id="sleep-ledger" class="space-y-3">
-                        </div>
+                    </div>
                 </div>
 
                 <div class="h-32"></div>
@@ -122,7 +218,7 @@
     <script src="js/sidebar.js"></script>
     <script>
         let currentQuality = 'Average';
-        
+
         // Data stores
         let sleepLedger = JSON.parse(localStorage.getItem('sys_sleep_ledger')) || [];
         let sleepGraphData = JSON.parse(localStorage.getItem('sys_sleep_logs')) || [7, 6.5, 8, 7.2, 6, 7.5, 8];
@@ -153,14 +249,14 @@
         function saveCore() {
             const dateVal = document.getElementById('core-date').value;
             const hours = parseFloat(document.getElementById('core-hours').value);
-            
+
             if (!dateVal || !hours || hours <= 0) return;
 
             const dateStr = formatDate(dateVal);
 
-            sleepLedger.unshift({ 
-                id: Date.now(), type: 'Core', date: dateStr, 
-                duration: `${hours} hrs`, quality: currentQuality 
+            sleepLedger.unshift({
+                id: Date.now(), type: 'Core', date: dateStr,
+                duration: `${hours} hrs`, quality: currentQuality
             });
             localStorage.setItem('sys_sleep_ledger', JSON.stringify(sleepLedger));
 
@@ -176,14 +272,14 @@
         function saveNap() {
             const dateVal = document.getElementById('nap-date').value;
             const mins = parseInt(document.getElementById('nap-mins').value);
-            
+
             if (!dateVal || !mins || mins <= 0) return;
 
             const dateStr = formatDate(dateVal);
 
-            sleepLedger.unshift({ 
-                id: Date.now(), type: 'Nap', date: dateStr, 
-                duration: `${mins} mins`, quality: 'Boost' 
+            sleepLedger.unshift({
+                id: Date.now(), type: 'Nap', date: dateStr,
+                duration: `${mins} mins`, quality: 'Boost'
             });
             localStorage.setItem('sys_sleep_ledger', JSON.stringify(sleepLedger));
 
@@ -229,12 +325,26 @@
                 `;
             });
 
-            if(sleepLedger.length === 0) {
+            if (sleepLedger.length === 0) {
                 container.innerHTML = '<p class="text-[10px] text-gray-600 italic text-center py-6 uppercase tracking-widest">No Recovery Data Logged</p>';
             }
         }
 
         window.onload = renderLedger;
     </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('System OS Service Worker registered!', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -11,9 +12,9 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { 
-                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6', 
-                        accentPurple: '#A855F7', accentYellow: '#FBBF24', accentRed: '#FF4C4C' 
+                    colors: {
+                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6',
+                        accentPurple: '#A855F7', accentYellow: '#FBBF24', accentRed: '#FF4C4C'
                     }
                 }
             }
@@ -21,34 +22,118 @@
     </script>
     <style>
         /* STRICT MOBILE VIEWPORT LOCKS */
-        body, html { background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; margin: 0; height: 100dvh; overflow: hidden; position: fixed; width: 100%; }
-        .mobile-viewport { width: 100%; max-width: 430px; height: 100dvh; margin: 0 auto; position: relative; background-color: #020202; display: flex; flex-direction: column; overflow: hidden; }
+        body,
+        html {
+            background-color: #000;
+            color: #C5C6C7;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            height: 100dvh;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+        }
+
+        .mobile-viewport {
+            width: 100%;
+            max-width: 430px;
+            height: 100dvh;
+            margin: 0 auto;
+            position: relative;
+            background-color: #020202;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
 
         /* THEMATIC BACKGROUND */
-        .todo-bg { 
-            background-image: url('https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?auto=format&fit=crop&q=80&w=1000'); 
-            background-size: cover; background-position: center; position: absolute; inset: 0; opacity: 0.15; z-index: 1; filter: grayscale(100%) contrast(120%); 
+        .todo-bg {
+            background-image: url('https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?auto=format&fit=crop&q=80&w=1000');
+            background-size: cover;
+            background-position: center;
+            position: absolute;
+            inset: 0;
+            opacity: 0.15;
+            z-index: 1;
+            filter: grayscale(100%) contrast(120%);
         }
-        .vignette { background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.98) 80%, #000 100%); position: absolute; inset: 0; z-index: 2; }
-        .content-layer { position: relative; z-index: 10; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+        .vignette {
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.98) 80%, #000 100%);
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+        }
+
+        .content-layer {
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
 
         /* SCROLLABLE AREA */
-        main { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; padding: 1.25rem; }
-        main::-webkit-scrollbar { display: none; }
+        main {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            padding: 1.25rem;
+        }
 
-        .glass-panel { background: rgba(13, 17, 23, 0.75); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .input-dark { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 12px; color: white; outline: none; transition: 0.3s; font-size: 14px; width: 100%; }
-        .input-dark:focus { border-color: rgba(102, 252, 241, 0.5); }
+        main::-webkit-scrollbar {
+            display: none;
+        }
+
+        .glass-panel {
+            background: rgba(13, 17, 23, 0.75);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .input-dark {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px;
+            color: white;
+            outline: none;
+            transition: 0.3s;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .input-dark:focus {
+            border-color: rgba(102, 252, 241, 0.5);
+        }
 
         /* Progress Bar */
-        .progress-bg { height: 6px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; margin-top: 10px; }
-        .progress-fill { height: 100%; transition: width 0.5s ease-out, background-color 0.3s; }
+        .progress-bg {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            transition: width 0.5s ease-out, background-color 0.3s;
+        }
 
         /* Task Animations */
-        .task-row { transition: all 0.2s ease-in-out; }
-        .task-row:active { transform: scale(0.98); }
+        .task-row {
+            transition: all 0.2s ease-in-out;
+        }
+
+        .task-row:active {
+            transform: scale(0.98);
+        }
     </style>
 </head>
+
 <body>
 
     <div class="mobile-viewport">
@@ -56,19 +141,24 @@
         <div class="vignette"></div>
 
         <div class="content-layer">
-            <header class="p-6 pb-2 flex justify-between items-center border-b border-white/5 bg-black/20 backdrop-blur-md">
+            <header
+                class="p-6 pb-2 flex justify-between items-center border-b border-white/5 bg-black/20 backdrop-blur-md">
                 <div class="flex items-center gap-4">
-                    <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
+                    <i id="menu-btn"
+                        class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
                     <h1 class="text-xl font-black text-white tracking-widest uppercase">Tasks</h1>
                 </div>
-                <div class="text-[9px] font-black text-accentTeal border border-accentTeal/20 bg-accentTeal/5 px-3 py-1 rounded-full uppercase">Tactical</div>
+                <div
+                    class="text-[9px] font-black text-accentTeal border border-accentTeal/20 bg-accentTeal/5 px-3 py-1 rounded-full uppercase">
+                    Tactical</div>
             </header>
 
             <main>
                 <div class="glass-panel p-6 rounded-[2.5rem] mb-6 border-t-2 border-t-accentTeal shadow-2xl">
                     <div class="flex justify-between items-end mb-2">
                         <div>
-                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Overall Progress</p>
+                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Overall
+                                Progress</p>
                             <h2 class="text-3xl font-black text-white" id="progress-text">0%</h2>
                         </div>
                         <div class="text-right">
@@ -76,7 +166,7 @@
                             <p class="text-sm font-bold text-gray-300" id="total-count-text">0 Directives</p>
                         </div>
                     </div>
-                    
+
                     <div class="progress-bg mb-4">
                         <div id="progress-bar" class="progress-fill bg-accentTeal" style="width: 0%"></div>
                     </div>
@@ -87,11 +177,13 @@
                             <p class="text-sm font-bold text-white" id="count-pending">0</p>
                         </div>
                         <div class="flex-1 bg-accentYellow/10 border border-accentYellow/20 rounded-xl p-2 text-center">
-                            <p class="text-[8px] font-black text-accentYellow uppercase tracking-widest mb-0.5">Ongoing</p>
+                            <p class="text-[8px] font-black text-accentYellow uppercase tracking-widest mb-0.5">Ongoing
+                            </p>
                             <p class="text-sm font-bold text-accentYellow" id="count-ongoing">0</p>
                         </div>
                         <div class="flex-1 bg-accentTeal/10 border border-accentTeal/20 rounded-xl p-2 text-center">
-                            <p class="text-[8px] font-black text-accentTeal uppercase tracking-widest mb-0.5">Cleared</p>
+                            <p class="text-[8px] font-black text-accentTeal uppercase tracking-widest mb-0.5">Cleared
+                            </p>
                             <p class="text-sm font-bold text-accentTeal" id="count-completed">0</p>
                         </div>
                     </div>
@@ -99,8 +191,10 @@
 
                 <div class="glass-panel p-5 rounded-[2rem] mb-8 space-y-3">
                     <div class="flex gap-2">
-                        <input type="text" id="task-input" placeholder="Initiate new directive..." class="flex-1 input-dark !text-xs font-bold text-white">
-                        <button onclick="addTask()" class="bg-accentTeal text-black px-5 rounded-xl font-black uppercase text-[10px] tracking-widest active:scale-95 transition flex justify-center items-center">
+                        <input type="text" id="task-input" placeholder="Initiate new directive..."
+                            class="flex-1 input-dark !text-xs font-bold text-white">
+                        <button onclick="addTask()"
+                            class="bg-accentTeal text-black px-5 rounded-xl font-black uppercase text-[10px] tracking-widest active:scale-95 transition flex justify-center items-center">
                             <i class="ph-bold ph-plus text-lg"></i>
                         </button>
                     </div>
@@ -108,22 +202,24 @@
 
                 <div class="space-y-4 mb-10">
                     <div class="flex justify-between items-end px-2">
-                        <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em] flex items-center gap-2">
+                        <h3
+                            class="text-[10px] font-black text-white uppercase tracking-[0.2em] flex items-center gap-2">
                             <i class="ph-fill ph-target text-accentTeal"></i> Active Directives
                         </h3>
                         <p class="text-[7px] font-bold text-gray-500 uppercase tracking-widest">(Tap Card to Cycle)</p>
                     </div>
-                    
+
                     <div id="today-tasks-list" class="space-y-2">
-                        </div>
+                    </div>
                 </div>
 
                 <div class="space-y-4 opacity-80">
-                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-2 flex items-center gap-2 border-t border-white/10 pt-6">
+                    <h3
+                        class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-2 flex items-center gap-2 border-t border-white/10 pt-6">
                         <i class="ph-fill ph-archive text-gray-500"></i> Registration Logs
                     </h3>
                     <div id="past-tasks-list" class="space-y-6">
-                        </div>
+                    </div>
                 </div>
 
                 <div class="h-32"></div>
@@ -212,7 +308,7 @@
         function render() {
             const todayContainer = document.getElementById('today-tasks-list');
             const pastContainer = document.getElementById('past-tasks-list');
-            
+
             todayContainer.innerHTML = '';
             pastContainer.innerHTML = '';
 
@@ -236,16 +332,16 @@
             const pendingToday = todayTasks.filter(t => t.status === 'pending').length;
             const ongoingToday = todayTasks.filter(t => t.status === 'ongoing').length;
             const completedToday = todayTasks.filter(t => t.status === 'completed').length;
-            
+
             const progressPct = totalToday === 0 ? 0 : Math.round((completedToday / totalToday) * 100);
 
             document.getElementById('progress-text').innerText = `${progressPct}%`;
             document.getElementById('total-count-text').innerText = `${totalToday} Directives`;
-            
+
             document.getElementById('count-pending').innerText = pendingToday;
             document.getElementById('count-ongoing').innerText = ongoingToday;
             document.getElementById('count-completed').innerText = completedToday;
-            
+
             const bar = document.getElementById('progress-bar');
             bar.style.width = `${progressPct}%`;
             if (progressPct === 100 && totalToday > 0) {
@@ -298,11 +394,11 @@
             } else {
                 pastDates.forEach(date => {
                     let dateHTML = `<div class="space-y-2"><h4 class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em] pl-1">${date}</h4>`;
-                    
+
                     groupedPastTasks[date].forEach(task => {
                         let icon = 'ph-minus text-gray-600';
                         let textDeco = 'text-gray-400';
-                        
+
                         if (task.status === 'ongoing') {
                             icon = 'ph-play text-accentYellow/70';
                             textDeco = 'text-accentYellow/70';
@@ -322,7 +418,7 @@
                             </div>
                         `;
                     });
-                    
+
                     dateHTML += `</div>`;
                     pastContainer.innerHTML += dateHTML;
                 });
@@ -330,7 +426,7 @@
         }
 
         // --- Keyboard Support for Input ---
-        document.getElementById('task-input').addEventListener('keypress', function(e) {
+        document.getElementById('task-input').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 addTask();
             }
@@ -339,5 +435,19 @@
         // Initialize
         window.onload = render;
     </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('System OS Service Worker registered!', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
 </body>
+
 </html>

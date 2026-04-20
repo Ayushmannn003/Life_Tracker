@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -17,35 +18,136 @@
         }
     </script>
     <style>
-        body, html { background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; margin: 0; height: 100dvh; overflow: hidden; position: fixed; width: 100%; }
-        .mobile-viewport { width: 100%; max-width: 430px; height: 100dvh; margin: 0 auto; position: relative; background-color: #020202; display: flex; flex-direction: column; overflow: hidden; }
+        body,
+        html {
+            background-color: #000;
+            color: #C5C6C7;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            height: 100dvh;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+        }
+
+        .mobile-viewport {
+            width: 100%;
+            max-width: 430px;
+            height: 100dvh;
+            margin: 0 auto;
+            position: relative;
+            background-color: #020202;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
 
         /* THEMATIC FINANCIAL BACKGROUND */
-        .budget-bg { 
-            background-image: url('https://images.unsplash.com/photo-1642543492481-44e81e391452?auto=format&fit=crop&q=80&w=1000'); 
-            background-size: cover; background-position: center; position: absolute; inset: 0; opacity: 0.2; z-index: 1; filter: grayscale(100%) contrast(110%); 
+        .budget-bg {
+            background-image: url('https://images.unsplash.com/photo-1642543492481-44e81e391452?auto=format&fit=crop&q=80&w=1000');
+            background-size: cover;
+            background-position: center;
+            position: absolute;
+            inset: 0;
+            opacity: 0.2;
+            z-index: 1;
+            filter: grayscale(100%) contrast(110%);
         }
-        .vignette { background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.98) 80%, #000 100%); position: absolute; inset: 0; z-index: 2; }
-        .content-layer { position: relative; z-index: 10; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
-        main { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 1.25rem; }
-        main::-webkit-scrollbar { display: none; }
+        .vignette {
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.98) 80%, #000 100%);
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+        }
 
-        .glass-panel { background: rgba(13, 17, 23, 0.75); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .input-dark { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 12px; color: white; outline: none; font-size: 14px; }
-        .input-dark:focus { border-color: rgba(255, 76, 76, 0.5); }
-        
-        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.6; cursor: pointer; }
-        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-        input[type=number] { appearance: textfield; -moz-appearance: textfield; }
+        .content-layer {
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
 
-        .limit-input { background: transparent; text-align: right; font-size: 0.75rem; font-weight: 700; color: white; width: 4rem; outline: none; border-bottom: 1px solid transparent; transition: 0.2s; }
-        .limit-input:focus { border-bottom: 1px solid #FF4C4C; }
+        main {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 1.25rem;
+        }
 
-        .progress-bg { height: 6px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
-        .progress-fill { height: 100%; transition: width 0.5s ease; }
+        main::-webkit-scrollbar {
+            display: none;
+        }
+
+        .glass-panel {
+            background: rgba(13, 17, 23, 0.75);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .input-dark {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px;
+            color: white;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .input-dark:focus {
+            border-color: rgba(255, 76, 76, 0.5);
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            opacity: 0.6;
+            cursor: pointer;
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            appearance: textfield;
+            -moz-appearance: textfield;
+        }
+
+        .limit-input {
+            background: transparent;
+            text-align: right;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: white;
+            width: 4rem;
+            outline: none;
+            border-bottom: 1px solid transparent;
+            transition: 0.2s;
+        }
+
+        .limit-input:focus {
+            border-bottom: 1px solid #FF4C4C;
+        }
+
+        .progress-bg {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            transition: width 0.5s ease;
+        }
     </style>
 </head>
+
 <body>
 
     <div class="mobile-viewport">
@@ -53,35 +155,42 @@
         <div class="vignette"></div>
 
         <div class="content-layer">
-            
-            <header class="p-6 pb-2 flex justify-between items-center border-b border-white/5 bg-black/20 backdrop-blur-md">
+
+            <header
+                class="p-6 pb-2 flex justify-between items-center border-b border-white/5 bg-black/20 backdrop-blur-md">
                 <div class="flex items-center gap-4">
-                    <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
+                    <i id="menu-btn"
+                        class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
                     <h1 class="text-xl font-black text-white tracking-widest uppercase">Capital</h1>
                 </div>
-                <div class="text-[9px] font-black text-accentRed border border-accentRed/20 bg-accentRed/5 px-3 py-1 rounded-full uppercase" id="current-month-badge">Control</div>
+                <div class="text-[9px] font-black text-accentRed border border-accentRed/20 bg-accentRed/5 px-3 py-1 rounded-full uppercase"
+                    id="current-month-badge">Control</div>
             </header>
 
             <main>
                 <div class="glass-panel p-6 rounded-[2.5rem] mb-6 border-t-2 border-t-accentRed space-y-4">
                     <div class="flex justify-between items-center border-b border-white/10 pb-3 mb-2">
-                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                        <p
+                            class="text-[8px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
                             <i class="ph-fill ph-sliders-horizontal"></i> Core Limit
                         </p>
                         <div class="flex items-center gap-1 bg-black/40 px-3 py-1.5 rounded-lg border border-white/5">
                             <span class="text-xs font-bold text-gray-500">₹</span>
-                            <input type="number" id="monthly-limit-input" class="limit-input" value="30000" onchange="updateLimit()">
+                            <input type="number" id="monthly-limit-input" class="limit-input" value="30000"
+                                onchange="updateLimit()">
                             <i class="ph ph-pencil-simple text-gray-600 text-[10px]"></i>
                         </div>
                     </div>
 
                     <div class="flex justify-between items-end">
                         <div>
-                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Total Burn (This Month)</p>
+                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Total Burn
+                                (This Month)</p>
                             <h2 class="text-3xl font-black text-white" id="total-spent">₹0</h2>
                         </div>
                         <div class="text-right">
-                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Allowance Left</p>
+                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Allowance Left
+                            </p>
                             <p class="text-xs font-bold text-accentRed" id="remaining-budget">₹0</p>
                         </div>
                     </div>
@@ -93,29 +202,36 @@
                 <div class="space-y-4 mb-10">
                     <div class="glass-panel p-5 rounded-[2rem] space-y-3">
                         <div class="flex gap-2">
-                            <input type="date" id="exp-date" class="w-1/3 input-dark !text-[10px] font-bold text-gray-300 !px-2">
+                            <input type="date" id="exp-date"
+                                class="w-1/3 input-dark !text-[10px] font-bold text-gray-300 !px-2">
                             <input type="text" id="exp-name" placeholder="Item Name..." class="flex-1 input-dark">
                         </div>
                         <div class="flex gap-2">
-                            <input type="number" id="exp-amount" placeholder="₹ Amount" class="w-1/3 input-dark text-center font-bold">
-                            <input type="text" id="exp-note" placeholder="Note (Optional)..." class="flex-1 input-dark !text-[11px] italic text-gray-400">
+                            <input type="number" id="exp-amount" placeholder="₹ Amount"
+                                class="w-1/3 input-dark text-center font-bold">
+                            <input type="text" id="exp-note" placeholder="Note (Optional)..."
+                                class="flex-1 input-dark !text-[11px] italic text-gray-400">
                         </div>
-                        <button onclick="addExpense()" class="w-full bg-accentRed/20 text-accentRed border border-accentRed/30 font-black py-3 rounded-xl uppercase text-[10px] tracking-widest active:scale-95 transition shadow-lg mt-1">Authorize Expense</button>
+                        <button onclick="addExpense()"
+                            class="w-full bg-accentRed/20 text-accentRed border border-accentRed/30 font-black py-3 rounded-xl uppercase text-[10px] tracking-widest active:scale-95 transition shadow-lg mt-1">Authorize
+                            Expense</button>
                     </div>
 
                     <div>
                         <div class="flex justify-between items-end px-2 mb-3">
-                            <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em] flex items-center gap-2">
+                            <h3
+                                class="text-[10px] font-black text-white uppercase tracking-[0.2em] flex items-center gap-2">
                                 Today's Logs
                             </h3>
                             <div class="text-right">
-                                <p class="text-[7px] font-black text-gray-500 uppercase tracking-widest">Today's Burn</p>
+                                <p class="text-[7px] font-black text-gray-500 uppercase tracking-widest">Today's Burn
+                                </p>
                                 <p class="text-sm font-black text-accentRed" id="today-burn-counter">₹0</p>
                             </div>
                         </div>
-                        
+
                         <div id="current-expense-list" class="space-y-3">
-                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -124,28 +240,34 @@
                         <h3 class="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
                             <i class="ph-fill ph-repeat text-accentYellow text-lg"></i> Recurring Protocol
                         </h3>
-                        <button onclick="toggleSubInput()" class="text-accentYellow text-xl active:scale-90 transition"><i class="ph-bold ph-plus-circle"></i></button>
+                        <button onclick="toggleSubInput()"
+                            class="text-accentYellow text-xl active:scale-90 transition"><i
+                                class="ph-bold ph-plus-circle"></i></button>
                     </div>
-                    
+
                     <div id="sub-input-zone" class="hidden space-y-2 pb-2">
                         <div class="flex gap-2">
-                            <input type="text" id="sub-name" placeholder="Service (Netflix, Gym)" class="flex-1 input-dark !text-xs">
-                            <input type="number" id="sub-amount" placeholder="₹/mo" class="w-20 input-dark !text-xs text-center">
-                            <button onclick="addSubscription()" class="bg-accentYellow text-black px-4 rounded-xl font-black text-[10px] uppercase tracking-widest active:scale-95 transition">Add</button>
+                            <input type="text" id="sub-name" placeholder="Service (Netflix, Gym)"
+                                class="flex-1 input-dark !text-xs">
+                            <input type="number" id="sub-amount" placeholder="₹/mo"
+                                class="w-20 input-dark !text-xs text-center">
+                            <button onclick="addSubscription()"
+                                class="bg-accentYellow text-black px-4 rounded-xl font-black text-[10px] uppercase tracking-widest active:scale-95 transition">Add</button>
                         </div>
                     </div>
 
                     <div id="sub-list" class="space-y-2 max-h-40 overflow-y-auto pr-1">
-                        </div>
+                    </div>
                 </div>
 
                 <div class="space-y-4 opacity-80">
-                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-2 flex items-center gap-2 border-t border-white/10 pt-4 mb-4">
+                    <h3
+                        class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-2 flex items-center gap-2 border-t border-white/10 pt-4 mb-4">
                         <i class="ph-fill ph-archive text-gray-500"></i> Historical Ledger
                     </h3>
-                    
+
                     <div id="previous-expense-list" class="space-y-4">
-                        </div>
+                    </div>
                 </div>
 
                 <div class="h-32"></div>
@@ -174,8 +296,8 @@
         function updateLimit() {
             const inputField = document.getElementById('monthly-limit-input');
             let newVal = parseFloat(inputField.value);
-            if (isNaN(newVal) || newVal <= 0) newVal = 30000; 
-            
+            if (isNaN(newVal) || newVal <= 0) newVal = 30000;
+
             monthlyLimit = newVal;
             localStorage.setItem('sys_budget_limit', monthlyLimit);
             inputField.value = monthlyLimit;
@@ -187,17 +309,17 @@
             const name = document.getElementById('exp-name').value.trim();
             const amount = parseFloat(document.getElementById('exp-amount').value);
             const note = document.getElementById('exp-note').value.trim();
-            
+
             if (!dateVal || !name || isNaN(amount) || amount <= 0) return;
 
-            expenses.unshift({ 
-                id: Date.now(), 
-                name: name, 
-                amount: amount, 
-                rawDate: dateVal, 
-                note: note 
+            expenses.unshift({
+                id: Date.now(),
+                name: name,
+                amount: amount,
+                rawDate: dateVal,
+                note: note
             });
-            
+
             document.getElementById('exp-name').value = '';
             document.getElementById('exp-amount').value = '';
             document.getElementById('exp-note').value = '';
@@ -245,8 +367,8 @@
 
             expenses.forEach(e => {
                 // Backward compatibility for old records
-                const eDateStr = e.rawDate || todayStr; 
-                
+                const eDateStr = e.rawDate || todayStr;
+
                 const eMonth = parseInt(eDateStr.split('-')[1]);
                 const eYear = parseInt(eDateStr.split('-')[0]);
 
@@ -272,11 +394,11 @@
             const cContainer = document.getElementById('current-expense-list');
             cContainer.innerHTML = '';
             let todayBurn = 0;
-            
+
             todayExpenses.forEach(e => {
                 todayBurn += e.amount;
                 let noteHTML = e.note ? `<p class="text-[9px] text-gray-400 italic truncate mt-0.5">${e.note}</p>` : '';
-                
+
                 cContainer.innerHTML += `
                     <div class="glass-panel p-4 rounded-2xl flex justify-between items-center border-l-2 border-l-accentRed gap-2">
                         <div class="flex-1 min-w-0 pr-2">
@@ -294,7 +416,7 @@
             // Update Today's Burn Counter
             document.getElementById('today-burn-counter').innerText = `₹${todayBurn.toLocaleString()}`;
 
-            if(todayExpenses.length === 0) {
+            if (todayExpenses.length === 0) {
                 cContainer.innerHTML = `<p class="text-[10px] text-gray-700 italic text-center py-6 uppercase tracking-widest">No Transactions Logged Today</p>`;
             }
 
@@ -304,19 +426,19 @@
             // ==========================================
             const pContainer = document.getElementById('previous-expense-list');
             pContainer.innerHTML = '';
-            
+
             // Sort dates from newest to oldest
             const sortedPastDates = Object.keys(groupedPastExpenses).sort((a, b) => b.localeCompare(a));
 
-            if(sortedPastDates.length === 0) {
+            if (sortedPastDates.length === 0) {
                 pContainer.innerHTML = `<p class="text-[9px] text-gray-800 italic uppercase tracking-widest px-2">No historical data found.</p>`;
             } else {
                 sortedPastDates.forEach(dateStr => {
                     const dayItems = groupedPastExpenses[dateStr];
-                    
+
                     // Calculate Day's Total
                     const dayTotal = dayItems.reduce((sum, item) => sum + item.amount, 0);
-                    
+
                     // Format Date nicely (e.g., "Monday, Apr 5")
                     const d = new Date(dateStr);
                     const niceDate = d.toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'long', month: 'short', day: 'numeric' });
@@ -329,7 +451,7 @@
                             </div>
                             <div class="space-y-2">
                     `;
-                    
+
                     dayItems.forEach(e => {
                         let noteHTML = e.note ? `<p class="text-[8px] text-gray-500 italic truncate mt-0.5">${e.note}</p>` : '';
                         blockHTML += `
@@ -376,7 +498,7 @@
             // ==========================================
             const combinedBurn = totalMonthlyEx + totalSub;
             document.getElementById('total-spent').innerText = `₹${combinedBurn.toLocaleString()}`;
-            
+
             const remaining = monthlyLimit - combinedBurn;
             const remainingEl = document.getElementById('remaining-budget');
             if (remaining < 0) {
@@ -386,11 +508,11 @@
                 remainingEl.innerText = `₹${remaining.toLocaleString()}`;
                 remainingEl.classList.replace('text-white', 'text-accentRed');
             }
-            
+
             const pct = (combinedBurn / monthlyLimit) * 100;
             const bar = document.getElementById('budget-bar');
             bar.style.width = `${Math.min(pct, 100)}%`;
-            
+
             if (pct >= 100) bar.className = "progress-fill bg-white";
             else if (pct >= 80) bar.className = "progress-fill bg-accentYellow";
             else bar.className = "progress-fill bg-accentRed";
@@ -398,5 +520,19 @@
 
         window.onload = render;
     </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('System OS Service Worker registered!', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
 </body>
+
 </html>
