@@ -16,6 +16,7 @@
                     colors: {
                         bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6',
                         accentPurple: '#A855F7', accentRed: '#FF4C4C', accentYellow: '#FBBF24',
+                        accentGreen: '#00E676', /* Neon Green added for Habit Matrix */
                         cardBg: '#080A0E'
                     }
                 }
@@ -259,6 +260,31 @@
                 </div>
             </div>
 
+            <div class="sys-card border-blue p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xs font-black text-white uppercase tracking-widest flex items-center gap-2">
+                        <i class="ph-fill ph-calendar-check text-accentBlue text-lg"></i> Routine Adherence
+                    </h2>
+                    <span
+                        class="text-[9px] font-black text-accentBlue bg-accentBlue/10 px-2 py-1 rounded border border-accentBlue/20">51%
+                        ACTIVE</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div class="bg-black/50 p-3 rounded-xl border border-white/5">
+                        <p class="card-header text-gray-500 mb-1">Active Routines</p>
+                        <p class="text-xl font-black text-white">6</p>
+                    </div>
+                    <div class="bg-black/50 p-3 rounded-xl border border-white/5">
+                        <p class="card-header text-gray-500 mb-1">MTD Checks</p>
+                        <p class="text-xl font-black text-white">58</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3" id="habit-matrix-grid">
+                </div>
+            </div>
+
             <div class="sys-card flex flex-col justify-center h-28 relative">
                 <div class="absolute inset-0 bg-white/[0.01] pointer-events-none"></div>
                 <div class="flex justify-around items-center text-center z-10">
@@ -300,10 +326,8 @@
             const xInterval = width / (dataPoints.length - 1);
             let pathData = `M 0,${dataPoints[0]} `;
 
-            // Apply Stroke Color
             path.setAttribute("stroke", color);
 
-            // Draw Path and Dots
             const ns = "http://www.w3.org/2000/svg";
             dataPoints.forEach((y, i) => {
                 const x = i * xInterval;
@@ -344,10 +368,51 @@
             } catch (e) { console.error(e); }
         }
 
+        // --- HABIT MATRIX ENGINE ---
+        function renderHabitMatrix() {
+            const container = document.getElementById('habit-matrix-grid');
+
+            // Hardcoded structural data mapping perfectly to your reference image.
+            // 1 represents completed (Green), 0 represents missed (Blank/Grey).
+            const habits = [
+                { name: "Read", today: "-", streak: 0, data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0] },
+                { name: "Study", today: "Done", streak: 2, data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1] },
+                { name: "Bath", today: "Done", streak: 2, data: [1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1] },
+                { name: "Brush", today: "Done", streak: 1, data: [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0] },
+                { name: "Workout", today: "Done", streak: 2, data: [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1] },
+                { name: "No-Sugar", today: "-", streak: 1, data: [1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0] }
+            ];
+
+            let html = '';
+            habits.forEach(h => {
+                // Generate 21-dot history (3 rows of 7 dots)
+                let dotsHTML = '';
+                h.data.forEach(val => {
+                    // Injecting the glowing neon green for completed tasks
+                    const colorClass = val === 1 ? 'bg-accentGreen shadow-[0_0_5px_rgba(0,230,118,0.5)]' : 'bg-white/5';
+                    dotsHTML += `<div class="w-[5px] h-[5px] sm:w-1.5 sm:h-1.5 rounded-full ${colorClass}"></div>`;
+                });
+
+                html += `
+                    <div class="bg-black/50 p-3 rounded-xl border border-white/5 flex flex-col justify-between">
+                        <p class="text-[10px] font-black text-white uppercase tracking-widest mb-1.5">${h.name}</p>
+                        <div class="mb-3">
+                            <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest leading-tight">Today: <span class="${h.today === 'Done' ? 'text-accentGreen' : 'text-gray-400'}">${h.today}</span></p>
+                            <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest leading-tight">Streak: <span class="text-white">${h.streak} Days</span></p>
+                        </div>
+                        <div class="grid grid-cols-7 gap-1.5 w-fit mt-auto mx-auto sm:mx-0">
+                            ${dotsHTML}
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
         window.onload = () => {
-            // Y-Coordinates calculated for 0-60 height viewBox. Lower number = higher on the graph.
             renderGraph('sleep-graph', 'sleep-path', [20, 40, 35, 25, 50, 35, 30]);
             renderGraph('nap-graph', 'nap-path', [45, 35, 40, 30, 5, 25, 32]);
+            renderHabitMatrix();
             setTimeout(loadAcademicData, 200);
         };
     </script>
