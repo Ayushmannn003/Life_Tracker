@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>System OS | Rituals Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6',
+                        accentPurple: '#A855F7', accentRed: '#FF4C4C', accentYellow: '#FBBF24',
+                        accentGreen: '#00E676', cardBg: '#080A0E'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* STRICT MOBILE LOCK */
+        body,
+        html {
+            background-color: #000;
+            color: #C5C6C7;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .mobile-viewport {
+            width: 100%;
+            max-width: 430px;
+            margin: 0 auto;
+            position: relative;
+            background-color: #020202;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+        }
+
+        main {
+            padding: 1rem;
+            flex: 1;
+            padding-bottom: 6rem;
+            overflow-y: auto;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        * {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* PREMIUM IMAGE CARD SYSTEM */
+        .img-card {
+            background-color: #080A0E;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .bg-layer {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.25;
+            mix-blend-mode: luminosity;
+            filter: grayscale(60%) contrast(1.1);
+        }
+
+        .gradient-mask {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background: linear-gradient(to bottom, rgba(8, 10, 14, 0.3) 0%, #080A0E 100%);
+        }
+
+        .content-layer {
+            position: relative;
+            z-index: 10;
+            padding: 1.25rem;
+        }
+
+        .border-yellow {
+            border-top: 2px solid #FBBF24;
+            border-left: 2px solid #FBBF24;
+        }
+
+        .border-purple {
+            border-top: 2px solid #A855F7;
+            border-left: 2px solid #A855F7;
+        }
+
+        /* CENTERED GLASS MODAL */
+        .center-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -45%) scale(0.95);
+            width: 90%;
+            max-width: 380px;
+            background: rgba(8, 10, 14, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.75rem;
+            padding: 1.5rem;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .center-modal.active {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            z-index: 9998;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .modal-backdrop.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .sys-input {
+            width: 100%;
+            background: #000;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1rem;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .sys-input:focus {
+            border-color: #66FCF1;
+        }
+
+        input[type="time"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
+        .touch-btn {
+            transition: transform 0.1s;
+            cursor: pointer;
+        }
+
+        .touch-btn:active {
+            transform: scale(0.96);
+        }
+
+        /* INTERACTIVE RITUAL ROWS */
+        .ritual-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.85rem 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 0.75rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+        }
+
+        .ritual-item:active {
+            transform: scale(0.98);
+        }
+
+        .ritual-item.completed {
+            opacity: 0.5;
+            background: rgba(0, 230, 118, 0.05);
+            border-color: rgba(0, 230, 118, 0.2);
+        }
+
+        .ritual-item.completed .ritual-text {
+            text-decoration: line-through;
+            color: #6b7280;
+        }
+
+        .ritual-item.completed .time-badge {
+            opacity: 0.5;
+            text-decoration: line-through;
+            border-color: transparent;
+        }
+
+        body,
+        html {
+            height: 100dvh;
+            overflow: hidden;
+            /* This stops the whole screen from scrolling */
+            margin: 0;
+        }
+
+        .mobile-viewport {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            /* Allows content and nav to stack */
+        }
+
+        main {
+            flex: 1;
+            overflow-y: auto;
+            /* Only your content area scrolls */
+            padding-bottom: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="mobile-viewport">
+        <header
+            class="sticky top-0 p-6 pb-4 flex justify-between items-center z-50 bg-[#020202]/90 backdrop-blur-xl border-b border-white/5">
+            <div class="flex items-center gap-4">
+                <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
+                <h1 class="text-xl font-black text-white tracking-widest uppercase">Rituals Hub</h1>
+            </div>
+            <div
+                class="text-[10px] font-black text-accentGreen uppercase tracking-widest bg-accentGreen/10 border border-accentGreen/20 px-3 py-1.5 rounded-full flex items-center gap-2">
+                Live Sync <div class="w-1.5 h-1.5 rounded-full bg-accentGreen animate-pulse"></div>
+            </div>
+        </header>
+
+        <main class="space-y-2">
+
+            <div class="mb-6 px-2">
+                <div class="flex justify-between items-end mb-2">
+                    <h2 class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Daily Execution Yield
+                    </h2>
+                    <span class="text-2xl font-black text-white leading-none" id="progress-text">0%</span>
+                </div>
+                <div class="h-1.5 bg-gray-900 rounded-full overflow-hidden border border-white/5">
+                    <div class="h-full bg-accentTeal shadow-[0_0_8px_rgba(102,252,241,0.8)] transition-all duration-500"
+                        id="progress-bar" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="img-card border-yellow">
+                <div class="bg-layer"
+                    style="background-image: url('https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?q=80&w=600&auto=format&fit=crop');">
+                </div>
+                <div class="gradient-mask"></div>
+
+                <div class="content-layer">
+                    <div class="flex justify-between items-center mb-5">
+                        <div class="flex items-center gap-2">
+                            <i
+                                class="ph-fill ph-sun-horizon text-accentYellow text-2xl drop-shadow-[0_0_5px_rgba(251,191,36,0.5)]"></i>
+                            <div>
+                                <h2 class="text-xs font-black text-white uppercase tracking-widest drop-shadow-md">AM
+                                    Protocol</h2>
+                                <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">Morning
+                                    Alignment</p>
+                            </div>
+                        </div>
+                        <button onclick="openModal('morning')"
+                            class="text-[9px] font-black text-accentYellow bg-accentYellow/10 px-3 py-1.5 rounded-full border border-accentYellow/20 uppercase tracking-widest touch-btn backdrop-blur-sm">
+                            + Add Ritual
+                        </button>
+                    </div>
+
+                    <div id="morning-list" class="space-y-1 relative z-20">
+                    </div>
+                </div>
+            </div>
+
+            <div class="img-card border-purple">
+                <div class="bg-layer"
+                    style="background-image: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=600&auto=format&fit=crop');">
+                </div>
+                <div class="gradient-mask"></div>
+
+                <div class="content-layer">
+                    <div class="flex justify-between items-center mb-5">
+                        <div class="flex items-center gap-2">
+                            <i
+                                class="ph-fill ph-moon-stars text-accentPurple text-2xl drop-shadow-[0_0_5px_rgba(168,85,247,0.5)]"></i>
+                            <div>
+                                <h2 class="text-xs font-black text-white uppercase tracking-widest drop-shadow-md">PM
+                                    Protocol</h2>
+                                <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">Evening
+                                    Wind-Down</p>
+                            </div>
+                        </div>
+                        <button onclick="openModal('evening')"
+                            class="text-[9px] font-black text-accentPurple bg-accentPurple/10 px-3 py-1.5 rounded-full border border-accentPurple/20 uppercase tracking-widest touch-btn backdrop-blur-sm">
+                            + Add Ritual
+                        </button>
+                    </div>
+
+                    <div id="evening-list" class="space-y-1 relative z-20">
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div class="modal-backdrop" id="modal-bg" onclick="closeModal()"></div>
+
+    <div class="center-modal" id="add-modal">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-sm font-black text-white uppercase tracking-widest" id="modal-title">Initialize Ritual</h3>
+            <i class="ph-bold ph-x text-xl text-gray-500 cursor-pointer p-1 active:scale-90 touch-btn"
+                onclick="closeModal()"></i>
+        </div>
+
+        <form id="ritual-form" onsubmit="submitRitual(event)" class="space-y-4">
+            <div>
+                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Ritual
+                    Designation <span class="text-accentRed">*</span></label>
+                <input type="text" id="ritual-input" class="sys-input" placeholder="e.g. 10 Min Meditation"
+                    autocomplete="off" required>
+            </div>
+            <div>
+                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Target
+                    Time (Optional)</label>
+                <input type="time" id="ritual-time" class="sys-input text-gray-300">
+            </div>
+
+            <input type="hidden" id="ritual-type" value="morning">
+
+            <button type="submit"
+                class="w-full bg-white text-black font-black text-xs uppercase tracking-widest rounded-xl touch-btn mt-4 shadow-[0_0_20px_rgba(255,255,255,0.2)] py-4">
+                Lock Protocol
+            </button>
+        </form>
+    </div>
+
+    <div id="sidebar-injector"></div>
+    <script src="js/sidebar.js"></script>
+
+    <script>
+        // =========================================================================
+        // BULLETPROOF RITUALS ENGINE 
+        // =========================================================================
+
+        let rituals = [];
+
+        // Safe loader
+        try {
+            const rawData = localStorage.getItem('sys_rituals');
+            if (rawData) {
+                rituals = JSON.parse(rawData);
+                if (!Array.isArray(rituals)) rituals = [];
+            }
+        } catch (e) {
+            console.error("Local storage error, resetting rituals.");
+            rituals = [];
+        }
+
+        // --- MODAL CONTROLS ---
+        function openModal(type) {
+            document.getElementById('modal-bg').classList.add('active');
+            document.getElementById('add-modal').classList.add('active');
+            document.getElementById('ritual-type').value = type;
+
+            const input = document.getElementById('ritual-input');
+            const timeInput = document.getElementById('ritual-time');
+
+            input.value = '';
+            input.style.borderColor = 'rgba(255,255,255,0.1)';
+            timeInput.value = '';
+
+            setTimeout(() => input.focus(), 100);
+
+            const title = document.getElementById('modal-title');
+            title.innerText = type === 'morning' ? 'Add AM Protocol' : 'Add PM Protocol';
+            title.className = type === 'morning' ? 'text-sm font-black text-accentYellow uppercase tracking-widest' : 'text-sm font-black text-accentPurple uppercase tracking-widest';
+        }
+
+        function closeModal() {
+            document.getElementById('modal-bg').classList.remove('active');
+            document.getElementById('add-modal').classList.remove('active');
+            document.getElementById('ritual-input').blur();
+        }
+
+        function formatTime(timeStr) {
+            if (!timeStr) return null;
+            let [hours, minutes] = timeStr.split(':');
+            hours = parseInt(hours, 10);
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            return `${hours}:${minutes} ${ampm}`;
+        }
+
+        // --- CORE ACTIONS ---
+        function submitRitual(event) {
+            event.preventDefault();
+
+            const inputField = document.getElementById('ritual-input');
+            const timeField = document.getElementById('ritual-time');
+
+            const text = inputField.value.trim();
+            const type = document.getElementById('ritual-type').value;
+            const rawTime = timeField.value;
+
+            if (!text) {
+                inputField.style.borderColor = '#FF4C4C';
+                return false;
+            }
+
+            const formattedTime = formatTime(rawTime);
+
+            rituals.push({
+                id: Date.now(),
+                text: text,
+                time: formattedTime,
+                rawTime: rawTime,
+                completed: false,
+                type: type
+            });
+
+            saveData();
+            closeModal();
+            return false;
+        }
+
+        function toggleRitual(id) {
+            const ritual = rituals.find(r => r.id === id);
+            if (ritual) {
+                ritual.completed = !ritual.completed;
+                saveData();
+            }
+        }
+
+        function deleteRitual(id, event) {
+            event.preventDefault();
+            event.stopPropagation();
+            rituals = rituals.filter(r => r.id !== id);
+            saveData();
+        }
+
+        function saveData() {
+            localStorage.setItem('sys_rituals', JSON.stringify(rituals));
+            renderUI();
+            window.dispatchEvent(new Event('storage'));
+        }
+
+        // --- UI RENDERER ---
+        function renderUI() {
+            const morningList = document.getElementById('morning-list');
+            const eveningList = document.getElementById('evening-list');
+
+            morningList.innerHTML = '';
+            eveningList.innerHTML = '';
+
+            let completedCount = 0;
+
+            // Sort purely by the 24hr rawTime so rituals flow logically
+            let sortedRituals = [...rituals].sort((a, b) => {
+                if (a.rawTime && b.rawTime) return a.rawTime.localeCompare(b.rawTime);
+                if (a.rawTime) return -1;
+                if (b.rawTime) return 1;
+                return 0;
+            });
+
+            sortedRituals.forEach(r => {
+                if (r.completed) completedCount++;
+
+                const timeBadgeHTML = r.time ?
+                    `<span class="time-badge text-[9px] font-black text-gray-400 bg-black/50 border border-white/10 px-1.5 py-0.5 rounded uppercase tracking-widest shrink-0 ml-2">${r.time}</span>` : '';
+
+                const html = `
+                    <div class="ritual-item ${r.completed ? 'completed' : ''}" onclick="toggleRitual(${r.id})">
+                        <div class="flex items-center overflow-hidden w-full">
+                            <div class="flex items-center truncate w-full">
+                                <span class="ritual-text text-[13px] font-bold text-white truncate">${r.text}</span>
+                                ${timeBadgeHTML}
+                            </div>
+                        </div>
+                        <button onclick="deleteRitual(${r.id}, event)" class="shrink-0 text-gray-600 hover:text-accentRed px-2 py-1 rounded active:bg-white/5 transition z-10 ml-2">
+                            <i class="ph-bold ph-trash text-lg"></i>
+                        </button>
+                    </div>
+                `;
+
+                if (r.type === 'morning') morningList.innerHTML += html;
+                else eveningList.innerHTML += html;
+            });
+
+            // Empty States
+            if (morningList.innerHTML === '') morningList.innerHTML = '<p class="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] text-center py-4 border border-white/10 border-dashed rounded-lg bg-black/50 backdrop-blur-sm">No AM Rituals Active</p>';
+            if (eveningList.innerHTML === '') eveningList.innerHTML = '<p class="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] text-center py-4 border border-white/10 border-dashed rounded-lg bg-black/50 backdrop-blur-sm">No PM Rituals Active</p>';
+
+            // Progress Bar Logic
+            const total = rituals.length;
+            const pct = total === 0 ? 0 : Math.round((completedCount / total) * 100);
+
+            document.getElementById('progress-text').innerText = `${pct}%`;
+            const bar = document.getElementById('progress-bar');
+            bar.style.width = `${pct}%`;
+
+            if (pct === 100 && total > 0) {
+                bar.classList.replace('bg-accentTeal', 'bg-accentGreen');
+                bar.style.boxShadow = '0 0 15px rgba(0,230,118,0.8)';
+            } else {
+                bar.classList.replace('bg-accentGreen', 'bg-accentTeal');
+                bar.style.boxShadow = '0 0 8px rgba(102,252,241,0.8)';
+            }
+        }
+
+        window.onload = () => {
+            renderUI();
+            window.addEventListener('storage', () => {
+                rituals = JSON.parse(localStorage.getItem('sys_rituals')) || [];
+                renderUI();
+            });
+        };
+    </script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/bottom-nav.js"></script>
+</body>
+
+</html>

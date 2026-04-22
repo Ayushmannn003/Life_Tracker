@@ -131,6 +131,28 @@
             background: rgba(255, 255, 255, 0.1);
             border-radius: 2px;
         }
+
+        body,
+        html {
+            height: 100dvh;
+            overflow: hidden;
+            /* This stops the whole screen from scrolling */
+            margin: 0;
+        }
+
+        .mobile-viewport {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            /* Allows content and nav to stack */
+        }
+
+        main {
+            flex: 1;
+            overflow-y: auto;
+            /* Only your content area scrolls */
+            padding-bottom: 2rem;
+        }
     </style>
 </head>
 
@@ -323,6 +345,8 @@
             });
         }
     </script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/bottom-nav.js"></script>
 </body>
 
 </html>

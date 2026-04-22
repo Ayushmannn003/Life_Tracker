@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>System OS | Capital Control</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -12,527 +11,462 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { bgDark: '#020202', accentRed: '#FF4C4C', accentTeal: '#66FCF1', accentYellow: '#FBBF24', accentPurple: '#A855F7' }
+                    colors: { 
+                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6', 
+                        accentPurple: '#A855F7', accentRed: '#FF4C4C', accentYellow: '#FBBF24',
+                        accentGreen: '#00E676', cardBg: '#080A0E' 
+                    }
                 }
             }
         }
     </script>
     <style>
-        body,
-        html {
-            background-color: #000;
-            color: #C5C6C7;
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            height: 100dvh;
-            overflow: hidden;
-            position: fixed;
-            width: 100%;
+        /* STRICT MOBILE LOCK */
+        body, html { 
+            background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; 
+            margin: 0; padding: 0; height: 100dvh; overflow: hidden; -webkit-font-smoothing: antialiased;
         }
-
-        .mobile-viewport {
-            width: 100%;
-            max-width: 430px;
-            height: 100dvh;
-            margin: 0 auto;
-            position: relative;
-            background-color: #020202;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+        .mobile-viewport { 
+            width: 100%; max-width: 430px; margin: 0 auto; position: relative; 
+            background-color: #020202; height: 100%; display: flex; flex-direction: column; 
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
         }
+        main { padding: 1.25rem; flex: 1; overflow-y: auto; padding-bottom: 9rem; display: flex; flex-direction: column; gap: 1.5rem; }
+        ::-webkit-scrollbar { display: none; }
+        * { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* THEMATIC FINANCIAL BACKGROUND */
-        .budget-bg {
-            background-image: url('https://images.unsplash.com/photo-1642543492481-44e81e391452?auto=format&fit=crop&q=80&w=1000');
-            background-size: cover;
-            background-position: center;
-            position: absolute;
-            inset: 0;
-            opacity: 0.2;
-            z-index: 1;
-            filter: grayscale(100%) contrast(110%);
+        .touch-btn { transition: transform 0.1s; cursor: pointer; }
+        .touch-btn:active { transform: scale(0.96); }
+
+        /* DEEP GLASS CARDS */
+        .sys-card { 
+            background: linear-gradient(145deg, #0A0C12 0%, #050608 100%); 
+            border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem;
+            padding: 1.25rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.05);
+            position: relative; overflow: hidden; flex-shrink: 0;
         }
+        .border-red { border-top: 2px solid #FF4C4C; }
+        .border-purple { border-top: 2px solid #A855F7; }
+        .border-blue { border-top: 2px solid #3B82F6; }
 
-        .vignette {
-            background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.98) 80%, #000 100%);
-            position: absolute;
-            inset: 0;
-            z-index: 2;
+        /* INPUTS */
+        .sys-input {
+            background: #000; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 0.75rem; padding: 1rem; color: #fff; font-size: 13px; font-weight: 600;
+            outline: none; transition: border-color 0.2s; width: 100%;
         }
+        .sys-input:focus { border-color: #FF4C4C; }
+        
+        .section-divider { text-align: center; padding: 0.25rem 0; opacity: 0.5; }
+        .section-divider span { font-size: 9px; font-weight: 900; color: #4B5563; text-transform: uppercase; letter-spacing: 0.4em; }
 
-        .content-layer {
-            position: relative;
-            z-index: 10;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        main {
-            flex: 1;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            padding: 1.25rem;
-        }
-
-        main::-webkit-scrollbar {
-            display: none;
-        }
-
-        .glass-panel {
-            background: rgba(13, 17, 23, 0.75);
-            backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .input-dark {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 12px;
-            color: white;
-            outline: none;
-            font-size: 14px;
-        }
-
-        .input-dark:focus {
-            border-color: rgba(255, 76, 76, 0.5);
-        }
-
-        input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(1);
-            opacity: 0.6;
-            cursor: pointer;
-        }
-
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        input[type=number] {
-            appearance: textfield;
-            -moz-appearance: textfield;
-        }
-
-        .limit-input {
-            background: transparent;
-            text-align: right;
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: white;
-            width: 4rem;
-            outline: none;
-            border-bottom: 1px solid transparent;
-            transition: 0.2s;
-        }
-
-        .limit-input:focus {
-            border-bottom: 1px solid #FF4C4C;
-        }
-
-        .progress-bg {
-            height: 6px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            transition: width 0.5s ease;
+        /* MODAL ANIMATION */
+        .modal-enter { animation: fadeIn 0.2s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
     </style>
 </head>
-
 <body>
 
-    <div class="mobile-viewport">
-        <div class="budget-bg"></div>
-        <div class="vignette"></div>
-
-        <div class="content-layer">
-
-            <header
-                class="p-6 pb-2 flex justify-between items-center border-b border-white/5 bg-black/20 backdrop-blur-md">
-                <div class="flex items-center gap-4">
-                    <i id="menu-btn"
-                        class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
-                    <h1 class="text-xl font-black text-white tracking-widest uppercase">Capital</h1>
-                </div>
-                <div class="text-[9px] font-black text-accentRed border border-accentRed/20 bg-accentRed/5 px-3 py-1 rounded-full uppercase"
-                    id="current-month-badge">Control</div>
-            </header>
-
-            <main>
-                <div class="glass-panel p-6 rounded-[2.5rem] mb-6 border-t-2 border-t-accentRed space-y-4">
-                    <div class="flex justify-between items-center border-b border-white/10 pb-3 mb-2">
-                        <p
-                            class="text-[8px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
-                            <i class="ph-fill ph-sliders-horizontal"></i> Core Limit
-                        </p>
-                        <div class="flex items-center gap-1 bg-black/40 px-3 py-1.5 rounded-lg border border-white/5">
-                            <span class="text-xs font-bold text-gray-500">₹</span>
-                            <input type="number" id="monthly-limit-input" class="limit-input" value="30000"
-                                onchange="updateLimit()">
-                            <i class="ph ph-pencil-simple text-gray-600 text-[10px]"></i>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-between items-end">
-                        <div>
-                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Total Burn
-                                (This Month)</p>
-                            <h2 class="text-3xl font-black text-white" id="total-spent">₹0</h2>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Allowance Left
-                            </p>
-                            <p class="text-xs font-bold text-accentRed" id="remaining-budget">₹0</p>
-                        </div>
-                    </div>
-                    <div class="progress-bg">
-                        <div id="budget-bar" class="progress-fill bg-accentRed" style="width: 0%"></div>
-                    </div>
-                </div>
-
-                <div class="space-y-4 mb-10">
-                    <div class="glass-panel p-5 rounded-[2rem] space-y-3">
-                        <div class="flex gap-2">
-                            <input type="date" id="exp-date"
-                                class="w-1/3 input-dark !text-[10px] font-bold text-gray-300 !px-2">
-                            <input type="text" id="exp-name" placeholder="Item Name..." class="flex-1 input-dark">
-                        </div>
-                        <div class="flex gap-2">
-                            <input type="number" id="exp-amount" placeholder="₹ Amount"
-                                class="w-1/3 input-dark text-center font-bold">
-                            <input type="text" id="exp-note" placeholder="Note (Optional)..."
-                                class="flex-1 input-dark !text-[11px] italic text-gray-400">
-                        </div>
-                        <button onclick="addExpense()"
-                            class="w-full bg-accentRed/20 text-accentRed border border-accentRed/30 font-black py-3 rounded-xl uppercase text-[10px] tracking-widest active:scale-95 transition shadow-lg mt-1">Authorize
-                            Expense</button>
-                    </div>
-
-                    <div>
-                        <div class="flex justify-between items-end px-2 mb-3">
-                            <h3
-                                class="text-[10px] font-black text-white uppercase tracking-[0.2em] flex items-center gap-2">
-                                Today's Logs
-                            </h3>
-                            <div class="text-right">
-                                <p class="text-[7px] font-black text-gray-500 uppercase tracking-widest">Today's Burn
-                                </p>
-                                <p class="text-sm font-black text-accentRed" id="today-burn-counter">₹0</p>
-                            </div>
-                        </div>
-
-                        <div id="current-expense-list" class="space-y-3">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="glass-panel p-5 rounded-[2rem] mb-10 border-t-2 border-t-accentYellow space-y-4">
-                    <div class="flex justify-between items-center">
-                        <h3 class="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
-                            <i class="ph-fill ph-repeat text-accentYellow text-lg"></i> Recurring Protocol
-                        </h3>
-                        <button onclick="toggleSubInput()"
-                            class="text-accentYellow text-xl active:scale-90 transition"><i
-                                class="ph-bold ph-plus-circle"></i></button>
-                    </div>
-
-                    <div id="sub-input-zone" class="hidden space-y-2 pb-2">
-                        <div class="flex gap-2">
-                            <input type="text" id="sub-name" placeholder="Service (Netflix, Gym)"
-                                class="flex-1 input-dark !text-xs">
-                            <input type="number" id="sub-amount" placeholder="₹/mo"
-                                class="w-20 input-dark !text-xs text-center">
-                            <button onclick="addSubscription()"
-                                class="bg-accentYellow text-black px-4 rounded-xl font-black text-[10px] uppercase tracking-widest active:scale-95 transition">Add</button>
-                        </div>
-                    </div>
-
-                    <div id="sub-list" class="space-y-2 max-h-40 overflow-y-auto pr-1">
-                    </div>
-                </div>
-
-                <div class="space-y-4 opacity-80">
-                    <h3
-                        class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-2 flex items-center gap-2 border-t border-white/10 pt-4 mb-4">
-                        <i class="ph-fill ph-archive text-gray-500"></i> Historical Ledger
-                    </h3>
-
-                    <div id="previous-expense-list" class="space-y-4">
-                    </div>
-                </div>
-
-                <div class="h-32"></div>
-            </main>
+    <div id="modal-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[10000] hidden items-center justify-center p-4">
+        
+        <div id="allowance-modal" class="sys-card border-red w-full max-w-[320px] hidden flex-col gap-4 modal-enter">
+            <h2 class="text-xs font-black text-white uppercase tracking-widest text-center mb-1">Set Capital Limit</h2>
+            <input type="number" id="allowance-input" class="sys-input text-center text-xl" placeholder="Amount (₹)">
+            <div class="flex gap-2 mt-2">
+                <button onclick="closeModal()" class="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black text-gray-400 uppercase tracking-widest touch-btn hover:text-white">Cancel</button>
+                <button onclick="saveAllowance()" class="flex-1 py-3 rounded-xl bg-accentRed text-white text-[10px] font-black uppercase tracking-widest touch-btn shadow-[0_0_10px_rgba(255,76,76,0.3)]">Save Limit</button>
+            </div>
         </div>
+
+        <div id="subscription-modal" class="sys-card border-purple w-full max-w-[320px] hidden flex-col gap-4 modal-enter">
+            <h2 class="text-xs font-black text-white uppercase tracking-widest text-center mb-1">New Subscription</h2>
+            <input type="text" id="sub-title" class="sys-input" placeholder="Name (e.g., Spotify)">
+            <div class="flex gap-2">
+                <input type="number" id="sub-amount" class="sys-input w-1/2" placeholder="Cost (₹)">
+                <input type="number" id="sub-day" class="sys-input w-1/2" placeholder="Bill Day (1-31)" min="1" max="31">
+            </div>
+            <div class="flex gap-2 mt-2">
+                <button onclick="closeModal()" class="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black text-gray-400 uppercase tracking-widest touch-btn hover:text-white">Cancel</button>
+                <button onclick="saveSubscription()" class="flex-1 py-3 rounded-xl bg-accentPurple text-white text-[10px] font-black uppercase tracking-widest touch-btn shadow-[0_0_10px_rgba(168,85,247,0.3)]">Add Sub</button>
+            </div>
+        </div>
+
+        <div id="confirm-modal" class="sys-card border-blue w-full max-w-[320px] hidden flex-col gap-4 text-center modal-enter">
+            <i class="ph-fill ph-warning-circle text-4xl text-accentBlue mx-auto mt-2 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]"></i>
+            <h2 id="confirm-message" class="text-sm font-bold text-white tracking-wide mt-1 mb-2">Are you sure?</h2>
+            <div class="flex gap-2">
+                <button onclick="closeModal()" class="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black text-gray-400 uppercase tracking-widest touch-btn hover:text-white">Cancel</button>
+                <button id="confirm-btn" class="flex-1 py-3 rounded-xl bg-accentBlue text-white text-[10px] font-black uppercase tracking-widest touch-btn shadow-[0_0_10px_rgba(59,130,246,0.3)]">Confirm</button>
+            </div>
+        </div>
+
     </div>
 
+    <div class="mobile-viewport">
+        <header class="p-6 pb-2 flex justify-between items-center z-50 bg-[#020202]/90 backdrop-blur-xl shrink-0">
+            <div class="flex items-center gap-4">
+                <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
+                <h1 class="text-xl font-black text-white tracking-widest uppercase">Capital Control</h1>
+            </div>
+            <div class="text-[10px] font-black text-accentRed bg-accentRed/10 border border-accentRed/20 px-3 py-1.5 rounded-full flex items-center gap-2">
+                <div class="w-1.5 h-1.5 rounded-full bg-accentRed animate-pulse shadow-[0_0_5px_#FF4C4C]"></div> LIVE
+            </div>
+        </header>
+
+        <main>
+            <div class="sys-card border-red relative shrink-0">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-2">
+                        <i class="ph-fill ph-wallet text-accentRed text-lg drop-shadow-[0_0_5px_rgba(255,76,76,0.5)]"></i>
+                        <h2 class="text-[11px] font-black text-gray-400 uppercase tracking-widest">Macro Overview</h2>
+                    </div>
+                    <button onclick="openAllowanceModal()" class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-2 py-1 border border-white/10 rounded hover:text-white transition touch-btn">
+                        Set Allowance
+                    </button>
+                </div>
+                
+                <div class="flex justify-between items-end mb-4">
+                    <div>
+                        <p class="text-[9px] font-bold text-gray-600 uppercase tracking-widest">Today's Burn</p>
+                        <h1 class="text-4xl font-black text-white" id="today-total">₹0</h1>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[9px] font-bold text-gray-600 uppercase tracking-widest">Monthly Remaining</p>
+                        <p class="text-xl font-black text-accentGreen" id="month-remaining">₹0</p>
+                    </div>
+                </div>
+
+                <div class="h-1 bg-white/5 rounded-full overflow-hidden w-full">
+                    <div class="h-full bg-accentRed transition-all duration-700 shadow-[0_0_10px_#FF4C4C]" id="allowance-bar" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="section-divider"><span>Execution</span></div>
+
+            <div class="sys-card border-blue relative shrink-0">
+                <div class="flex items-center gap-2 mb-4">
+                    <i class="ph-fill ph-lightning text-accentBlue text-lg drop-shadow-[0_0_5px_rgba(59,130,246,0.5)]"></i>
+                    <h2 class="text-[11px] font-black text-white uppercase tracking-widest">Log Transaction</h2>
+                </div>
+                <form onsubmit="addExpense(event)" class="flex flex-col gap-3 relative z-10">
+                    <input type="text" id="exp-title" class="sys-input py-3" placeholder="Description (e.g. Canteen Lunch)" autocomplete="off" required>
+                    <div class="flex gap-2">
+                        <input type="number" id="exp-amount" class="sys-input py-3 w-1/2" placeholder="Amount (₹)" required min="1">
+                        <select id="exp-category" class="sys-input py-3 w-1/2 text-[11px] uppercase tracking-wider text-gray-300">
+                            <option value="Sustenance">🍕 Food</option>
+                            <option value="Commute">🚌 Transport</option>
+                            <option value="Academics">📚 Academic</option>
+                            <option value="Leisure">🎮 Leisure</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full bg-accentBlue text-white py-3 rounded-xl font-black text-xs uppercase tracking-widest touch-btn shadow-[0_0_15px_rgba(59,130,246,0.3)] mt-1">
+                        Execute Log
+                    </button>
+                </form>
+            </div>
+
+            <div>
+                <h3 class="px-4 text-[9px] font-black text-gray-600 uppercase tracking-[0.2em] mb-3">Today's Ledger</h3>
+                <div id="ledger-container" class="space-y-2">
+                    </div>
+            </div>
+
+            <div class="section-divider"><span>Recurring Yield</span></div>
+
+            <div class="sys-card border-purple relative shrink-0">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center gap-2">
+                        <i class="ph-fill ph-arrows-clockwise text-accentPurple text-lg drop-shadow-[0_0_5px_rgba(168,85,247,0.5)]"></i>
+                        <h2 class="text-[11px] font-black text-white uppercase tracking-widest">Active Subscriptions</h2>
+                    </div>
+                    <button onclick="openSubscriptionModal()" class="text-accentPurple text-xl touch-btn"><i class="ph-bold ph-plus-circle"></i></button>
+                </div>
+                
+                <div id="subs-container" class="space-y-3 mt-4">
+                    </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="sidebar-injector"></div>
     <script src="js/sidebar.js"></script>
+    <script src="js/bottom-nav.js"></script>
+
     <script>
-        // --- DATA STATE ---
-        let monthlyLimit = parseFloat(localStorage.getItem('sys_budget_limit')) || 30000;
-        let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
-        let subscriptions = JSON.parse(localStorage.getItem('sys_subscriptions')) || [];
+        // =========================================================================
+        // CAPITAL CONTROL ENGINE
+        // =========================================================================
 
-        // Ensures Date Picker accounts for local time zone to avoid 1-day offset errors
-        const todayObj = new Date();
-        const localOffset = todayObj.getTimezoneOffset() * 60000;
-        const todayStr = new Date(todayObj.getTime() - localOffset).toISOString().split('T')[0];
-        document.getElementById('exp-date').value = todayStr;
-
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        const currentMonthName = monthNames[new Date().getMonth()];
-        document.getElementById('current-month-badge').innerText = currentMonthName;
-
-        // --- CORE FUNCTIONS ---
-        function updateLimit() {
-            const inputField = document.getElementById('monthly-limit-input');
-            let newVal = parseFloat(inputField.value);
-            if (isNaN(newVal) || newVal <= 0) newVal = 30000;
-
-            monthlyLimit = newVal;
-            localStorage.setItem('sys_budget_limit', monthlyLimit);
-            inputField.value = monthlyLimit;
-            render();
+        function getLocalYMD(d) {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
         }
 
-        function addExpense() {
-            const dateVal = document.getElementById('exp-date').value;
-            const name = document.getElementById('exp-name').value.trim();
-            const amount = parseFloat(document.getElementById('exp-amount').value);
-            const note = document.getElementById('exp-note').value.trim();
+        const todayStr = getLocalYMD(new Date());
+        const currentMonthPrefix = todayStr.substring(0, 7);
 
-            if (!dateVal || !name || isNaN(amount) || amount <= 0) return;
+        function getCategoryColor(cat) {
+            switch(cat) {
+                case 'Sustenance': return 'text-accentYellow bg-accentYellow/10 border-accentYellow/20';
+                case 'Commute': return 'text-accentTeal bg-accentTeal/10 border-accentTeal/20';
+                case 'Academics': return 'text-accentPurple bg-accentPurple/10 border-accentPurple/20';
+                case 'Leisure': return 'text-accentRed bg-accentRed/10 border-accentRed/20';
+                default: return 'text-gray-300 bg-white/5 border-white/10';
+            }
+        }
 
-            expenses.unshift({
-                id: Date.now(),
-                name: name,
-                amount: amount,
-                rawDate: dateVal,
-                note: note
+        // --- CUSTOM MODAL SYSTEM ---
+        let pendingConfirmAction = null;
+
+        function openModalContainer(targetModalId) {
+            document.getElementById('modal-overlay').classList.remove('hidden');
+            document.getElementById('modal-overlay').classList.add('flex');
+            
+            // Hide all sub-modals first
+            ['allowance-modal', 'subscription-modal', 'confirm-modal'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+                document.getElementById(id).classList.remove('flex');
             });
-
-            document.getElementById('exp-name').value = '';
-            document.getElementById('exp-amount').value = '';
-            document.getElementById('exp-note').value = '';
-            sync();
+            
+            // Show target
+            document.getElementById(targetModalId).classList.remove('hidden');
+            document.getElementById(targetModalId).classList.add('flex');
         }
 
-        function toggleSubInput() {
-            document.getElementById('sub-input-zone').classList.toggle('hidden');
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.add('hidden');
+            document.getElementById('modal-overlay').classList.remove('flex');
+            pendingConfirmAction = null;
         }
 
-        function addSubscription() {
-            const name = document.getElementById('sub-name').value.trim();
-            const amount = parseFloat(document.getElementById('sub-amount').value);
-            if (!name || isNaN(amount) || amount <= 0) return;
+        function triggerConfirm(message, callback) {
+            document.getElementById('confirm-message').innerText = message;
+            pendingConfirmAction = callback;
+            openModalContainer('confirm-modal');
+        }
 
-            subscriptions.push({ id: Date.now(), name, amount });
-            document.getElementById('sub-name').value = '';
+        document.getElementById('confirm-btn').onclick = () => {
+            if (pendingConfirmAction) pendingConfirmAction();
+            closeModal();
+        };
+
+        // --- MODAL WRAPPERS FOR ACTIONS ---
+        function openAllowanceModal() {
+            const current = localStorage.getItem('sys_monthly_allowance') || 10000;
+            document.getElementById('allowance-input').value = current;
+            openModalContainer('allowance-modal');
+        }
+
+        function saveAllowance() {
+            const limit = document.getElementById('allowance-input').value;
+            if (limit && !isNaN(limit)) {
+                localStorage.setItem('sys_monthly_allowance', limit);
+                loadFinances();
+                closeModal();
+            }
+        }
+
+        function openSubscriptionModal() {
+            document.getElementById('sub-title').value = '';
             document.getElementById('sub-amount').value = '';
-            toggleSubInput();
-            sync();
+            document.getElementById('sub-day').value = '';
+            openModalContainer('subscription-modal');
         }
 
-        function deleteItem(id, type) {
-            if (type === 'exp') expenses = expenses.filter(e => e.id !== id);
-            else subscriptions = subscriptions.filter(s => s.id !== id);
-            sync();
+        function saveSubscription() {
+            const title = document.getElementById('sub-title').value.trim();
+            const amount = document.getElementById('sub-amount').value;
+            const date = document.getElementById('sub-day').value;
+
+            if (!title || !amount || isNaN(amount) || !date || isNaN(date) || date < 1 || date > 31) return;
+
+            const subs = JSON.parse(localStorage.getItem('sys_subscriptions')) || [];
+            subs.push({
+                id: Date.now(),
+                title: title,
+                amount: amount,
+                billingDate: date
+            });
+            localStorage.setItem('sys_subscriptions', JSON.stringify(subs));
+            loadFinances();
+            closeModal();
         }
 
-        // --- RENDER ENGINE ---
-        function sync() {
-            localStorage.setItem('expenses', JSON.stringify(expenses));
-            localStorage.setItem('sys_subscriptions', JSON.stringify(subscriptions));
-            render();
-        }
 
-        function render() {
-            document.getElementById('monthly-limit-input').value = monthlyLimit;
+        // --- CORE FINANCE LOGIC ---
+        function loadFinances() {
+            const expenses = JSON.parse(localStorage.getItem('sys_expenses')) || [];
+            const allowance = parseFloat(localStorage.getItem('sys_monthly_allowance')) || 10000; 
+            
+            let todayTotal = 0;
+            let monthTotal = 0;
+            let ledgerHtml = '';
 
-            const currentMonth = parseInt(todayStr.split('-')[1]);
-            const currentYear = parseInt(todayStr.split('-')[0]);
-
-            let todayExpenses = [];
-            let groupedPastExpenses = {}; // Groups items by date
-            let totalMonthlyEx = 0; // Calculates the master month burn
+            const todaysExpenses = expenses.filter(e => e.date === todayStr);
 
             expenses.forEach(e => {
-                // Backward compatibility for old records
-                const eDateStr = e.rawDate || todayStr;
-
-                const eMonth = parseInt(eDateStr.split('-')[1]);
-                const eYear = parseInt(eDateStr.split('-')[0]);
-
-                // 1. Calculate Monthly HUD Total
-                if (eMonth === currentMonth && eYear === currentYear) {
-                    totalMonthlyEx += e.amount;
-                }
-
-                // 2. Route to Today OR Past Archive
-                if (eDateStr === todayStr) {
-                    todayExpenses.push(e);
-                } else {
-                    if (!groupedPastExpenses[eDateStr]) {
-                        groupedPastExpenses[eDateStr] = [];
-                    }
-                    groupedPastExpenses[eDateStr].push(e);
-                }
+                if (e.date === todayStr) todayTotal += parseFloat(e.amount);
+                if (e.date.startsWith(currentMonthPrefix)) monthTotal += parseFloat(e.amount);
             });
 
-            // ==========================================
-            // RENDER TODAY'S LEDGER
-            // ==========================================
-            const cContainer = document.getElementById('current-expense-list');
-            cContainer.innerHTML = '';
-            let todayBurn = 0;
+            document.getElementById('today-total').innerText = `₹${todayTotal.toLocaleString()}`;
+            
+            const remaining = allowance - monthTotal;
+            const remainingEl = document.getElementById('month-remaining');
+            remainingEl.innerText = `₹${remaining.toLocaleString()}`;
+            remainingEl.className = remaining >= 0 ? "text-xl font-black text-accentGreen" : "text-xl font-black text-accentRed";
 
-            todayExpenses.forEach(e => {
-                todayBurn += e.amount;
-                let noteHTML = e.note ? `<p class="text-[9px] text-gray-400 italic truncate mt-0.5">${e.note}</p>` : '';
+            const barPct = Math.min(100, (monthTotal / allowance) * 100);
+            const barEl = document.getElementById('allowance-bar');
+            barEl.style.width = `${barPct}%`;
+            barEl.className = barPct > 90 
+                ? "h-full bg-accentRed transition-all duration-700 shadow-[0_0_10px_#FF4C4C]" 
+                : "h-full bg-accentTeal transition-all duration-700 shadow-[0_0_10px_#66FCF1]";
 
-                cContainer.innerHTML += `
-                    <div class="glass-panel p-4 rounded-2xl flex justify-between items-center border-l-2 border-l-accentRed gap-2">
-                        <div class="flex-1 min-w-0 pr-2">
-                            <p class="text-xs font-bold text-white uppercase truncate">${e.name}</p>
-                            ${noteHTML}
-                        </div>
-                        <div class="flex items-center gap-3 shrink-0">
-                            <span class="text-sm font-black text-white text-right w-16 truncate">₹${e.amount}</span>
-                            <div class="h-6 w-[1px] bg-white/10"></div>
-                            <i onclick="deleteItem(${e.id}, 'exp')" class="ph ph-trash text-gray-500 hover:text-red-500 active:text-red-500 transition text-lg cursor-pointer"></i>
-                        </div>
-                    </div>`;
-            });
-
-            // Update Today's Burn Counter
-            document.getElementById('today-burn-counter').innerText = `₹${todayBurn.toLocaleString()}`;
-
-            if (todayExpenses.length === 0) {
-                cContainer.innerHTML = `<p class="text-[10px] text-gray-700 italic text-center py-6 uppercase tracking-widest">No Transactions Logged Today</p>`;
-            }
-
-
-            // ==========================================
-            // RENDER HISTORICAL LEDGER (Grouped Blocks)
-            // ==========================================
-            const pContainer = document.getElementById('previous-expense-list');
-            pContainer.innerHTML = '';
-
-            // Sort dates from newest to oldest
-            const sortedPastDates = Object.keys(groupedPastExpenses).sort((a, b) => b.localeCompare(a));
-
-            if (sortedPastDates.length === 0) {
-                pContainer.innerHTML = `<p class="text-[9px] text-gray-800 italic uppercase tracking-widest px-2">No historical data found.</p>`;
+            if (todaysExpenses.length === 0) {
+                ledgerHtml = `<div class="text-center py-6 border border-dashed border-white/10 rounded-2xl bg-black/40 text-[9px] font-black text-gray-600 uppercase tracking-widest">No capital burned today.</div>`;
             } else {
-                sortedPastDates.forEach(dateStr => {
-                    const dayItems = groupedPastExpenses[dateStr];
-
-                    // Calculate Day's Total
-                    const dayTotal = dayItems.reduce((sum, item) => sum + item.amount, 0);
-
-                    // Format Date nicely (e.g., "Monday, Apr 5")
-                    const d = new Date(dateStr);
-                    const niceDate = d.toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'long', month: 'short', day: 'numeric' });
-
-                    let blockHTML = `
-                        <div class="glass-panel p-4 rounded-[1.5rem] bg-black/40 border border-white/5 shadow-lg">
-                            <div class="flex justify-between items-center border-b border-white/10 pb-3 mb-3">
-                                <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest">${niceDate}</h4>
-                                <div class="bg-accentRed/10 px-2 py-1 rounded text-[10px] font-black text-accentRed tracking-widest">TOTAL: ₹${dayTotal.toLocaleString()}</div>
+                todaysExpenses.slice().reverse().forEach(e => {
+                    const catClass = getCategoryColor(e.category);
+                    ledgerHtml += `
+                        <div class="bg-black/50 border border-white/5 p-3 rounded-xl flex justify-between items-center">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center border ${catClass}">
+                                    <i class="ph-fill ph-receipt text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-black text-white truncate max-w-[150px]">${e.title}</p>
+                                    <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mt-0.5">${e.category}</p>
+                                </div>
                             </div>
-                            <div class="space-y-2">
+                            <div class="flex items-center gap-3">
+                                <p class="text-sm font-black text-accentRed">-₹${parseFloat(e.amount).toLocaleString()}</p>
+                                <button onclick="deleteExpense(${e.id})" class="text-gray-600 hover:text-white transition p-1"><i class="ph-bold ph-x"></i></button>
+                            </div>
+                        </div>
                     `;
-
-                    dayItems.forEach(e => {
-                        let noteHTML = e.note ? `<p class="text-[8px] text-gray-500 italic truncate mt-0.5">${e.note}</p>` : '';
-                        blockHTML += `
-                            <div class="flex justify-between items-center gap-2 pl-1">
-                                <div class="flex-1 min-w-0 pr-2">
-                                    <p class="text-[10px] font-bold text-gray-300 uppercase truncate">${e.name}</p>
-                                    ${noteHTML}
-                                </div>
-                                <div class="flex items-center gap-3 shrink-0">
-                                    <span class="text-xs font-black text-gray-400 text-right w-14 truncate">₹${e.amount}</span>
-                                    <div class="h-4 w-[1px] bg-white/10"></div>
-                                    <i onclick="deleteItem(${e.id}, 'exp')" class="ph ph-trash text-gray-700 hover:text-red-500 active:text-red-500 transition text-sm cursor-pointer"></i>
-                                </div>
-                            </div>
-                        `;
-                    });
-
-                    blockHTML += `</div></div>`;
-                    pContainer.innerHTML += blockHTML;
                 });
             }
+            document.getElementById('ledger-container').innerHTML = ledgerHtml;
+            loadSubscriptions();
+        }
 
-            // ==========================================
-            // RENDER SUBSCRIPTIONS
-            // ==========================================
-            const sContainer = document.getElementById('sub-list');
-            sContainer.innerHTML = '';
-            let totalSub = 0;
-            subscriptions.forEach(s => {
-                totalSub += s.amount;
-                sContainer.innerHTML += `
-                    <div class="flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/5 gap-2">
-                        <span class="text-[10px] font-bold text-gray-300 uppercase tracking-widest truncate flex-1">${s.name}</span>
-                        <div class="flex items-center gap-3 shrink-0">
-                            <span class="text-[10px] font-black text-accentYellow w-14 text-right truncate">₹${s.amount}/mo</span>
-                            <div class="h-4 w-[1px] bg-white/10"></div>
-                            <i onclick="deleteItem(${s.id}, 'sub')" class="ph ph-trash text-gray-500 active:text-accentRed transition text-sm cursor-pointer"></i>
-                        </div>
-                    </div>`;
+        function addExpense(e) {
+            e.preventDefault();
+            const title = document.getElementById('exp-title').value.trim();
+            const amount = document.getElementById('exp-amount').value;
+            const category = document.getElementById('exp-category').value;
+
+            if (!title || !amount) return;
+
+            const expenses = JSON.parse(localStorage.getItem('sys_expenses')) || [];
+            
+            expenses.push({
+                id: Date.now(),
+                title: title,
+                amount: amount,
+                category: category,
+                date: todayStr
             });
 
-            // ==========================================
-            // MATH ENGINE (HUD)
-            // ==========================================
-            const combinedBurn = totalMonthlyEx + totalSub;
-            document.getElementById('total-spent').innerText = `₹${combinedBurn.toLocaleString()}`;
+            localStorage.setItem('sys_expenses', JSON.stringify(expenses));
+            
+            document.getElementById('exp-title').value = '';
+            document.getElementById('exp-amount').value = '';
+            document.getElementById('exp-title').blur();
+            
+            loadFinances();
+            window.dispatchEvent(new Event('storage'));
+        }
 
-            const remaining = monthlyLimit - combinedBurn;
-            const remainingEl = document.getElementById('remaining-budget');
-            if (remaining < 0) {
-                remainingEl.innerText = `-₹${Math.abs(remaining).toLocaleString()}`;
-                remainingEl.classList.replace('text-accentRed', 'text-white');
-            } else {
-                remainingEl.innerText = `₹${remaining.toLocaleString()}`;
-                remainingEl.classList.replace('text-white', 'text-accentRed');
+        function deleteExpense(id) {
+            triggerConfirm("Erase this transaction record?", () => {
+                let expenses = JSON.parse(localStorage.getItem('sys_expenses')) || [];
+                expenses = expenses.filter(e => e.id !== id);
+                localStorage.setItem('sys_expenses', JSON.stringify(expenses));
+                loadFinances();
+                window.dispatchEvent(new Event('storage'));
+            });
+        }
+
+        function loadSubscriptions() {
+            const subs = JSON.parse(localStorage.getItem('sys_subscriptions')) || [];
+            const container = document.getElementById('subs-container');
+            
+            if (subs.length === 0) {
+                container.innerHTML = `<p class="text-center text-[9px] font-black text-gray-600 uppercase tracking-widest mt-2 border border-dashed border-white/5 py-4 rounded-xl">No Active Subscriptions</p>`;
+                return;
             }
 
-            const pct = (combinedBurn / monthlyLimit) * 100;
-            const bar = document.getElementById('budget-bar');
-            bar.style.width = `${Math.min(pct, 100)}%`;
+            let html = '';
+            const today = new Date();
+            const currentDay = today.getDate();
 
-            if (pct >= 100) bar.className = "progress-fill bg-white";
-            else if (pct >= 80) bar.className = "progress-fill bg-accentYellow";
-            else bar.className = "progress-fill bg-accentRed";
+            subs.forEach(s => {
+                const billDay = parseInt(s.billingDate);
+                let daysLeft = billDay - currentDay;
+                
+                if (daysLeft < 0) {
+                    const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+                    daysLeft = (daysInMonth - currentDay) + billDay;
+                }
+
+                let statusBadge = '';
+                if (daysLeft === 0) {
+                    statusBadge = `<span class="text-[8px] font-black text-accentRed bg-accentRed/10 border border-accentRed/20 px-2 py-0.5 rounded uppercase tracking-widest animate-pulse">BILLS TODAY</span>`;
+                } else if (daysLeft <= 3) {
+                    statusBadge = `<span class="text-[8px] font-black text-accentYellow bg-accentYellow/10 border border-accentYellow/20 px-2 py-0.5 rounded uppercase tracking-widest">In ${daysLeft} Days</span>`;
+                } else {
+                    statusBadge = `<span class="text-[8px] font-black text-gray-400 bg-white/5 border border-white/10 px-2 py-0.5 rounded uppercase tracking-widest">In ${daysLeft} Days</span>`;
+                }
+
+                html += `
+                    <div class="bg-black/40 border border-white/5 p-3 rounded-xl flex justify-between items-center">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <h3 class="text-xs font-black text-white uppercase tracking-widest">${s.title}</h3>
+                                ${statusBadge}
+                            </div>
+                            <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Renews on the ${billDay}${getOrdinalIndicator(billDay)}</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <p class="text-sm font-black text-accentPurple">₹${s.amount}</p>
+                            <button onclick="deleteSubscription(${s.id})" class="text-gray-600 hover:text-accentRed transition p-1"><i class="ph-fill ph-trash text-sm"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
         }
 
-        window.onload = render;
-    </script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('System OS Service Worker registered!', registration.scope);
-                    })
-                    .catch(error => {
-                        console.error('Service Worker registration failed:', error);
-                    });
+        function getOrdinalIndicator(d) {
+            if (d > 3 && d < 21) return 'th';
+            switch (d % 10) {
+                case 1:  return "st";
+                case 2:  return "nd";
+                case 3:  return "rd";
+                default: return "th";
+            }
+        }
+
+        function deleteSubscription(id) {
+            triggerConfirm("Remove this subscription?", () => {
+                let subs = JSON.parse(localStorage.getItem('sys_subscriptions')) || [];
+                subs = subs.filter(s => s.id !== id);
+                localStorage.setItem('sys_subscriptions', JSON.stringify(subs));
+                loadFinances();
             });
         }
+
+        window.onload = loadFinances;
+        window.addEventListener('storage', loadFinances);
     </script>
 </body>
-
 </html>

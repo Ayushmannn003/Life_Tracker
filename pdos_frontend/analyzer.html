@@ -1,434 +1,435 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>System OS | Core Analytics</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>System OS | Analyzer Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6',
+                    colors: { 
+                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6', 
                         accentPurple: '#A855F7', accentRed: '#FF4C4C', accentYellow: '#FBBF24',
-                        accentGreen: '#00E676', /* Neon Green added for Habit Matrix */
-                        cardBg: '#080A0E'
+                        accentGreen: '#00E676', cardBg: '#080A0E' 
                     }
                 }
             }
         }
     </script>
     <style>
-        /* NATIVE MOBILE SCROLLING FIX */
-        body,
-        html {
-            background-color: #000;
-            color: #C5C6C7;
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 0;
-            -webkit-font-smoothing: antialiased;
+        body, html { 
+            background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; 
+            margin: 0; padding: 0; height: 100dvh; overflow: hidden; -webkit-font-smoothing: antialiased;
         }
+        .mobile-viewport { 
+            width: 100%; max-width: 430px; margin: 0 auto; position: relative; 
+            background-color: #020202; height: 100%; display: flex; flex-direction: column; 
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+        main { padding: 1.25rem; flex: 1; overflow-y: auto; padding-bottom: 7rem; display: flex; flex-direction: column; gap: 1.25rem; }
+        ::-webkit-scrollbar { display: none; }
+        * { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* DEEP GLASS CARDS */
+        .sys-card { 
+            background: linear-gradient(145deg, #0A0C12 0%, #050608 100%); 
+            border: 1px solid rgba(255,255,255,0.03); border-radius: 1.75rem;
+            padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.05);
+            position: relative; overflow: hidden; flex-shrink: 0;
+        }
+        
+        .border-red { border-left: 3px solid #FF4C4C; }
+        .border-teal { border-left: 3px solid #66FCF1; }
+        .border-yellow { border-left: 3px solid #FBBF24; }
+        .border-purple { border-left: 3px solid #A855F7; }
+        .border-blue { border-left: 3px solid #3B82F6; }
 
-        .mobile-viewport {
-            width: 100%;
-            max-width: 430px;
-            margin: 0 auto;
-            position: relative;
-            background-color: #020202;
-            min-height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+        /* RATING BADGES */
+        .rating-badge {
+            font-size: 8px; font-weight: 900; padding: 3px 8px; border-radius: 4px;
+            text-transform: uppercase; letter-spacing: 1px;
         }
+        .tier-s { background: rgba(0, 230, 118, 0.1); color: #00E676; border: 1px solid rgba(0, 230, 118, 0.2); }
+        .tier-a { background: rgba(102, 252, 241, 0.1); color: #66FCF1; border: 1px solid rgba(102, 252, 241, 0.2); }
+        .tier-c { background: rgba(255, 76, 76, 0.1); color: #FF4C4C; border: 1px solid rgba(255, 76, 76, 0.2); }
 
-        main {
-            padding: 1rem;
-            flex: 1;
-            padding-bottom: 6rem;
-        }
+        .section-divider { text-align: center; padding: 0.5rem 0; opacity: 0.5; }
+        .section-divider span { font-size: 9px; font-weight: 900; color: #4B5563; text-transform: uppercase; letter-spacing: 0.4em; }
 
-        ::-webkit-scrollbar {
-            display: none;
+        .btn-export {
+            flex: 1; background: #0A0C12; border: 1px solid rgba(255,255,255,0.05);
+            padding: 1.25rem; border-radius: 1.25rem; font-size: 10px; font-weight: 900;
+            text-transform: uppercase; color: white; display: flex; flex-direction: column; 
+            align-items: center; gap: 0.5rem; transition: all 0.2s; cursor: pointer;
         }
+        .btn-export:active { transform: scale(0.95); }
 
-        * {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        /* REFERENCE STYLED CARDS */
-        .sys-card {
-            background: #080A0E;
-            border: 1px solid #14171F;
-            border-radius: 1.25rem;
-            padding: 1.25rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            margin-bottom: 0.75rem;
-        }
-
-        /* Colored top borders */
-        .border-teal {
-            border-top: 2px solid #66FCF1;
-        }
-
-        .border-yellow {
-            border-top: 2px solid #FBBF24;
-        }
-
-        .border-purple {
-            border-top: 2px solid #A855F7;
-        }
-
-        .border-red {
-            border-top: 2px solid #FF4C4C;
-        }
-
-        .border-blue {
-            border-top: 2px solid #3B82F6;
-        }
-
-        .card-header {
-            font-size: 10px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            line-height: 1;
-        }
-
-        .stat-large {
-            font-size: 32px;
-            font-weight: 900;
-            color: #FFF;
-            line-height: 1;
-        }
+        /* TINY MATRIX DOTS */
+        .dot { width: 6px; height: 6px; border-radius: 50%; }
+        .dot-done { background-color: #00E676; box-shadow: 0 0 4px rgba(0,230,118,0.6); }
+        .dot-miss { background-color: rgba(255,255,255,0.05); }
+        .dot-future { background-color: transparent; border: 1px dashed rgba(255,255,255,0.2); }
     </style>
 </head>
-
 <body>
 
-    <div class="mobile-viewport">
-        <header
-            class="sticky top-0 p-6 pb-4 flex justify-between items-center z-50 bg-[#020202]/90 backdrop-blur-xl border-b border-white/5">
+    <div class="mobile-viewport" id="capture-area">
+        <header class="p-6 pb-2 flex justify-between items-center z-50 bg-[#020202]/90 backdrop-blur-xl shrink-0">
             <div class="flex items-center gap-4">
                 <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
-                <h1 class="text-xl font-black text-white tracking-widest uppercase">System OS</h1>
+                <h1 class="text-xl font-black text-white tracking-tighter uppercase italic">Analyzer.log</h1>
             </div>
-            <div
-                class="text-[10px] font-black text-white uppercase tracking-widest bg-white/10 border border-white/10 px-3 py-1.5 rounded-full flex items-center gap-2">
-                <i class="ph-bold ph-chart-line-up"></i> Live
+            <div class="text-[10px] font-black text-accentTeal bg-accentTeal/5 border border-accentTeal/20 px-3 py-1.5 rounded-full flex items-center gap-2">
+                <div class="w-1.5 h-1.5 rounded-full bg-accentTeal animate-pulse shadow-[0_0_5px_#66FCF1]"></div> <span id="sys-clock">--:--</span>
             </div>
         </header>
 
-        <main class="space-y-3">
-
-            <div class="sys-card flex justify-between items-center relative overflow-hidden">
-                <div class="absolute inset-0 bg-accentRed/5 pointer-events-none"></div>
-                <div>
-                    <p class="card-header text-accentRed mb-1.5">Capital Burn</p>
-                    <h3 class="stat-large">₹<span id="burn-amount">1,697</span></h3>
-                </div>
-                <div
-                    class="w-12 h-12 rounded-xl bg-accentRed/10 border border-accentRed/20 flex items-center justify-center text-accentRed text-2xl shadow-[0_0_15px_rgba(255,76,76,0.2)]">
-                    <i class="ph-fill ph-wallet"></i>
-                </div>
-            </div>
-
-            <div class="sys-card border-teal">
-                <div class="flex justify-between items-center mb-3">
-                    <h2 class="text-xs font-black text-white uppercase tracking-widest flex items-center gap-2">
-                        <i class="ph-fill ph-cpu text-accentTeal text-lg shadow-[0_0_10px_rgba(102,252,241,0.3)]"></i>
-                        Task Protocol Execution
-                    </h2>
-                </div>
-
-                <div class="flex justify-between items-end mb-2.5">
-                    <h3 class="stat-large">20<span class="text-xl text-gray-500">%</span></h3>
-                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest"><span
-                            class="text-white">1</span> / 5 Cleared</p>
-                </div>
-
-                <div class="h-1.5 bg-gray-900 rounded-full overflow-hidden border border-white/5">
-                    <div class="h-full bg-accentTeal w-[20%] rounded-full shadow-[0_0_8px_rgba(102,252,241,0.8)]"></div>
-                </div>
-                <p class="text-[9px] text-center text-gray-600 font-bold uppercase tracking-[0.3em] mt-3">Protocol
-                    Execution in Progress</p>
-            </div>
-
-            <div class="sys-card border-yellow flex justify-between items-center">
-                <div>
-                    <p class="card-header text-accentYellow mb-1.5">Deep Focus Yield (Today)</p>
-                    <h3 class="stat-large">0h 0m</h3>
-                </div>
-                <span
-                    class="text-[9px] font-black text-accentYellow bg-accentYellow/10 px-3 py-1.5 rounded-full border border-accentYellow/20">0
-                    SESSIONS</span>
-            </div>
-
-            <div class="sys-card border-purple relative overflow-hidden">
-                <div
-                    class="absolute -bottom-10 -right-10 w-32 h-32 bg-accentPurple/15 blur-3xl rounded-full pointer-events-none">
-                </div>
-
-                <div class="flex items-center justify-between mb-4 relative z-10">
-                    <div class="flex items-center gap-2">
-                        <i
-                            class="ph-fill ph-graduation-cap text-accentPurple text-xl drop-shadow-[0_0_5px_rgba(168,85,247,0.5)]"></i>
-                        <h2 class="text-xs font-black text-white uppercase tracking-widest">Academic Overview</h2>
-                    </div>
-                    <a href="academics.html"
-                        class="text-[9px] font-black text-gray-400 hover:text-white uppercase tracking-widest transition active:scale-90 flex items-center gap-1 bg-white/5 px-2 py-1 rounded-full border border-white/5">
-                        Hub <i class="ph-bold ph-caret-right"></i>
-                    </a>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3 relative z-10">
-                    <div class="bg-black/50 p-3.5 rounded-2xl border border-white/5 backdrop-blur-md">
-                        <p class="card-header text-accentRed mb-1">Active Deadlines</p>
-                        <p class="stat-large text-accentRed drop-shadow-[0_0_5px_rgba(255,76,76,0.3)]"
-                            id="deadlines-count">3</p>
-                    </div>
-
-                    <div class="bg-black/50 p-3.5 rounded-2xl border border-white/5 backdrop-blur-md">
-                        <p class="card-header text-accentBlue mb-1">Safe Courses</p>
-                        <p class="stat-large text-accentBlue" id="safe-courses">4<span
-                                class="text-xs text-gray-600">/6</span></p>
-                    </div>
-
-                    <div class="col-span-2 bg-black/50 p-4 rounded-2xl border border-white/5 backdrop-blur-md mt-1">
-                        <div class="flex justify-between items-end mb-2.5">
-                            <p class="card-header text-gray-400">Semester Progression</p>
-                            <span
-                                class="text-[10px] font-black text-accentPurple bg-accentPurple/10 border border-accentPurple/20 px-2 py-0.5 rounded"
-                                id="semester-pct">68%</span>
-                        </div>
-                        <div class="h-1.5 bg-gray-900 rounded-full overflow-hidden border border-white/5">
-                            <div id="semester-bar"
-                                class="h-full bg-accentPurple w-[68%] shadow-[0_0_8px_rgba(168,85,247,0.8)] transition-all duration-1000">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="sys-card border-purple p-5 flex flex-col h-[240px]">
-                <div class="flex justify-between items-center mb-1">
-                    <h2 class="text-xs font-black text-white uppercase tracking-widest flex items-center gap-2">
-                        <i class="ph-fill ph-moon-stars text-accentPurple text-lg"></i> Core Sleep Yield
-                    </h2>
-                    <span class="text-[8px] font-bold text-gray-500 uppercase tracking-widest">LAST 7 LOGS</span>
-                </div>
-                <p class="stat-large text-accentPurple mb-2">7.2<span class="text-xl text-gray-500">h Avg</span></p>
-
-                <div class="flex-1 w-full relative mt-2">
-                    <svg viewBox="0 -5 300 70" class="absolute inset-0 w-full h-full overflow-visible" id="sleep-graph"
-                        data-color="#A855F7">
-                        <path d="" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"
-                            id="sleep-path" />
-                    </svg>
-                </div>
-
-                <div class="flex justify-between text-[8px] text-gray-600 font-black uppercase tracking-widest mt-4">
-                    <span>4/8</span><span>4/9</span><span>4/15</span><span>4/16</span><span>4/17</span><span>4/18</span><span>4/19</span>
-                </div>
-            </div>
-
-            <div class="sys-card border-yellow p-5 flex flex-col h-[240px]">
-                <div class="flex justify-between items-center mb-1">
-                    <h2 class="text-xs font-black text-white uppercase tracking-widest flex items-center gap-2">
-                        <i class="ph-fill ph-battery-charging text-accentYellow text-lg"></i> Power Nap Yield
-                    </h2>
-                    <span class="text-[8px] font-bold text-gray-500 uppercase tracking-widest">LAST 7 LOGS</span>
-                </div>
-                <p class="stat-large text-accentYellow mb-2">65<span class="text-xl text-gray-500">m Avg</span></p>
-
-                <div class="flex-1 w-full relative mt-2">
-                    <svg viewBox="0 -5 300 70" class="absolute inset-0 w-full h-full overflow-visible" id="nap-graph"
-                        data-color="#FBBF24">
-                        <path d="" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"
-                            id="nap-path" />
-                    </svg>
-                </div>
-
-                <div class="flex justify-between text-[8px] text-gray-600 font-black uppercase tracking-widest mt-4">
-                    <span>4/9</span><span>4/7</span><span>4/8</span><span>4/9</span><span>4/17</span><span>4/18</span><span>4/19</span>
-                </div>
-            </div>
-
-            <div class="sys-card border-blue p-5">
+        <main id="main-content">
+            
+            <div class="sys-card border-red" onclick="window.location.href='budget.html'">
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xs font-black text-white uppercase tracking-widest flex items-center gap-2">
-                        <i class="ph-fill ph-calendar-check text-accentBlue text-lg"></i> Routine Adherence
-                    </h2>
-                    <span
-                        class="text-[9px] font-black text-accentBlue bg-accentBlue/10 px-2 py-1 rounded border border-accentBlue/20">51%
-                        ACTIVE</span>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3 mb-4">
-                    <div class="bg-black/50 p-3 rounded-xl border border-white/5">
-                        <p class="card-header text-gray-500 mb-1">Active Routines</p>
-                        <p class="text-xl font-black text-white">6</p>
+                    <div class="flex items-center gap-2">
+                        <i class="ph-fill ph-wallet text-accentRed text-lg"></i>
+                        <h2 class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Capital Burn</h2>
                     </div>
-                    <div class="bg-black/50 p-3 rounded-xl border border-white/5">
-                        <p class="card-header text-gray-500 mb-1">MTD Checks</p>
-                        <p class="text-xl font-black text-white">58</p>
-                    </div>
+                    <span id="rate-burn" class="rating-badge">Calculating</span>
                 </div>
-
-                <div class="grid grid-cols-2 gap-3" id="habit-matrix-grid">
+                <h1 class="text-4xl font-black text-white" id="val-burn">₹0</h1>
+                <p class="text-[9px] font-bold text-gray-600 mt-1 uppercase">Today's Total Expenditure</p>
+                <div class="mt-4 h-1 bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-full bg-accentRed shadow-[0_0_10px_#FF4C4C] transition-all duration-700" id="val-burn-bar" style="width: 0%"></div>
                 </div>
             </div>
 
-            <div class="sys-card flex flex-col justify-center h-28 relative">
-                <div class="absolute inset-0 bg-white/[0.01] pointer-events-none"></div>
-                <div class="flex justify-around items-center text-center z-10">
-                    <div>
-                        <p class="text-2xl font-black text-white mb-1">8<span class="text-xs text-gray-600">/11</span>
-                        </p>
-                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest">Movies</p>
+            <div class="section-divider"><span>Recovery Yield</span></div>
+
+            <div class="sys-card border-purple" onclick="window.location.href='sleep.html'">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Core Sleep (7 Days)</h2>
+                    <p class="text-lg font-black text-accentPurple" id="val-sleep-duration">0.0h</p>
+                </div>
+                <div class="h-28 w-full"><canvas id="sleepChart"></canvas></div>
+            </div>
+
+            <div class="sys-card border-yellow" onclick="window.location.href='sleep.html'">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Power Nap Yield (7 Days)</h2>
+                    <p class="text-lg font-black text-accentYellow" id="val-nap-duration">0m</p>
+                </div>
+                <div class="h-28 w-full"><canvas id="napChart"></canvas></div>
+            </div>
+
+            <div class="section-divider"><span>Habit Matrix</span></div>
+
+            <div class="sys-card border-blue">
+                <div class="flex justify-between items-center mb-5">
+                    <h2 class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Matrix Adherence</h2>
+                    <span id="rate-routines" class="rating-badge">Tracking</span>
+                </div>
+                
+                <div id="routine-matrix-container" class="grid grid-cols-2 gap-4">
                     </div>
-                    <div class="w-[1px] h-10 bg-white/5"></div>
-                    <div>
-                        <p class="text-2xl font-black text-white mb-1">1<span class="text-xs text-gray-600">/4</span>
-                        </p>
-                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest">Series</p>
+            </div>
+
+            <div class="section-divider"><span>Execution Engine</span></div>
+
+            <div class="sys-card border-teal" onclick="window.location.href='todo.html'">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Protocol Yield</h2>
+                    <span id="rate-tasks" class="rating-badge">Initializing</span>
+                </div>
+                <div class="flex justify-between items-end mb-4">
+                    <h1 class="text-4xl font-black text-white" id="val-task-pct">0%</h1>
+                    <span class="text-[11px] font-black text-accentTeal" id="task-fraction">0/0</span>
+                </div>
+                <div class="h-1 bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-full bg-accentTeal transition-all duration-700" id="task-bar" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="sys-card border-purple" onclick="window.location.href='academics.html'">
+                <div class="flex justify-between items-center mb-5">
+                    <h2 class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Academic Matrix</h2>
+                    <span id="rate-academics" class="rating-badge tier-a">Active</span>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white/5 p-4 rounded-2xl border border-white/5">
+                        <p class="text-[8px] font-black text-gray-500 uppercase mb-1">Backlog</p>
+                        <p class="text-xl font-black text-white" id="val-academic-assignments">0</p>
                     </div>
-                    <div class="w-[1px] h-10 bg-white/5"></div>
-                    <div>
-                        <p class="text-2xl font-black text-white mb-1">6<span class="text-xs text-gray-600">/11</span>
-                        </p>
-                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest">Books</p>
+                    <div class="bg-white/5 p-4 rounded-2xl border border-white/5">
+                        <p class="text-[8px] font-black text-gray-500 uppercase mb-1">Vector</p>
+                        <p class="text-xl font-black text-white" id="val-academic-vector">0%</p>
                     </div>
                 </div>
             </div>
 
+            <div class="section-divider"><span>Bio-Metrics</span></div>
+
+            <div class="sys-card border-blue" onclick="window.location.href='health.html'">
+                <div class="flex justify-between items-center mb-5">
+                    <h2 class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Bio-Metrics</h2>
+                    <span id="rate-bio" class="rating-badge">Nominal</span>
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="text-center">
+                        <p class="text-lg font-black text-white" id="val-health-water">0</p>
+                        <p class="text-[7px] font-black text-gray-500 uppercase mt-1">WATER (ml)</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-lg font-black text-white" id="val-health-caffeine">0</p>
+                        <p class="text-[7px] font-black text-gray-500 uppercase mt-1">CAFFEINE</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-lg font-black text-white" id="val-health-meditation">0m</p>
+                        <p class="text-[7px] font-black text-gray-500 uppercase mt-1">ZEN</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-3 mb-4 mt-2">
+                <button onclick="downloadTextReport()" class="btn-export">
+                    <i class="ph-bold ph-terminal-window text-xl text-accentTeal"></i>
+                    Export Log
+                </button>
+                <button onclick="downloadImageReport()" class="btn-export">
+                    <i class="ph-bold ph-aperture text-xl text-accentPurple"></i>
+                    Capture View
+                </button>
+            </div>
         </main>
     </div>
 
     <div id="sidebar-injector"></div>
     <script src="js/sidebar.js"></script>
-    <script src="js/api.js"></script>
+    <script src="js/bottom-nav.js"></script>
 
     <script>
-        // --- HIGH-RESOLUTION GRAPH ENGINE ---
-        function renderGraph(svgId, pathId, dataPoints) {
-            const svg = document.getElementById(svgId);
-            const path = document.getElementById(pathId);
-            const color = svg.getAttribute('data-color');
+        let sleepChartInstance = null;
+        let napChartInstance = null;
+        let lastChartSyncData = "";
+        let lastMatrixSyncData = "";
 
-            const width = 300;
-            const xInterval = width / (dataPoints.length - 1);
-            let pathData = `M 0,${dataPoints[0]} `;
-
-            path.setAttribute("stroke", color);
-
-            const ns = "http://www.w3.org/2000/svg";
-            dataPoints.forEach((y, i) => {
-                const x = i * xInterval;
-                if (i > 0) pathData += `L ${x},${y} `;
-
-                const circle = document.createElementNS(ns, "circle");
-                circle.setAttribute("cx", x);
-                circle.setAttribute("cy", y);
-                circle.setAttribute("r", 4.5);
-                circle.setAttribute("fill", "#080A0E");
-                circle.setAttribute("stroke", color);
-                circle.setAttribute("stroke-width", "3");
-                svg.appendChild(circle);
-            });
-
-            path.setAttribute("d", pathData);
+        // --- BULLETPROOF DATE FORMATTING ---
+        function getLocalYMD(d) {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
         }
 
-        async function loadAcademicData() {
-            try {
-                const config = JSON.parse(localStorage.getItem('sys_semester_config')) || { start: '2026-01-15', end: '2026-06-30' };
-                const now = new Date();
-                const totalDays = (new Date(config.end) - new Date(config.start)) / (1000 * 60 * 60 * 24);
-                const daysPassed = (now - new Date(config.start)) / (1000 * 60 * 60 * 24);
-                let pct = Math.max(0, Math.min(100, (daysPassed / totalDays) * 100));
-
-                setTimeout(() => {
-                    const pctEl = document.getElementById('semester-pct');
-                    const barEl = document.getElementById('semester-bar');
-                    if (pctEl) pctEl.innerText = `${Math.round(pct)}%`;
-                    if (barEl) barEl.style.width = `${pct}%`;
-                }, 300);
-
-                if (typeof AcademicsAPI !== 'undefined') {
-                    const deadlines = await AcademicsAPI.getDeadlines();
-                    document.getElementById('deadlines-count').innerText = deadlines.filter(d => d.status !== 'completed').length;
-                }
-            } catch (e) { console.error(e); }
+        function getLast7Days() {
+            let dates = [];
+            for (let i = 6; i >= 0; i--) {
+                let d = new Date(); d.setDate(d.getDate() - i);
+                dates.push({
+                    full: getLocalYMD(d),
+                    display: `${d.getDate()}/${d.getMonth() + 1}`
+                });
+            }
+            return dates;
         }
 
-        // --- HABIT MATRIX ENGINE ---
-        function renderHabitMatrix() {
-            const container = document.getElementById('habit-matrix-grid');
+        // Ratings Engine
+        function getRating(value, s, a) {
+            if (value >= s) return { text: 'S-Tier', class: 'tier-s' };
+            if (value >= a) return { text: 'Nominal', class: 'tier-a' };
+            return { text: 'Critical', class: 'tier-c' };
+        }
 
-            // Hardcoded structural data mapping perfectly to your reference image.
-            // 1 represents completed (Green), 0 represents missed (Blank/Grey).
-            const habits = [
-                { name: "Read", today: "-", streak: 0, data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0] },
-                { name: "Study", today: "Done", streak: 2, data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1] },
-                { name: "Bath", today: "Done", streak: 2, data: [1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1] },
-                { name: "Brush", today: "Done", streak: 1, data: [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0] },
-                { name: "Workout", today: "Done", streak: 2, data: [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1] },
-                { name: "No-Sugar", today: "-", streak: 1, data: [1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0] }
-            ];
+        // Chart Engine
+        function updateChart(canvasId, chartInstance, color, labels, data, callback) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            const gradient = ctx.createLinearGradient(0, 0, 0, 100);
+            gradient.addColorStop(0, color + '40'); gradient.addColorStop(1, 'rgba(0,0,0,0)');
+            const config = {
+                type: 'line', 
+                data: { labels, datasets: [{ data, borderColor: color, backgroundColor: gradient, borderWidth: 2, tension: 0.4, fill: true, pointRadius: 3, pointBackgroundColor: '#000' }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false, min: 0 }, x: { ticks: { color: '#6B7280', font: { size: 8, weight: 'bold' } }, grid: { display: false } } }, plugins: { legend: { display: false } } }
+            };
+            if (chartInstance) chartInstance.destroy();
+            callback(new Chart(ctx, config));
+        }
+
+        // --- DUAL MATRIX ENGINE (Routines & Forge) ---
+        function renderMatrixBlocks() {
+            const routines = JSON.parse(localStorage.getItem('sys_routines')) || [];
+            const forgeHabits = JSON.parse(localStorage.getItem('sys_forge_habits')) || [];
+            
+            const currentSyncStr = JSON.stringify({routines, forgeHabits});
+            if (currentSyncStr === lastMatrixSyncData) return; // Prevent DOM flickering
+            lastMatrixSyncData = currentSyncStr;
+
+            const container = document.getElementById('routine-matrix-container');
+            
+            if (routines.length === 0 && forgeHabits.length === 0) {
+                container.innerHTML = `<div class="col-span-2 text-center py-4 text-[10px] font-bold text-gray-600 uppercase border border-dashed border-white/10 rounded-xl">No Active Matrices Found</div>`;
+                document.getElementById('rate-routines').innerText = "Inactive";
+                document.getElementById('rate-routines').className = "rating-badge tier-c";
+                return;
+            }
 
             let html = '';
-            habits.forEach(h => {
-                // Generate 21-dot history (3 rows of 7 dots)
-                let dotsHTML = '';
-                h.data.forEach(val => {
-                    // Injecting the glowing neon green for completed tasks
-                    const colorClass = val === 1 ? 'bg-accentGreen shadow-[0_0_5px_rgba(0,230,118,0.5)]' : 'bg-white/5';
-                    dotsHTML += `<div class="w-[5px] h-[5px] sm:w-1.5 sm:h-1.5 rounded-full ${colorClass}"></div>`;
-                });
+            let totalPossible = 0;
+            let totalAchieved = 0;
+            const todayStr = getLocalYMD(new Date());
+            const todayObj = new Date(todayStr.split('-')[0], todayStr.split('-')[1]-1, todayStr.split('-')[2]);
 
-                html += `
+            // Helper to build tiny 21-dot grid
+            const buildTinyGrid = (name, history, startIterDate, maxDays, typeColor) => {
+                let dotsHtml = '';
+                let localDone = 0;
+                let iterDate = new Date(startIterDate);
+
+                for (let i = 0; i < maxDays; i++) {
+                    const currentIterStr = getLocalYMD(iterDate);
+                    const iterObj = new Date(iterDate);
+                    
+                    const isDone = history.includes(currentIterStr);
+                    const isFuture = iterObj > todayObj;
+
+                    if (isDone) {
+                        dotsHtml += `<div class="dot dot-done shadow-[0_0_4px_${typeColor}80]" style="background-color: ${typeColor}"></div>`;
+                        localDone++;
+                        totalAchieved++;
+                    } else if (isFuture) {
+                        dotsHtml += `<div class="dot dot-future"></div>`;
+                    } else {
+                        dotsHtml += `<div class="dot dot-miss"></div>`;
+                    }
+                    totalPossible++;
+                    iterDate.setDate(iterDate.getDate() + 1);
+                }
+
+                return `
                     <div class="bg-black/50 p-3 rounded-xl border border-white/5 flex flex-col justify-between">
-                        <p class="text-[10px] font-black text-white uppercase tracking-widest mb-1.5">${h.name}</p>
-                        <div class="mb-3">
-                            <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest leading-tight">Today: <span class="${h.today === 'Done' ? 'text-accentGreen' : 'text-gray-400'}">${h.today}</span></p>
-                            <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest leading-tight">Streak: <span class="text-white">${h.streak} Days</span></p>
+                        <div class="flex justify-between items-center mb-3">
+                            <p class="text-[10px] font-black text-white uppercase truncate pr-2">${name}</p>
+                            <span class="text-[8px] font-bold text-gray-500">${localDone}/${maxDays}</span>
                         </div>
-                        <div class="grid grid-cols-7 gap-1.5 w-fit mt-auto mx-auto sm:mx-0">
-                            ${dotsHTML}
-                        </div>
+                        <div class="grid grid-cols-7 gap-1.5 w-fit">${dotsHtml}</div>
                     </div>
                 `;
+            };
+
+            // 1. Process Daily Routines (Rolling 21 days backwards)
+            routines.forEach(r => {
+                let d = new Date(); d.setDate(d.getDate() - 20); // 21 days ago
+                html += buildTinyGrid(r.name || 'Routine', r.history || [], d, 21, '#66FCF1'); // Teal
             });
+
+            // 2. Process Forge Habits (Fixed 21 days from start)
+            forgeHabits.forEach(h => {
+                const [sy, sm, sd] = h.startDate.split('-');
+                let d = new Date(sy, sm - 1, sd);
+                html += buildTinyGrid(h.name || 'Forge', h.history || [], d, 21, '#00E676'); // Green
+            });
+
             container.innerHTML = html;
+            
+            const pct = totalPossible ? Math.round((totalAchieved / totalPossible) * 100) : 0;
+            const rate = getRating(pct, 80, 50);
+            document.getElementById('rate-routines').innerText = rate.text;
+            document.getElementById('rate-routines').className = 'rating-badge ' + rate.class;
         }
 
-        window.onload = () => {
-            renderGraph('sleep-graph', 'sleep-path', [20, 40, 35, 25, 50, 35, 30]);
-            renderGraph('nap-graph', 'nap-path', [45, 35, 40, 30, 5, 25, 32]);
-            renderHabitMatrix();
-            setTimeout(loadAcademicData, 200);
+        // --- MASTER SYNC ENGINE ---
+        function sync() {
+            const todayStr = getLocalYMD(new Date());
+
+            // Clock
+            const now = new Date();
+            document.getElementById('sys-clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+            // 1. Budget Sync
+            const exp = JSON.parse(localStorage.getItem('sys_expenses')) || [];
+            const spent = exp.filter(e => e.date === todayStr).reduce((s, e) => s + parseFloat(e.amount), 0);
+            document.getElementById('val-burn').innerText = `₹${spent.toLocaleString()}`;
+            document.getElementById('val-burn-bar').style.width = `${Math.min(100, (spent/2000)*100)}%`;
+            const burnRate = spent > 2000 ? {text:'Over-Limit', class:'tier-c'} : {text:'Within-Budget', class:'tier-s'};
+            document.getElementById('rate-burn').innerText = burnRate.text;
+            document.getElementById('rate-burn').className = 'rating-badge ' + burnRate.class;
+
+            // 2. Charts Sync (Strict Dates)
+            const sleepH = JSON.parse(localStorage.getItem('sys_sleep_history')) || {};
+            const napH = JSON.parse(localStorage.getItem('sys_nap_history')) || {};
+            const last7Days = getLast7Days();
+
+            const labels = last7Days.map(d => d.display);
+            const sData = last7Days.map(d => parseFloat(sleepH[d.full]) || 0);
+            const nData = last7Days.map(d => parseInt(napH[d.full]) || 0);
+
+            const chartSyncStr = JSON.stringify({sData, nData});
+            if (chartSyncStr !== lastChartSyncData) {
+                updateChart('sleepChart', sleepChartInstance, '#A855F7', labels, sData, v => sleepChartInstance = v);
+                updateChart('napChart', napChartInstance, '#FBBF24', labels, nData, v => napChartInstance = v);
+                
+                const validS = sData.filter(x => x > 0);
+                const validN = nData.filter(x => x > 0);
+                document.getElementById('val-sleep-duration').innerText = validS.length ? `${(validS.reduce((a,b)=>a+b,0)/validS.length).toFixed(1)}h` : '0.0h';
+                document.getElementById('val-nap-duration').innerText = validN.length ? `${Math.round(validN.reduce((a,b)=>a+b,0)/validN.length)}m` : '0m';
+                
+                lastChartSyncData = chartSyncStr;
+            }
+
+            // 3. Matrix Sync
+            renderMatrixBlocks();
+
+            // 4. Tasks Sync
+            const todos = JSON.parse(localStorage.getItem('sys_todos')) || [];
+            const done = todos.filter(t => t.completed).length, total = todos.length;
+            const pct = total ? Math.round((done/total)*100) : 0;
+            document.getElementById('val-task-pct').innerText = pct + '%';
+            document.getElementById('task-bar').style.width = pct + '%';
+            document.getElementById('task-fraction').innerText = `${done}/${total}`;
+            const taskRate = getRating(pct, 100, 50);
+            document.getElementById('rate-tasks').innerText = taskRate.text;
+            document.getElementById('rate-tasks').className = 'rating-badge ' + taskRate.class;
+
+            // 5. Academic Sync
+            const assigns = (JSON.parse(localStorage.getItem('sys_deadlines')) || []).length;
+            document.getElementById('val-academic-assignments').innerText = assigns;
+
+            // 6. Health Sync
+            const hH = JSON.parse(localStorage.getItem('sys_health_history')) || {};
+            const tH = hH[todayStr] || { water: 0, caffeine: 0, meditation: 0 };
+            document.getElementById('val-health-water').innerText = tH.water;
+            document.getElementById('val-health-caffeine').innerText = tH.caffeine;
+            document.getElementById('val-health-meditation').innerText = tH.meditation + 'm';
+            const bioRate = getRating(tH.water, 3000, 1500);
+            document.getElementById('rate-bio').innerText = bioRate.text;
+            document.getElementById('rate-bio').className = 'rating-badge ' + bioRate.class;
+        }
+
+        // --- EXPORT ENGINES ---
+        function downloadTextReport() {
+            const now = new Date();
+            const report = `SYSTEM ANALYSIS [${now.toLocaleString()}]\n\n` +
+                `Capital Burn: ${document.getElementById('val-burn').innerText} [${document.getElementById('rate-burn').innerText}]\n` +
+                `Task Yield: ${document.getElementById('val-task-pct').innerText} [${document.getElementById('rate-tasks').innerText}]\n` +
+                `Biological Hydration: ${document.getElementById('val-health-water').innerText}ml`;
+            const blob = new Blob([report], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = `Log_${now.getTime()}.txt`; a.click();
+        }
+
+        function downloadImageReport() {
+            html2canvas(document.getElementById('capture-area'), { backgroundColor: '#020202', scale: 2 }).then(canvas => {
+                const link = document.createElement('a'); link.download = `OS_Report.png`; link.href = canvas.toDataURL(); link.click();
+            });
+        }
+
+        window.onload = () => { 
+            sync(); 
+            setInterval(sync, 2000); 
+            window.addEventListener('storage', sync);
         };
     </script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('System OS Service Worker registered!', registration.scope);
-                    })
-                    .catch(error => {
-                        console.error('Service Worker registration failed:', error);
-                    });
-            });
-        }
-    </script>
 </body>
-
 </html>

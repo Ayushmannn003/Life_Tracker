@@ -50,6 +50,7 @@
             padding: 1rem;
             flex: 1;
             padding-bottom: 6rem;
+            overflow-y: auto;
         }
 
         ::-webkit-scrollbar {
@@ -61,49 +62,39 @@
             scrollbar-width: none;
         }
 
-        .hide-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-
-        .hide-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        /* SLEEKER CARD SYSTEM */
+        /* SLEEK CARD SYSTEM */
         .sys-card {
             background: #080A0E;
             border: 1px solid #14171F;
-            border-radius: 1rem;
-            padding: 1rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-            margin-bottom: 0.5rem;
+            border-radius: 1.25rem;
+            padding: 1.25rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            margin-bottom: 1rem;
             position: relative;
-            cursor: pointer;
+        }
+
+        .border-teal {
+            border-top: 2px solid #66FCF1;
+        }
+
+        .border-purple {
+            border-top: 2px solid #A855F7;
+        }
+
+        .border-red {
+            border-top: 2px solid #FF4C4C;
+        }
+
+        .touch-btn {
             transition: transform 0.1s;
+            cursor: pointer;
         }
 
-        .sys-card:active {
-            transform: scale(0.98);
+        .touch-btn:active {
+            transform: scale(0.96);
         }
 
-        /* SECTION HEADERS */
-        .section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 0.75rem;
-            padding: 0 0.25rem;
-        }
-
-        .section-divider {
-            height: 1px;
-            flex: 1;
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
-            margin-left: 0.75rem;
-        }
-
-        /* CENTERED GLASS POPUPS */
+        /* CENTERED GLASS MODALS */
         .center-modal {
             position: fixed;
             top: 50%;
@@ -147,7 +138,6 @@
             pointer-events: auto;
         }
 
-        /* CUSTOM INPUTS & SLIDERS */
         .sys-input {
             width: 100%;
             background: #000;
@@ -162,9 +152,10 @@
         }
 
         .sys-input:focus {
-            border-color: #A855F7;
+            border-color: #66FCF1;
         }
 
+        /* SLIDER OVERRIDES */
         input[type=range] {
             -webkit-appearance: none;
             width: 100%;
@@ -192,16 +183,26 @@
             border: 2px solid #000;
         }
 
-        .touch-btn {
-            min-height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.1s;
+        body,
+        html {
+            height: 100dvh;
+            overflow: hidden;
+            /* This stops the whole screen from scrolling */
+            margin: 0;
         }
 
-        .touch-btn:active {
-            transform: scale(0.96);
+        .mobile-viewport {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            /* Allows content and nav to stack */
+        }
+
+        main {
+            flex: 1;
+            overflow-y: auto;
+            /* Only your content area scrolls */
+            padding-bottom: 2rem;
         }
     </style>
 </head>
@@ -215,23 +216,24 @@
                 <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
                 <h1 class="text-xl font-black text-white tracking-widest uppercase">Academic Hub</h1>
             </div>
-            <button onclick="openDeadlineModal()"
-                class="w-8 h-8 rounded-full bg-accentRed/10 text-accentRed flex items-center justify-center border border-accentRed/20 active:scale-90 transition">
-                <i class="ph-bold ph-plus"></i>
-            </button>
+            <div
+                class="text-[10px] font-black text-accentPurple uppercase tracking-widest bg-accentPurple/10 border border-accentPurple/20 px-3 py-1.5 rounded-full flex items-center gap-2">
+                Sync <i class="ph-bold ph-arrows-clockwise"></i>
+            </div>
         </header>
 
-        <main class="space-y-6">
+        <main>
 
-            <div class="sys-card border-t-2 border-t-accentTeal m-0 relative overflow-hidden bg-gradient-to-br from-[#080A0E] to-[#020202]"
-                onclick="openModal('semester-modal')">
+            <div
+                class="sys-card border-teal m-0 relative overflow-hidden bg-gradient-to-br from-[#080A0E] to-[#020202] mb-5">
                 <div
                     class="absolute -top-10 -right-10 w-32 h-32 bg-accentTeal/10 blur-3xl rounded-full pointer-events-none">
                 </div>
-                <button
-                    class="absolute top-4 right-4 text-[8px] font-black text-accentTeal bg-accentTeal/5 px-2.5 py-1 rounded-full border border-accentTeal/20 uppercase tracking-widest pointer-events-none backdrop-blur-sm">Edit</button>
+                <button onclick="openSemesterModal()"
+                    class="absolute top-4 right-4 text-[9px] font-black text-accentTeal bg-accentTeal/10 px-3 py-1.5 rounded-full border border-accentTeal/20 uppercase tracking-widest touch-btn backdrop-blur-sm z-20">Edit
+                    Config</button>
 
-                <div class="flex justify-between items-center mb-4 relative z-10">
+                <div class="flex justify-between items-center mb-4 relative z-10 pr-20">
                     <h2 class="text-[11px] font-black text-gray-300 uppercase tracking-widest flex items-center gap-2">
                         <i
                             class="ph-fill ph-hourglass-high text-accentTeal text-lg drop-shadow-[0_0_5px_rgba(102,252,241,0.5)]"></i>
@@ -242,10 +244,10 @@
                 <div class="flex justify-between items-end mb-2 relative z-10">
                     <div>
                         <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5"><span
-                                id="sem-start-date">--</span> to <span id="sem-end-date">--</span></p>
+                                id="sem-start">--</span> to <span id="sem-end">--</span></p>
                         <span
                             class="text-[10px] font-black text-white uppercase tracking-widest px-2 py-0.5 bg-white/10 rounded border border-white/10"
-                            id="days-left-badge">-- Days Left</span>
+                            id="sem-days-left">-- Days Left</span>
                     </div>
                     <h3 class="text-4xl font-black text-white leading-none drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]"
                         id="sem-pct-text">0%</h3>
@@ -257,494 +259,320 @@
                 </div>
             </div>
 
-            <div class="pt-2">
-                <div class="section-header">
+            <div class="mb-5">
+                <div class="flex justify-between items-center mb-3 px-1">
                     <h2 class="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                        <i class="ph-fill ph-warning-circle text-accentRed text-lg"></i> Directives
+                        <i class="ph-fill ph-books text-accentPurple text-lg"></i> Subject Matrix
                     </h2>
-                    <div class="section-divider"></div>
-                    <button onclick="openDeadlineModal()"
-                        class="text-[10px] font-black text-accentRed bg-accentRed/10 px-3 py-1.5 rounded-full border border-accentRed/20 uppercase tracking-widest touch-btn min-h-[28px] ml-2">
-                        + Add
-                    </button>
-                </div>
-                <div id="deadline-list" class="space-y-1.5">
-                </div>
-            </div>
-
-            <div class="pt-2">
-                <div class="section-header">
-                    <h2 class="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                        <i class="ph-fill ph-student text-accentPurple text-lg"></i> Attendance
-                    </h2>
-                    <div class="section-divider"></div>
                     <button onclick="openCourseModal()"
-                        class="text-[10px] font-black text-accentPurple bg-accentPurple/10 px-3 py-1.5 rounded-full border border-accentPurple/20 uppercase tracking-widest touch-btn min-h-[28px] ml-2">
-                        + Add
+                        class="text-[10px] font-black text-accentPurple bg-accentPurple/10 px-3 py-1.5 rounded-full border border-accentPurple/20 uppercase tracking-widest touch-btn">
+                        + Add Subject
                     </button>
-                </div>
-                <div class="grid grid-cols-2 gap-2 mb-3">
-                    <div
-                        class="bg-black/50 p-3 rounded-xl border border-white/5 flex flex-col justify-center items-center">
-                        <span class="text-xl font-black text-accentPurple leading-none" id="stat-safe">0</span>
-                        <span class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mt-1">Safe
-                            Zones</span>
-                    </div>
-                    <div
-                        class="bg-black/50 p-3 rounded-xl border border-white/5 flex flex-col justify-center items-center">
-                        <span
-                            class="text-xl font-black text-accentRed leading-none drop-shadow-[0_0_5px_rgba(255,76,76,0.5)]"
-                            id="stat-danger">0</span>
-                        <span class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mt-1">Danger
-                            Zones</span>
-                    </div>
                 </div>
                 <div id="course-list" class="space-y-2">
                 </div>
             </div>
 
-            <div class="pt-2">
-                <div class="section-header">
+            <div class="mb-5">
+                <div class="flex justify-between items-center mb-3 px-1">
                     <h2 class="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                        <i class="ph-fill ph-code text-accentBlue text-lg"></i> Self-Study
+                        <i class="ph-fill ph-warning-circle text-accentRed text-lg"></i> Active Assignments
                     </h2>
-                    <div class="section-divider"></div>
-                    <button onclick="openStudyModal()"
-                        class="text-[10px] font-black text-accentBlue bg-accentBlue/10 px-3 py-1.5 rounded-full border border-accentBlue/20 uppercase tracking-widest touch-btn min-h-[28px] ml-2">
-                        + Add
+                    <button onclick="openAssignmentModal()"
+                        class="text-[10px] font-black text-accentRed bg-accentRed/10 px-3 py-1.5 rounded-full border border-accentRed/20 uppercase tracking-widest touch-btn">
+                        + Add Task
                     </button>
                 </div>
-                <div id="self-study-list" class="grid grid-cols-2 gap-2">
+                <div id="assignment-list" class="space-y-2">
                 </div>
             </div>
 
         </main>
+    </div>
 
-        <div class="modal-backdrop" id="modal-bg" onclick="closeModals()"></div>
+    <div class="modal-backdrop" id="modal-bg" onclick="closeModals()"></div>
 
-        <div class="center-modal" id="semester-modal">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-sm font-black text-white uppercase tracking-widest">Configure Timeline</h3>
-                <i class="ph-bold ph-x text-xl text-gray-500 cursor-pointer p-1 active:scale-90"
-                    onclick="closeModals()"></i>
-            </div>
-            <div class="space-y-5">
-                <div>
-                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Start
-                        Date</label>
-                    <input type="date" id="sem-input-start"
-                        class="sys-input text-center text-accentTeal tracking-widest text-lg">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">End
-                        Date</label>
-                    <input type="date" id="sem-input-end"
-                        class="sys-input text-center text-accentTeal tracking-widest text-lg">
-                    <div class="flex gap-2 overflow-x-auto hide-scrollbar mt-3 pb-1">
-                        <button onclick="setQuickDate('sem-input-end', 30)"
-                            class="shrink-0 text-[10px] font-bold text-accentTeal bg-accentTeal/10 px-3 py-1.5 rounded-full border border-accentTeal/20">+1
-                            Month</button>
-                        <button onclick="setQuickDate('sem-input-end', 90)"
-                            class="shrink-0 text-[10px] font-bold text-accentTeal bg-accentTeal/10 px-3 py-1.5 rounded-full border border-accentTeal/20">+3
-                            Months</button>
-                        <button onclick="setQuickDate('sem-input-end', 180)"
-                            class="shrink-0 text-[10px] font-bold text-accentTeal bg-accentTeal/10 px-3 py-1.5 rounded-full border border-accentTeal/20">+6
-                            Months</button>
-                    </div>
-                </div>
-                <button onclick="submitSemester()"
-                    class="w-full bg-accentTeal text-black font-black text-xs uppercase tracking-widest rounded-xl touch-btn mt-4 shadow-[0_0_20px_rgba(102,252,241,0.5)]">Save
-                    Timeline</button>
-            </div>
+    <div class="center-modal" id="semester-modal">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-sm font-black text-accentTeal uppercase tracking-widest">Timeline Config</h3>
+            <i class="ph-bold ph-x text-xl text-gray-500 cursor-pointer p-1 active:scale-90 touch-btn"
+                onclick="closeModals()"></i>
         </div>
-
-        <div class="center-modal" id="course-modal">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-sm font-black text-white uppercase tracking-widest" id="course-modal-title">Add Course
-                </h3>
-                <i class="ph-bold ph-x text-xl text-gray-500 cursor-pointer p-1 active:scale-90"
-                    onclick="closeModals()"></i>
+        <div class="space-y-4">
+            <div>
+                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Semester
+                    Start</label>
+                <input type="date" id="input-sem-start" class="sys-input text-center text-accentTeal">
             </div>
-            <div class="space-y-5">
-                <div>
-                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Course
-                        Name</label>
-                    <input type="text" id="course-name" class="sys-input" placeholder="e.g. Data Structures">
-                </div>
+            <div>
+                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Semester
+                    End</label>
+                <input type="date" id="input-sem-end" class="sys-input text-center text-accentTeal">
+            </div>
+            <button onclick="submitSemester()"
+                class="w-full bg-accentTeal text-black font-black text-xs uppercase tracking-widest rounded-xl touch-btn mt-4 py-4 shadow-[0_0_20px_rgba(102,252,241,0.5)]">Save
+                Vector</button>
+        </div>
+    </div>
 
+    <div class="center-modal" id="course-modal">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-sm font-black text-accentPurple uppercase tracking-widest" id="course-modal-title">Subject
+                Config</h3>
+            <i class="ph-bold ph-x text-xl text-gray-500 cursor-pointer p-1 active:scale-90 touch-btn"
+                onclick="closeModals()"></i>
+        </div>
+        <div class="space-y-4">
+            <input type="hidden" id="edit-course-id">
+            <div>
+                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Course
+                    Designation</label>
+                <input type="text" id="input-course-name" class="sys-input" placeholder="e.g. Data Structures"
+                    autocomplete="off">
+            </div>
+
+            <div class="bg-black p-4 rounded-xl border border-white/5">
+                <div class="flex justify-between items-center">
+                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Attendance
+                        Target</label>
+                    <span id="target-val" class="text-lg font-black text-accentPurple">75%</span>
+                </div>
+                <input type="range" id="input-course-target" class="text-accentPurple" min="0" max="100" value="75"
+                    oninput="document.getElementById('target-val').innerText = this.value + '%'">
+            </div>
+
+            <div id="course-override-section" class="space-y-4" style="display: none;">
                 <div class="bg-black p-4 rounded-xl border border-white/5">
                     <div class="flex justify-between items-center">
-                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Target %</label>
-                        <span id="target-val" class="text-lg font-black text-accentPurple">75%</span>
+                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Total Classes
+                            Run</label>
+                        <span id="total-val" class="text-lg font-black text-white">0</span>
                     </div>
-                    <input type="range" id="course-target" class="text-accentPurple" min="0" max="100" value="75"
-                        oninput="document.getElementById('target-val').innerText = this.value + '%'">
+                    <input type="number" id="input-course-total" class="sys-input mt-2"
+                        oninput="document.getElementById('total-val').innerText = this.value || 0; syncAttendedMax();">
                 </div>
-
-                <div class="course-override-fields space-y-4">
-                    <div class="bg-black p-4 rounded-xl border border-white/5">
-                        <div class="flex justify-between items-center">
-                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Total
-                                Classes</label>
-                            <span id="total-val" class="text-lg font-black text-white">0</span>
-                        </div>
-                        <input type="range" id="course-total" class="text-white" min="0" max="100" value="0"
-                            oninput="document.getElementById('total-val').innerText = this.value; syncAttendedSlider();">
-                    </div>
-                    <div class="bg-black p-4 rounded-xl border border-white/5">
-                        <div class="flex justify-between items-center">
-                            <label
-                                class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Attended</label>
-                            <span id="attended-val" class="text-lg font-black text-accentPurple">0</span>
-                        </div>
-                        <input type="range" id="course-attended" class="text-accentPurple" min="0" max="100" value="0"
-                            oninput="document.getElementById('attended-val').innerText = this.value">
-                    </div>
-                </div>
-
-                <div class="flex gap-3 pt-2">
-                    <button id="course-delete-btn" onclick="deleteItem('course')"
-                        class="w-14 bg-accentRed/10 text-accentRed border border-accentRed/20 rounded-xl touch-btn"
-                        style="display: none;"><i class="ph-fill ph-trash text-xl"></i></button>
-                    <button onclick="submitCourse()" id="course-submit-btn"
-                        class="flex-1 bg-accentPurple text-white font-black text-xs uppercase tracking-widest rounded-xl touch-btn shadow-[0_0_20px_rgba(168,85,247,0.5)]">Save
-                        Course</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="center-modal" id="self-study-modal">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-sm font-black text-white uppercase tracking-widest" id="study-modal-title">Add Topic
-                </h3>
-                <i class="ph-bold ph-x text-xl text-gray-500 cursor-pointer p-1 active:scale-90"
-                    onclick="closeModals()"></i>
-            </div>
-            <div class="space-y-5">
-                <div>
-                    <label
-                        class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Subject
-                        Vector</label>
-                    <input type="text" id="study-name" class="sys-input" placeholder="e.g. ML Math">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Target
-                        Deadline</label>
-                    <input type="date" id="study-date"
-                        class="sys-input text-center text-accentBlue tracking-widest text-lg">
-                    <div class="flex gap-2 overflow-x-auto hide-scrollbar mt-3 pb-1">
-                        <button onclick="setQuickDate('study-date', 1)"
-                            class="shrink-0 text-[10px] font-bold text-accentBlue bg-accentBlue/10 px-3 py-1.5 rounded-full border border-accentBlue/20">Tomorrow</button>
-                        <button onclick="setQuickDate('study-date', 3)"
-                            class="shrink-0 text-[10px] font-bold text-accentBlue bg-accentBlue/10 px-3 py-1.5 rounded-full border border-accentBlue/20">+3
-                            Days</button>
-                        <button onclick="setQuickDate('study-date', 7)"
-                            class="shrink-0 text-[10px] font-bold text-accentBlue bg-accentBlue/10 px-3 py-1.5 rounded-full border border-accentBlue/20">+1
-                            Week</button>
-                        <button onclick="setQuickDate('study-date', 30)"
-                            class="shrink-0 text-[10px] font-bold text-accentBlue bg-accentBlue/10 px-3 py-1.5 rounded-full border border-accentBlue/20">+1
-                            Month</button>
-                    </div>
-                </div>
-
                 <div class="bg-black p-4 rounded-xl border border-white/5">
                     <div class="flex justify-between items-center">
-                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Total
-                            Modules</label>
-                        <span id="study-total-val" class="text-lg font-black text-white">10</span>
+                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Classes
+                            Attended</label>
+                        <span id="attended-val" class="text-lg font-black text-accentPurple">0</span>
                     </div>
-                    <input type="range" id="study-modules" class="text-white" min="1" max="100" value="10"
-                        oninput="document.getElementById('study-total-val').innerText = this.value; syncStudySlider();">
+                    <input type="number" id="input-course-attended" class="sys-input text-accentPurple mt-2"
+                        oninput="document.getElementById('attended-val').innerText = this.value || 0">
                 </div>
-                <div class="study-override-fields bg-black p-4 rounded-xl border border-white/5">
-                    <div class="flex justify-between items-center">
-                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Completed</label>
-                        <span id="study-done-val" class="text-lg font-black text-accentBlue">0</span>
-                    </div>
-                    <input type="range" id="study-completed" class="text-accentBlue" min="0" max="10" value="0"
-                        oninput="document.getElementById('study-done-val').innerText = this.value">
-                </div>
+            </div>
 
-                <div class="flex gap-3 pt-2">
-                    <button id="study-delete-btn" onclick="deleteItem('study')"
-                        class="w-14 bg-accentRed/10 text-accentRed border border-accentRed/20 rounded-xl touch-btn"
-                        style="display: none;"><i class="ph-fill ph-trash text-xl"></i></button>
-                    <button onclick="submitSelfStudy()" id="study-submit-btn"
-                        class="flex-1 bg-accentBlue text-white font-black text-xs uppercase tracking-widest rounded-xl touch-btn shadow-[0_0_20px_rgba(59,130,246,0.5)]">Save
-                        Vector</button>
-                </div>
+            <div class="flex gap-2 pt-2">
+                <button id="btn-delete-course" onclick="deleteCourse()"
+                    class="w-14 bg-accentRed/10 text-accentRed border border-accentRed/20 rounded-xl touch-btn"
+                    style="display: none;"><i class="ph-bold ph-trash text-xl"></i></button>
+                <button onclick="submitCourse()"
+                    class="flex-1 bg-accentPurple text-white font-black text-xs uppercase tracking-widest rounded-xl touch-btn py-4 shadow-[0_0_20px_rgba(168,85,247,0.5)]">Save
+                    Subject</button>
             </div>
         </div>
+    </div>
 
-        <div class="center-modal" id="deadline-modal">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-sm font-black text-white uppercase tracking-widest" id="deadline-modal-title">Add
-                    Directive</h3>
-                <i class="ph-bold ph-x text-xl text-gray-500 cursor-pointer p-1 active:scale-90"
-                    onclick="closeModals()"></i>
+    <div class="center-modal" id="assignment-modal">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-sm font-black text-accentRed uppercase tracking-widest" id="assignment-modal-title">Task
+                Directive</h3>
+            <i class="ph-bold ph-x text-xl text-gray-500 cursor-pointer p-1 active:scale-90 touch-btn"
+                onclick="closeModals()"></i>
+        </div>
+        <div class="space-y-4">
+            <input type="hidden" id="edit-assignment-id">
+            <div>
+                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Task
+                    Details</label>
+                <input type="text" id="input-assignment-title" class="sys-input" placeholder="e.g. AI Project Report"
+                    autocomplete="off">
             </div>
-            <div class="space-y-5">
-                <div>
-                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Task
-                        Designation</label>
-                    <input type="text" id="deadline-title" class="sys-input" placeholder="e.g. IoT Report">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Due
-                        Date</label>
-                    <input type="date" id="deadline-date"
-                        class="sys-input text-center text-accentRed tracking-widest text-lg">
-                    <div class="flex gap-2 overflow-x-auto hide-scrollbar mt-3 pb-1">
-                        <button onclick="setQuickDate('deadline-date', 0)"
-                            class="shrink-0 text-[10px] font-bold text-accentRed bg-accentRed/10 px-3 py-1.5 rounded-full border border-accentRed/20">Today</button>
-                        <button onclick="setQuickDate('deadline-date', 1)"
-                            class="shrink-0 text-[10px] font-bold text-accentRed bg-accentRed/10 px-3 py-1.5 rounded-full border border-accentRed/20">Tomorrow</button>
-                        <button onclick="setQuickDate('deadline-date', 3)"
-                            class="shrink-0 text-[10px] font-bold text-accentRed bg-accentRed/10 px-3 py-1.5 rounded-full border border-accentRed/20">+3
-                            Days</button>
-                        <button onclick="setQuickDate('deadline-date', 7)"
-                            class="shrink-0 text-[10px] font-bold text-accentRed bg-accentRed/10 px-3 py-1.5 rounded-full border border-accentRed/20">+1
-                            Week</button>
-                    </div>
-                </div>
-
-                <div class="flex gap-3 pt-2">
-                    <button id="deadline-delete-btn" onclick="deleteItem('deadline')"
-                        class="w-14 bg-accentRed/10 text-accentRed border border-accentRed/20 rounded-xl touch-btn"
-                        style="display: none;"><i class="ph-fill ph-trash text-xl"></i></button>
-                    <button onclick="submitDeadline()" id="deadline-submit-btn"
-                        class="flex-1 bg-accentRed text-white font-black text-xs uppercase tracking-widest rounded-xl touch-btn shadow-[0_0_20px_rgba(255,76,76,0.5)]">Save
-                        Directive</button>
-                </div>
+            <div>
+                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Execution
+                    Deadline</label>
+                <input type="date" id="input-assignment-date" class="sys-input text-center text-accentRed">
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button id="btn-delete-assignment" onclick="deleteAssignment()"
+                    class="w-14 bg-accentRed/10 text-accentRed border border-accentRed/20 rounded-xl touch-btn"
+                    style="display: none;"><i class="ph-bold ph-trash text-xl"></i></button>
+                <button onclick="submitAssignment()"
+                    class="flex-1 bg-accentRed text-white font-black text-xs uppercase tracking-widest rounded-xl touch-btn py-4 shadow-[0_0_20px_rgba(255,76,76,0.5)]">Lock
+                    Deadline</button>
             </div>
         </div>
-
     </div>
 
     <div id="sidebar-injector"></div>
     <script src="js/sidebar.js"></script>
+    <script src="js/bottom-nav.js"></script>
 
     <script>
-        // --- DATA ENGINE ---
+        // =========================================================================
+        // ACADEMIC HUB LOGIC ENGINE (SYNCS DIRECTLY WITH INDEX.HTML LOCALSTORAGE)
+        // =========================================================================
+
+        // 1. Core Data Retrieval
+        let semConfig = JSON.parse(localStorage.getItem('sys_semester_config')) || { start: '2026-01-01', end: '2026-06-01' };
         let courses = JSON.parse(localStorage.getItem('sys_courses')) || [];
         let deadlines = JSON.parse(localStorage.getItem('sys_deadlines')) || [];
-        let selfStudies = JSON.parse(localStorage.getItem('sys_self_study')) || [];
-        let semConfig = JSON.parse(localStorage.getItem('sys_semester_config')) || { start: '2026-01-01', end: '2026-06-01' };
-        let editingId = null;
 
-        function saveToLocal() {
+        function saveAndRender() {
+            localStorage.setItem('sys_semester_config', JSON.stringify(semConfig));
             localStorage.setItem('sys_courses', JSON.stringify(courses));
             localStorage.setItem('sys_deadlines', JSON.stringify(deadlines));
-            localStorage.setItem('sys_self_study', JSON.stringify(selfStudies));
-            localStorage.setItem('sys_semester_config', JSON.stringify(semConfig));
             renderDashboard();
+            window.dispatchEvent(new Event('storage')); // Alert index.html to update automatically
         }
 
-        function setQuickDate(inputId, daysToAdd) {
-            const date = new Date();
-            date.setDate(date.getDate() + daysToAdd);
-            document.getElementById(inputId).value = date.toISOString().split('T')[0];
+        // 2. Modal Management
+        function closeModals() {
+            document.getElementById('modal-bg').classList.remove('active');
+            document.querySelectorAll('.center-modal').forEach(m => m.classList.remove('active'));
+            document.body.style.overflow = '';
         }
 
-        function syncAttendedSlider() {
-            let total = document.getElementById('course-total').value;
-            let attended = document.getElementById('course-attended');
-            attended.max = total;
-            if (parseInt(attended.value) > parseInt(total)) attended.value = total;
-            document.getElementById('attended-val').innerText = attended.value;
-        }
-        function syncStudySlider() {
-            let total = document.getElementById('study-modules').value;
-            let done = document.getElementById('study-completed');
-            done.max = total;
-            if (parseInt(done.value) > parseInt(total)) done.value = total;
-            document.getElementById('study-done-val').innerText = done.value;
-        }
-
-        // --- CENTER MODAL CONTROLLERS ---
-        function openModal(id) {
+        // --- Semester Setup ---
+        function openSemesterModal() {
+            document.getElementById('input-sem-start').value = semConfig.start;
+            document.getElementById('input-sem-end').value = semConfig.end;
             document.getElementById('modal-bg').classList.add('active');
-            document.getElementById(id).classList.add('active');
+            document.getElementById('semester-modal').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
 
-        function closeModals() {
-            document.getElementById('modal-bg').classList.remove('active');
-            document.querySelectorAll('.center-modal').forEach(sheet => sheet.classList.remove('active'));
-            document.body.style.overflow = '';
-            editingId = null;
+        function submitSemester() {
+            semConfig.start = document.getElementById('input-sem-start').value;
+            semConfig.end = document.getElementById('input-sem-end').value;
+            closeModals(); saveAndRender();
         }
 
+        // --- Course/Subject Setup ---
         function openCourseModal(id = null) {
-            editingId = id;
-            const overrideFields = document.querySelectorAll('.course-override-fields');
+            document.getElementById('modal-bg').classList.add('active');
+            document.getElementById('course-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            const overrideSection = document.getElementById('course-override-section');
+            const delBtn = document.getElementById('btn-delete-course');
+
             if (id) {
                 const c = courses.find(x => x.id === id);
-                document.getElementById('course-modal-title').innerText = "Edit Course";
-                document.getElementById('course-name').value = c.name;
-                document.getElementById('course-target').value = c.target;
+                document.getElementById('course-modal-title').innerText = "Edit Subject";
+                document.getElementById('edit-course-id').value = c.id;
+                document.getElementById('input-course-name').value = c.name;
+                document.getElementById('input-course-target').value = c.target;
                 document.getElementById('target-val').innerText = c.target + '%';
-                document.getElementById('course-total').value = c.total;
-                document.getElementById('total-val').innerText = c.total;
 
-                let attendedSlider = document.getElementById('course-attended');
-                attendedSlider.max = c.total || 100;
-                attendedSlider.value = c.attended;
+                document.getElementById('input-course-total').value = c.total;
+                document.getElementById('total-val').innerText = c.total;
+                document.getElementById('input-course-attended').value = c.attended;
                 document.getElementById('attended-val').innerText = c.attended;
 
-                overrideFields.forEach(f => f.style.display = 'block');
-                document.getElementById('course-delete-btn').style.display = 'flex';
-                document.getElementById('course-submit-btn').innerText = 'Update';
+                overrideSection.style.display = 'block';
+                delBtn.style.display = 'block';
             } else {
-                document.getElementById('course-modal-title').innerText = "Initialize Course";
-                document.getElementById('course-name').value = '';
-                document.getElementById('course-target').value = '75';
+                document.getElementById('course-modal-title').innerText = "Initialize Subject";
+                document.getElementById('edit-course-id').value = '';
+                document.getElementById('input-course-name').value = '';
+                document.getElementById('input-course-target').value = '75';
                 document.getElementById('target-val').innerText = '75%';
-                overrideFields.forEach(f => f.style.display = 'none');
-                document.getElementById('course-delete-btn').style.display = 'none';
-                document.getElementById('course-submit-btn').innerText = 'Save';
+
+                overrideSection.style.display = 'none';
+                delBtn.style.display = 'none';
             }
-            openModal('course-modal');
-        }
-
-        function openStudyModal(id = null) {
-            editingId = id;
-            const overrideFields = document.querySelectorAll('.study-override-fields');
-            if (id) {
-                const s = selfStudies.find(x => x.id === id);
-                document.getElementById('study-modal-title').innerText = "Edit Vector";
-                document.getElementById('study-name').value = s.name;
-                document.getElementById('study-date').value = s.date;
-                document.getElementById('study-modules').value = s.totalMods;
-                document.getElementById('study-total-val').innerText = s.totalMods;
-
-                let doneSlider = document.getElementById('study-completed');
-                doneSlider.max = s.totalMods;
-                doneSlider.value = s.completedMods;
-                document.getElementById('study-done-val').innerText = s.completedMods;
-
-                overrideFields.forEach(f => f.style.display = 'block');
-                document.getElementById('study-delete-btn').style.display = 'flex';
-                document.getElementById('study-submit-btn').innerText = 'Update';
-            } else {
-                document.getElementById('study-modal-title').innerText = "Initialize Topic";
-                document.getElementById('study-name').value = '';
-                document.getElementById('study-date').value = '';
-                document.getElementById('study-modules').value = '10';
-                document.getElementById('study-total-val').innerText = '10';
-                overrideFields.forEach(f => f.style.display = 'none');
-                document.getElementById('study-delete-btn').style.display = 'none';
-                document.getElementById('study-submit-btn').innerText = 'Save';
-            }
-            openModal('self-study-modal');
-        }
-
-        function openDeadlineModal(id = null) {
-            editingId = id;
-            if (id) {
-                const d = deadlines.find(x => x.id === id);
-                document.getElementById('deadline-modal-title').innerText = "Edit Directive";
-                document.getElementById('deadline-title').value = d.title;
-                document.getElementById('deadline-date').value = d.date;
-                document.getElementById('deadline-delete-btn').style.display = 'flex';
-                document.getElementById('deadline-submit-btn').innerText = 'Update';
-            } else {
-                document.getElementById('deadline-modal-title').innerText = "Add Directive";
-                document.getElementById('deadline-title').value = '';
-                document.getElementById('deadline-date').value = '';
-                document.getElementById('deadline-delete-btn').style.display = 'none';
-                document.getElementById('deadline-submit-btn').innerText = 'Save';
-            }
-            openModal('deadline-modal');
-        }
-
-        // --- SUBMIT PROCESSORS ---
-        function submitSemester() {
-            semConfig.start = document.getElementById('sem-input-start').value || semConfig.start;
-            semConfig.end = document.getElementById('sem-input-end').value || semConfig.end;
-            saveToLocal(); closeModals();
         }
 
         function submitCourse() {
-            const name = document.getElementById('course-name').value.trim();
-            const target = parseInt(document.getElementById('course-target').value) || 75;
-            const attended = parseInt(document.getElementById('course-attended').value) || 0;
-            const total = parseInt(document.getElementById('course-total').value) || 0;
+            const id = document.getElementById('edit-course-id').value;
+            const name = document.getElementById('input-course-name').value.trim();
+            const target = parseInt(document.getElementById('input-course-target').value) || 75;
+
             if (!name) return;
 
-            if (editingId) {
-                let c = courses.find(x => x.id === editingId);
-                c.name = name; c.target = target; c.attended = attended; c.total = total;
+            if (id) {
+                let c = courses.find(x => x.id == id);
+                c.name = name; c.target = target;
+                c.total = parseInt(document.getElementById('input-course-total').value) || 0;
+                c.attended = parseInt(document.getElementById('input-course-attended').value) || 0;
             } else {
                 courses.push({ id: Date.now(), name, target, attended: 0, total: 0 });
             }
-            saveToLocal(); closeModals();
+            closeModals(); saveAndRender();
         }
 
-        function submitSelfStudy() {
-            const name = document.getElementById('study-name').value.trim();
-            const date = document.getElementById('study-date').value;
-            const totalMods = parseInt(document.getElementById('study-modules').value) || 1;
-            const completedMods = parseInt(document.getElementById('study-completed').value) || 0;
-            if (!name || !date) return;
-
-            if (editingId) {
-                let s = selfStudies.find(x => x.id === editingId);
-                s.name = name; s.date = date; s.totalMods = totalMods; s.completedMods = completedMods;
-            } else {
-                selfStudies.push({ id: Date.now(), name, date, totalMods, completedMods: 0 });
-            }
-            saveToLocal(); closeModals();
-        }
-
-        function submitDeadline() {
-            const title = document.getElementById('deadline-title').value.trim();
-            const date = document.getElementById('deadline-date').value;
-            if (!title || !date) return;
-
-            if (editingId) {
-                let d = deadlines.find(x => x.id === editingId);
-                d.title = title; d.date = date;
-            } else {
-                deadlines.push({ id: Date.now(), title, date, status: 'active' });
-            }
-            saveToLocal(); closeModals();
-        }
-
-        function deleteItem(type) {
-            if (type === 'course') courses = courses.filter(c => c.id !== editingId);
-            if (type === 'study') selfStudies = selfStudies.filter(s => s.id !== editingId);
-            if (type === 'deadline') deadlines = deadlines.filter(d => d.id !== editingId);
-            saveToLocal(); closeModals();
+        function deleteCourse() {
+            const id = document.getElementById('edit-course-id').value;
+            courses = courses.filter(c => c.id != id);
+            closeModals(); saveAndRender();
         }
 
         function logClass(id, isPresent, event) {
             event.stopPropagation();
-            let c = courses.find(x => x.id === id);
+            let c = courses.find(x => x.id == id);
             if (c) {
                 c.total += 1;
                 if (isPresent) c.attended += 1;
-                saveToLocal();
+                saveAndRender();
             }
         }
 
-        function logModule(id, event) {
-            event.stopPropagation();
-            let s = selfStudies.find(x => x.id === id);
-            if (s && s.completedMods < s.totalMods) {
-                s.completedMods += 1;
-                saveToLocal();
+        // --- Assignment/Directive Setup ---
+        function openAssignmentModal(id = null) {
+            document.getElementById('modal-bg').classList.add('active');
+            document.getElementById('assignment-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            const delBtn = document.getElementById('btn-delete-assignment');
+
+            if (id) {
+                const d = deadlines.find(x => x.id === id);
+                document.getElementById('assignment-modal-title').innerText = "Edit Directive";
+                document.getElementById('edit-assignment-id').value = d.id;
+                document.getElementById('input-assignment-title').value = d.title;
+                document.getElementById('input-assignment-date').value = d.date;
+                delBtn.style.display = 'block';
+            } else {
+                document.getElementById('assignment-modal-title').innerText = "New Directive";
+                document.getElementById('edit-assignment-id').value = '';
+                document.getElementById('input-assignment-title').value = '';
+                document.getElementById('input-assignment-date').value = '';
+                delBtn.style.display = 'none';
             }
         }
 
-        function completeDeadline(id, event) {
-            event.stopPropagation();
-            deadlines = deadlines.filter(d => d.id !== id);
-            saveToLocal();
+        function submitAssignment() {
+            const id = document.getElementById('edit-assignment-id').value;
+            const title = document.getElementById('input-assignment-title').value.trim();
+            const date = document.getElementById('input-assignment-date').value;
+
+            if (!title || !date) return;
+
+            if (id) {
+                let d = deadlines.find(x => x.id == id);
+                d.title = title; d.date = date;
+            } else {
+                deadlines.push({ id: Date.now(), title, date });
+            }
+            closeModals(); saveAndRender();
         }
 
-        // --- RENDER UI ---
+        function deleteAssignment() {
+            const id = document.getElementById('edit-assignment-id').value;
+            deadlines = deadlines.filter(d => d.id != id);
+            closeModals(); saveAndRender();
+        }
+
+        function completeAssignment(id, event) {
+            event.stopPropagation();
+            deadlines = deadlines.filter(d => d.id != id);
+            saveAndRender();
+        }
+
+        // 3. Dashboard UI Rendering
         function renderDashboard() {
+            // Render Semester
             const now = new Date();
             const start = new Date(semConfig.start);
             const end = new Date(semConfig.end);
@@ -753,119 +581,78 @@
             const daysLeft = Math.ceil(totalDays - daysPassed);
             let pct = Math.max(0, Math.min(100, (daysPassed / totalDays) * 100));
 
-            document.getElementById('sem-start-date').innerText = start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-            document.getElementById('sem-end-date').innerText = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-            document.getElementById('days-left-badge').innerText = daysLeft > 0 ? `${daysLeft} Days Left` : `Complete`;
-            document.getElementById('sem-pct-text').innerText = `${Math.round(pct)}%`;
-            document.getElementById('sem-pct-bar').style.width = `${pct}%`;
+            document.getElementById('sem-start').innerText = isNaN(start) ? "--" : start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            document.getElementById('sem-end').innerText = isNaN(end) ? "--" : end.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            document.getElementById('sem-days-left').innerText = daysLeft > 0 ? `${daysLeft} Days Left` : `Vector Complete`;
+            document.getElementById('sem-pct-text').innerText = `${Math.round(pct || 0)}%`;
+            document.getElementById('sem-pct-bar').style.width = `${pct || 0}%`;
 
-            let safeCount = 0; let dangerCount = 0;
-            const courseContainer = document.getElementById('course-list');
-            courseContainer.innerHTML = '';
+            // Render Courses
+            const courseList = document.getElementById('course-list');
+            courseList.innerHTML = '';
 
-            if (courses.length === 0) courseContainer.innerHTML = '<p class="text-[10px] text-gray-600 font-bold uppercase tracking-widest text-center py-4 border border-white/5 rounded-xl border-dashed">No Courses Linked</p>';
+            if (courses.length === 0) courseList.innerHTML = '<p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest text-center py-4 border border-white/5 rounded-xl border-dashed">No Subjects Logged.</p>';
 
             courses.forEach(c => {
                 let currentPct = c.total === 0 ? 100 : Math.round((c.attended / c.total) * 100);
                 let isSafe = currentPct >= c.target;
-                if (c.total > 0) { isSafe ? safeCount++ : dangerCount++; }
                 let color = isSafe ? 'accentPurple' : 'accentRed';
 
-                courseContainer.innerHTML += `
-                    <div class="sys-card m-0 border-l-2 border-l-${color}" onclick="openCourseModal(${c.id})">
-                        <button class="absolute top-3 right-3 text-[8px] font-black text-${color} bg-${color}/10 px-2 py-0.5 rounded border border-${color}/20 uppercase tracking-widest pointer-events-none">Edit</button>
-                        <div class="flex justify-between items-start mb-1.5">
-                            <h3 class="text-xs font-black text-white leading-tight pr-10">${c.name}</h3>
-                            <span class="text-lg font-black text-${color} leading-none mt-1">${currentPct}<span class="text-[9px] text-gray-500">%</span></span>
+                courseList.innerHTML += `
+                    <div class="bg-[#080A0E] p-4 rounded-xl border-l-2 border-l-${color} border-y border-r border-white/5 relative overflow-hidden shadow-md cursor-pointer active:scale-95 transition" onclick="openCourseModal(${c.id})">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xs font-black text-white pr-10 uppercase tracking-wide truncate">${c.name}</h3>
+                            <span class="text-xl font-black text-${color} leading-none drop-shadow-[0_0_5px_currentColor]">${currentPct}<span class="text-[10px] text-gray-500">%</span></span>
                         </div>
-                        <div class="h-1 bg-[#020202] rounded-full overflow-hidden border border-white/5 mb-2.5">
-                            <div class="h-full bg-${color} shadow-[0_0_8px_currentColor] transition-all duration-500" style="width: ${currentPct}%"></div>
+                        <div class="h-1.5 bg-black rounded-full overflow-hidden border border-white/5 mb-3">
+                            <div class="h-full bg-${color} transition-all duration-500" style="width: ${currentPct}%"></div>
                         </div>
                         <div class="flex justify-between items-center">
-                            <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest">T: ${c.target}% | <span class="text-white">${c.attended}/${c.total}</span></p>
-                            <div class="flex gap-1.5">
-                                <button onclick="logClass(${c.id}, false, event)" class="w-7 h-7 rounded bg-accentRed/10 text-accentRed border border-accentRed/20 flex items-center justify-center active:scale-90 transition"><i class="ph-bold ph-x text-xs"></i></button>
-                                <button onclick="logClass(${c.id}, true, event)" class="w-7 h-7 rounded bg-accentPurple/10 text-accentPurple border border-accentPurple/20 flex items-center justify-center active:scale-90 transition"><i class="ph-bold ph-check text-xs"></i></button>
+                            <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Target: ${c.target}% | Attended: <span class="text-white">${c.attended}/${c.total}</span></p>
+                            <div class="flex gap-2">
+                                <button onclick="logClass(${c.id}, false, event)" class="w-8 h-8 rounded bg-accentRed/10 text-accentRed border border-accentRed/20 flex items-center justify-center hover:bg-accentRed/20 transition"><i class="ph-bold ph-x text-sm"></i></button>
+                                <button onclick="logClass(${c.id}, true, event)" class="w-8 h-8 rounded bg-accentPurple/10 text-accentPurple border border-accentPurple/20 flex items-center justify-center hover:bg-accentPurple/20 transition"><i class="ph-bold ph-check text-sm"></i></button>
                             </div>
                         </div>
                     </div>
                 `;
             });
-            document.getElementById('stat-safe').innerText = safeCount;
-            document.getElementById('stat-danger').innerText = dangerCount;
 
-            const studyContainer = document.getElementById('self-study-list');
-            studyContainer.innerHTML = '';
-            if (selfStudies.length === 0) studyContainer.innerHTML = '<div class="col-span-2 text-[10px] text-gray-600 font-bold uppercase tracking-widest text-center py-4 border border-white/5 rounded-xl border-dashed">No Active Vectors</div>';
+            // Render Assignments
+            const assignmentList = document.getElementById('assignment-list');
+            assignmentList.innerHTML = '';
 
-            selfStudies.sort((a, b) => new Date(a.date) - new Date(b.date)).forEach(s => {
-                let modPct = Math.round((s.completedMods / s.totalMods) * 100);
-                const dateStr = new Date(s.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-
-                studyContainer.innerHTML += `
-                    <div class="sys-card m-0 p-3 border-t-2 border-t-accentBlue relative flex flex-col justify-between" onclick="openStudyModal(${s.id})">
-                        <button class="absolute top-2 right-2 text-[8px] font-black text-accentBlue bg-accentBlue/10 px-1.5 py-0.5 rounded border border-accentBlue/20 uppercase tracking-widest pointer-events-none">Edit</button>
-                        <div>
-                            <h3 class="text-[11px] font-black text-white leading-tight pr-6 mb-1 truncate">${s.name}</h3>
-                            <p class="text-[8px] font-black text-accentBlue uppercase tracking-widest mb-2">${dateStr}</p>
-                        </div>
-                        <div>
-                            <div class="flex justify-between items-end mb-1">
-                                <span class="text-white text-[10px] font-bold">${s.completedMods}<span class="text-gray-600">/${s.totalMods}</span></span>
-                                <p class="text-[10px] font-black text-accentBlue">${modPct}%</p>
-                            </div>
-                            <div class="h-1 bg-[#020202] rounded-full overflow-hidden border border-white/5 mb-2">
-                                <div class="h-full bg-accentBlue transition-all duration-500" style="width: ${modPct}%"></div>
-                            </div>
-                            <button onclick="logModule(${s.id}, event)" class="w-full bg-accentBlue/10 text-accentBlue border border-accentBlue/20 font-black text-[9px] uppercase tracking-widest py-1.5 rounded active:scale-95 transition">
-                                +1 Mod
-                            </button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            const deadlineContainer = document.getElementById('deadline-list');
-            deadlineContainer.innerHTML = '';
-            if (deadlines.length === 0) deadlineContainer.innerHTML = '<p class="text-[10px] text-gray-600 font-bold uppercase tracking-widest text-center py-4 border border-white/5 rounded-xl border-dashed">No Active Directives</p>';
+            if (deadlines.length === 0) assignmentList.innerHTML = '<p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest text-center py-4 border border-white/5 rounded-xl border-dashed">No Active Directives.</p>';
 
             deadlines.sort((a, b) => new Date(a.date) - new Date(b.date)).forEach(d => {
                 const dateStr = new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                const isUrgent = (new Date(d.date) - new Date()) / 86400000 <= 2;
-                let color = isUrgent ? 'accentRed' : 'white';
+                const daysUntil = (new Date(d.date) - now) / 86400000;
+                let color = daysUntil <= 2 ? 'accentRed' : 'white';
 
-                deadlineContainer.innerHTML += `
-                    <div class="bg-black/80 p-2.5 rounded-xl border border-white/5 flex justify-between items-center cursor-pointer active:scale-95 transition" onclick="openDeadlineModal(${d.id})">
-                        <div class="flex items-center gap-2.5 overflow-hidden">
-                            <button onclick="completeDeadline(${d.id}, event)" class="shrink-0 w-6 h-6 rounded border border-white/10 flex items-center justify-center text-gray-600 hover:text-accentTeal hover:border-accentTeal active:scale-90 transition bg-black">
-                                <i class="ph-bold ph-check text-[10px] opacity-0 hover:opacity-100"></i>
+                assignmentList.innerHTML += `
+                    <div class="bg-black/80 p-3 rounded-xl border border-white/5 flex justify-between items-center cursor-pointer active:scale-95 transition" onclick="openAssignmentModal(${d.id})">
+                        <div class="flex items-center gap-3 overflow-hidden">
+                            <button onclick="completeAssignment(${d.id}, event)" class="shrink-0 w-7 h-7 rounded border border-white/20 flex items-center justify-center text-gray-500 hover:text-accentTeal hover:border-accentTeal transition bg-black">
+                                <i class="ph-bold ph-check text-xs opacity-0 hover:opacity-100"></i>
                             </button>
-                            <p class="text-[11px] font-bold text-gray-200 truncate pr-2">${d.title}</p>
+                            <p class="text-xs font-bold text-gray-200 truncate pr-2">${d.title}</p>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <span class="shrink-0 text-[9px] font-black text-${color} uppercase tracking-widest bg-${color}/10 px-2 py-1 rounded border border-${color}/20">${dateStr}</span>
-                        </div>
+                        <span class="shrink-0 text-[9px] font-black text-${color} uppercase tracking-widest bg-${color}/10 px-2.5 py-1 rounded border border-${color}/20">${dateStr}</span>
                     </div>
                 `;
             });
         }
 
-        document.getElementById('sem-input-start').value = semConfig.start;
-        document.getElementById('sem-input-end').value = semConfig.end;
-        window.onload = renderDashboard;
-    </script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('System OS Service Worker registered!', registration.scope);
-                    })
-                    .catch(error => {
-                        console.error('Service Worker registration failed:', error);
-                    });
+        // Boot system
+        window.onload = () => {
+            renderDashboard();
+            window.addEventListener('storage', () => {
+                semConfig = JSON.parse(localStorage.getItem('sys_semester_config')) || { start: '2026-01-01', end: '2026-06-01' };
+                courses = JSON.parse(localStorage.getItem('sys_courses')) || [];
+                deadlines = JSON.parse(localStorage.getItem('sys_deadlines')) || [];
+                renderDashboard();
             });
-        }
+        };
     </script>
 </body>
 

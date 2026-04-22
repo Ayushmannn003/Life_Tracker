@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>System OS | Daily Progress</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { 
+                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6', 
+                        accentPurple: '#A855F7', accentRed: '#FF4C4C', accentYellow: '#FBBF24',
+                        accentGreen: '#00E676', cardBg: '#080A0E' 
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* CSS HARD-LOCK: PREVENTS BOTTOM NAV FROM MOVING */
+        body, html { 
+            background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; 
+            margin: 0; padding: 0; height: 100dvh; overflow: hidden; /* Locks the entire page */
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .mobile-viewport { 
+            width: 100%; max-width: 430px; margin: 0 auto; position: relative; 
+            background-color: #020202; height: 100%; display: flex; 
+            flex-direction: column; box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+        
+        /* ONLY THE MAIN TAG IS ALLOWED TO SCROLL */
+        main { 
+            padding: 1.5rem 1.25rem; flex: 1; overflow-y: auto; padding-bottom: 2rem; 
+        }
+        
+        ::-webkit-scrollbar { display: none; }
+        * { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* GLASS CARD SYSTEM */
+        .sys-card { 
+            background: #080A0E; border: 1px solid rgba(255,255,255,0.05); border-radius: 1.25rem;
+            padding: 1.25rem; box-shadow: 0 4px 20px rgba(0,0,0,0.3); margin-bottom: 1rem;
+            position: relative; overflow: hidden;
+        }
+        
+        .border-teal { border-top: 2px solid #66FCF1; }
+        .border-purple { border-top: 2px solid #A855F7; }
+        .border-red { border-top: 2px solid #FF4C4C; }
+        .border-blue { border-top: 2px solid #3B82F6; }
+
+        /* LIST ITEMS */
+        .list-item {
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 0.75rem; padding: 0.75rem; margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-viewport">
+        <header class="p-6 pb-4 flex justify-between items-center z-50 bg-[#020202]/90 backdrop-blur-xl border-b border-white/5 shrink-0">
+            <div class="flex items-center gap-4">
+                <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
+                <h1 class="text-xl font-black text-white tracking-widest uppercase">Daily Progress</h1>
+            </div>
+            <div class="text-[10px] font-black text-white uppercase tracking-widest bg-white/10 border border-white/20 px-3 py-1.5 rounded-full flex items-center gap-2">
+                <div class="w-1.5 h-1.5 rounded-full bg-accentTeal animate-pulse shadow-[0_0_5px_#66FCF1]"></div> <span id="current-date">--</span>
+            </div>
+        </header>
+
+        <main>
+            <div class="mb-6 px-1 flex justify-between items-end">
+                <div>
+                    <h2 class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">System Execution Yield</h2>
+                    <h1 class="text-4xl font-black text-white leading-none drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] transition-colors duration-500" id="master-yield">0%</h1>
+                </div>
+                <i class="ph-fill ph-trend-up text-3xl text-gray-600" id="master-icon"></i>
+            </div>
+
+            <div class="sys-card border-teal">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center gap-2">
+                        <i class="ph-fill ph-check-square-offset text-accentTeal text-xl drop-shadow-[0_0_5px_rgba(102,252,241,0.5)]"></i>
+                        <div>
+                            <h2 class="text-xs font-black text-white uppercase tracking-widest">Tasks Cleared</h2>
+                        </div>
+                    </div>
+                    <span class="text-[10px] font-black text-accentTeal uppercase tracking-widest" id="task-ratio">0/0</span>
+                </div>
+                
+                <div class="h-1.5 bg-black rounded-full overflow-hidden border border-white/5 mb-4">
+                    <div class="h-full bg-accentTeal shadow-[0_0_8px_rgba(102,252,241,0.8)] transition-all duration-700 ease-out" id="task-bar" style="width: 0%"></div>
+                </div>
+
+                <div id="completed-tasks-list" class="space-y-1">
+                    </div>
+            </div>
+
+            <div class="sys-card border-purple">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center gap-2">
+                        <i class="ph-fill ph-infinity text-accentPurple text-xl drop-shadow-[0_0_5px_rgba(168,85,247,0.5)]"></i>
+                        <div>
+                            <h2 class="text-xs font-black text-white uppercase tracking-widest">Protocol Adherence</h2>
+                        </div>
+                    </div>
+                    <span class="text-[10px] font-black text-accentPurple uppercase tracking-widest" id="ritual-ratio">0/0</span>
+                </div>
+                
+                <div class="h-1.5 bg-black rounded-full overflow-hidden border border-white/5 mb-2">
+                    <div class="h-full bg-accentPurple shadow-[0_0_8px_rgba(168,85,247,0.8)] transition-all duration-700 ease-out" id="ritual-bar" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="sys-card border-red cursor-pointer active:scale-95 transition-transform" onclick="window.location.href='budget.html'">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center gap-2">
+                        <i class="ph-fill ph-wallet text-accentRed text-xl drop-shadow-[0_0_5px_rgba(255,76,76,0.5)]"></i>
+                        <div>
+                            <h2 class="text-xs font-black text-white uppercase tracking-widest">Capital Burn</h2>
+                            <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mt-0.5">Automated Sync</p>
+                        </div>
+                    </div>
+                    <span class="text-lg font-black text-accentRed drop-shadow-[0_0_5px_rgba(255,76,76,0.5)]" id="total-spent">$0</span>
+                </div>
+                
+                <div class="h-1.5 bg-black rounded-full overflow-hidden border border-white/5 mb-4">
+                    <div class="h-full bg-accentRed shadow-[0_0_8px_rgba(255,76,76,0.8)] transition-all duration-700 ease-out" id="burn-bar" style="width: 0%"></div>
+                </div>
+
+                <div id="expenses-list" class="space-y-1">
+                    </div>
+            </div>
+
+            <div class="sys-card border-blue mb-4">
+                <div class="flex items-center gap-2 mb-4">
+                    <i class="ph-fill ph-heartbeat text-accentBlue text-xl drop-shadow-[0_0_5px_rgba(59,130,246,0.5)]"></i>
+                    <h2 class="text-xs font-black text-white uppercase tracking-widest">Bio-Metrics Check</h2>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-black/50 p-3 rounded-xl border border-white/5 flex flex-col justify-center items-center transition-colors" id="card-water">
+                        <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-1">Water</p>
+                        <p class="text-sm font-black text-white" id="stat-water">0 <span class="text-[9px] text-gray-500">ml</span></p>
+                    </div>
+                    <div class="bg-black/50 p-3 rounded-xl border border-white/5 flex flex-col justify-center items-center transition-colors" id="card-caffeine">
+                        <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-1">Caffeine</p>
+                        <p class="text-sm font-black text-white" id="stat-caffeine">0 <span class="text-[9px] text-gray-500">cp</span></p>
+                    </div>
+                    <div class="bg-black/50 p-3 rounded-xl border border-white/5 flex flex-col justify-center items-center transition-colors" id="card-meditation">
+                        <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-1">Meditation</p>
+                        <p class="text-sm font-black text-white" id="stat-meditation">0 <span class="text-[9px] text-gray-500">min</span></p>
+                    </div>
+                    <div class="bg-black/50 p-3 rounded-xl border border-white/5 flex flex-col justify-center items-center transition-colors" id="card-steps">
+                        <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-1">Movement</p>
+                        <p class="text-sm font-black text-white" id="stat-steps">0 <span class="text-[9px] text-gray-500">steps</span></p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="sidebar-injector"></div>
+    <script src="js/sidebar.js"></script>
+    <script src="js/bottom-nav.js"></script>
+
+    <script>
+        // =========================================================================
+        // REAL-TIME PROGRESS ENGINE
+        // =========================================================================
+
+        let lastTaskCount = -1;
+        let lastRitualCount = -1;
+        let lastExpenseCount = -1;
+        let lastHealthData = "";
+
+        function syncRealTimeProgress() {
+            const now = new Date();
+            const todayStr = now.toLocaleDateString('en-CA'); 
+            const displayDate = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            
+            document.getElementById('current-date').innerText = displayDate;
+
+            // --- 1. TASKS SYNC ---
+            const todos = JSON.parse(localStorage.getItem('sys_todos')) || [];
+            const completedTasks = todos.filter(t => t.completed);
+            
+            if (completedTasks.length !== lastTaskCount || todos.length !== lastTaskCount) {
+                const taskPct = todos.length === 0 ? 0 : Math.round((completedTasks.length / todos.length) * 100);
+                document.getElementById('task-ratio').innerText = `${completedTasks.length}/${todos.length}`;
+                document.getElementById('task-bar').style.width = `${taskPct}%`;
+
+                const taskListEl = document.getElementById('completed-tasks-list');
+                taskListEl.innerHTML = '';
+                
+                if (completedTasks.length === 0) {
+                    taskListEl.innerHTML = `<p class="text-[9px] font-bold text-gray-600 uppercase tracking-widest text-center py-3 bg-black/40 rounded-lg border border-dashed border-white/5">No tasks completed yet</p>`;
+                } else {
+                    completedTasks.reverse().forEach(t => {
+                        taskListEl.innerHTML += `
+                            <div class="list-item border-l-2 border-l-accentTeal">
+                                <p class="text-xs font-semibold text-gray-300 strike-through line-through opacity-70 truncate pr-4">${t.text}</p>
+                                <i class="ph-fill ph-check-circle text-accentTeal shrink-0"></i>
+                            </div>
+                        `;
+                    });
+                }
+                lastTaskCount = completedTasks.length;
+            }
+
+            // --- 2. RITUALS SYNC ---
+            const rituals = JSON.parse(localStorage.getItem('sys_rituals')) || [];
+            const completedRituals = rituals.filter(r => r.completed).length;
+            
+            if (completedRituals !== lastRitualCount || rituals.length !== lastRitualCount) {
+                const ritualPct = rituals.length === 0 ? 0 : Math.round((completedRituals / rituals.length) * 100);
+                document.getElementById('ritual-ratio').innerText = `${completedRituals}/${rituals.length}`;
+                document.getElementById('ritual-bar').style.width = `${ritualPct}%`;
+                lastRitualCount = completedRituals;
+            }
+
+            // --- 3. MASTER YIELD CALCULATION ---
+            const tPct = todos.length === 0 ? 0 : (completedTasks.length / todos.length) * 100;
+            const rPct = rituals.length === 0 ? 0 : (completedRituals / rituals.length) * 100;
+            
+            let masterYield = 0;
+            if(todos.length === 0 && rituals.length === 0) masterYield = 0;
+            else if (todos.length === 0) masterYield = rPct;
+            else if (rituals.length === 0) masterYield = tPct;
+            else masterYield = Math.round((tPct + rPct) / 2);
+            
+            const masterText = document.getElementById('master-yield');
+            const masterIcon = document.getElementById('master-icon');
+            masterText.innerText = `${Math.round(masterYield)}%`;
+            
+            if(masterYield >= 80) {
+                masterText.className = "text-4xl font-black text-accentGreen leading-none drop-shadow-[0_0_15px_rgba(0,230,118,0.4)] transition-colors duration-500";
+                masterIcon.className = "ph-fill ph-trend-up text-3xl text-accentGreen drop-shadow-[0_0_10px_rgba(0,230,118,0.4)]";
+            } else if(masterYield >= 50) {
+                masterText.className = "text-4xl font-black text-accentTeal leading-none drop-shadow-[0_0_15px_rgba(102,252,241,0.4)] transition-colors duration-500";
+                masterIcon.className = "ph-fill ph-trend-up text-3xl text-accentTeal drop-shadow-[0_0_10px_rgba(102,252,241,0.4)]";
+            } else {
+                masterText.className = "text-4xl font-black text-white leading-none drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] transition-colors duration-500";
+                masterIcon.className = "ph-fill ph-trend-down text-3xl text-gray-600";
+            }
+
+            // --- 4. EXPENSES SYNC (AUTOMATED PULL) ---
+            const allExpenses = JSON.parse(localStorage.getItem('sys_expenses')) || [];
+            const dailyExpenses = allExpenses.filter(e => e.date === todayStr);
+            
+            if (dailyExpenses.length !== lastExpenseCount) {
+                const listEl = document.getElementById('expenses-list');
+                let total = 0;
+                listEl.innerHTML = '';
+
+                if (dailyExpenses.length === 0) {
+                    listEl.innerHTML = `<p class="text-[9px] font-bold text-gray-600 uppercase tracking-widest text-center py-3 bg-black/40 rounded-lg border border-dashed border-white/5">Awaiting Finance Sync</p>`;
+                } else {
+                    dailyExpenses.reverse().forEach(e => {
+                        total += parseFloat(e.amount);
+                        listEl.innerHTML += `
+                            <div class="list-item">
+                                <p class="text-xs font-semibold text-gray-300 truncate pr-4">${e.desc}</p>
+                                <span class="text-xs font-black text-white">$${parseFloat(e.amount).toFixed(2)}</span>
+                            </div>
+                        `;
+                    });
+                }
+                
+                document.getElementById('total-spent').innerText = `$${total.toFixed(2)}`;
+                
+                // Assuming a default daily limit of $50 for the visual bar
+                const burnPct = Math.min((total / 50) * 100, 100);
+                document.getElementById('burn-bar').style.width = `${burnPct}%`;
+
+                lastExpenseCount = dailyExpenses.length;
+            }
+
+            // --- 5. BIO-METRICS SYNC ---
+            const healthHistory = JSON.parse(localStorage.getItem('sys_health_history')) || {};
+            const todayHealth = healthHistory[todayStr] || { water: 0, caffeine: 0, meditation: 0, steps: 0 };
+            const currentHealthDataStr = JSON.stringify(todayHealth);
+
+            if (currentHealthDataStr !== lastHealthData) {
+                document.getElementById('stat-water').innerHTML = `${todayHealth.water} <span class="text-[9px] text-gray-500">ml</span>`;
+                document.getElementById('stat-caffeine').innerHTML = `${todayHealth.caffeine} <span class="text-[9px] text-gray-500">cp</span>`;
+                document.getElementById('stat-meditation').innerHTML = `${todayHealth.meditation} <span class="text-[9px] text-gray-500">m</span>`;
+                document.getElementById('stat-steps').innerHTML = `${todayHealth.steps} <span class="text-[9px] text-gray-500">steps</span>`;
+                
+                if(todayHealth.water >= 3000) document.getElementById('card-water').classList.add('border-accentBlue', 'bg-accentBlue/10');
+                if(todayHealth.meditation > 0) document.getElementById('card-meditation').classList.add('border-accentPurple', 'bg-accentPurple/10');
+                
+                lastHealthData = currentHealthDataStr;
+            }
+        }
+
+        window.onload = () => {
+            syncRealTimeProgress();
+            setInterval(syncRealTimeProgress, 2000); 
+            window.addEventListener('storage', syncRealTimeProgress);
+        };
+    </script>
+    <script src="js/sidebar.js"></script>
+</body>
+</html>

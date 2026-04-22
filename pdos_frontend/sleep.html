@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>System OS | Recovery Arc</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>System OS | Recovery Yield</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -12,339 +11,334 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { bgDark: '#020202', accentPurple: '#A855F7', accentYellow: '#FBBF24', accentBlue: '#3B82F6' }
+                    colors: { 
+                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6', 
+                        accentPurple: '#A855F7', accentRed: '#FF4C4C', accentYellow: '#FBBF24',
+                        accentGreen: '#00E676', cardBg: '#080A0E' 
+                    }
                 }
             }
         }
     </script>
     <style>
-        /* UNIVERSAL MOBILE SCROLL LOCK */
-        body,
-        html {
-            background-color: #000;
-            color: #C5C6C7;
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            height: 100%;
-            height: 100dvh;
-            overflow: hidden;
-            position: fixed;
-            width: 100%;
+        /* STRICT MOBILE LOCK */
+        body, html { 
+            background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; 
+            margin: 0; padding: 0; height: 100dvh; overflow: hidden; -webkit-font-smoothing: antialiased;
         }
-
-        .mobile-viewport {
-            width: 100%;
-            max-width: 430px;
-            height: 100dvh;
-            margin: 0 auto;
-            position: relative;
-            background-color: #020202;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+        .mobile-viewport { 
+            width: 100%; max-width: 430px; margin: 0 auto; position: relative; 
+            background-color: #020202; height: 100%; display: flex; flex-direction: column; 
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
         }
+        main { padding: 1.25rem; flex: 1; overflow-y: auto; padding-bottom: 9rem; display: flex; flex-direction: column; gap: 1.5rem; }
+        ::-webkit-scrollbar { display: none; }
+        * { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* NEW: THEMATIC DEEP SPACE NIGHT SKY BACKGROUND */
-        .sleep-bg {
-            background-image: url('https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&fit=crop&q=80&w=1000');
-            background-size: cover;
-            background-position: center;
-            position: absolute;
-            inset: 0;
-            opacity: 0.25;
-            /* Slightly brighter for the stars to pop */
-            z-index: 1;
-            filter: grayscale(80%) hue-rotate(250deg);
-            /* Gives it a subtle, moody purple/blue space tint */
+        .touch-btn { transition: transform 0.1s; cursor: pointer; }
+        .touch-btn:active { transform: scale(0.96); }
+
+        /* DEEP GLASS CARDS */
+        .sys-card { 
+            background: linear-gradient(145deg, #0A0C12 0%, #050608 100%); 
+            border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem;
+            padding: 1.25rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.05);
+            position: relative; overflow: hidden; flex-shrink: 0;
         }
+        .border-purple { border-top: 2px solid #A855F7; }
+        .border-yellow { border-top: 2px solid #FBBF24; }
 
-        .vignette {
-            background: linear-gradient(180deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.98) 75%, #000 100%);
-            position: absolute;
-            inset: 0;
-            z-index: 2;
+        /* INPUTS */
+        .sys-input {
+            background: #000; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 0.75rem; padding: 1rem; color: #fff; font-size: 13px; font-weight: 600;
+            outline: none; transition: border-color 0.2s; width: 100%; text-align: center;
         }
+        .sys-input:focus { border-color: #A855F7; }
 
-        .content-layer {
-            position: relative;
-            z-index: 10;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
+        .section-divider { text-align: center; padding: 0.25rem 0; opacity: 0.5; }
+        .section-divider span { font-size: 9px; font-weight: 900; color: #4B5563; text-transform: uppercase; letter-spacing: 0.4em; }
 
-        main {
-            flex: 1;
-            overflow-y: auto;
-            overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
-            padding: 1.25rem;
-        }
-
-        main::-webkit-scrollbar {
-            display: none;
-        }
-
-        .glass-panel {
-            background: rgba(13, 17, 23, 0.75);
-            backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        /* Form Inputs */
-        .input-dark {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 12px;
-            color: white;
-            outline: none;
-            transition: 0.3s;
-            font-size: 14px;
-            width: 100%;
-        }
-
-        .input-dark:focus {
-            border-color: #A855F7;
-        }
-
-        /* Override Calendar Icon Filter for Dark Mode */
-        input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(1);
-            opacity: 0.6;
-            cursor: pointer;
-        }
-
-        .quality-btn {
-            flex: 1;
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 10px;
-            font-weight: 900;
-            text-transform: uppercase;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: 0.2s;
-            cursor: pointer;
-        }
-
-        .quality-btn.active {
-            background: #A855F7;
-            color: #000;
-            border-color: #A855F7;
-            box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+        /* MODAL ANIMATION */
+        .modal-enter { animation: fadeIn 0.2s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
     </style>
 </head>
-
 <body>
 
-    <div class="mobile-viewport">
-        <div class="sleep-bg"></div>
-        <div class="vignette"></div>
-
-        <div class="content-layer">
-            <div id="sidebar-injector"></div>
-
-            <header
-                class="p-6 pb-2 flex justify-between items-center border-b border-white/5 bg-black/20 backdrop-blur-md">
-                <div class="flex items-center gap-4">
-                    <i id="menu-btn"
-                        class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
-                    <h1 class="text-xl font-black text-white tracking-widest uppercase">Recovery</h1>
-                </div>
-                <div
-                    class="text-[9px] font-black text-accentPurple border border-accentPurple/20 bg-accentPurple/5 px-3 py-1 rounded-full uppercase">
-                    Sleep Arc</div>
-            </header>
-
-            <main>
-                <div class="glass-panel p-6 rounded-[2.5rem] mb-6 space-y-4 border-t-2 border-t-accentPurple">
-                    <div class="flex items-center gap-2">
-                        <i class="ph-fill ph-moon-stars text-accentPurple text-lg"></i>
-                        <h3 class="text-[10px] font-black text-white uppercase tracking-widest">Log Core Sleep</h3>
-                    </div>
-
-                    <div class="space-y-3">
-                        <div class="grid grid-cols-2 gap-3">
-                            <input type="date" id="core-date" class="input-dark text-xs font-bold text-gray-300">
-                            <input type="number" id="core-hours" placeholder="Hours (e.g. 7.5)" step="0.5"
-                                class="input-dark">
-                        </div>
-
-                        <div>
-                            <div class="flex gap-2 mt-1" id="quality-selector">
-                                <div class="quality-btn" onclick="selectQuality('Poor')">Poor</div>
-                                <div class="quality-btn active" onclick="selectQuality('Average')">Avg</div>
-                                <div class="quality-btn" onclick="selectQuality('Optimal')">Optimal</div>
-                            </div>
-                        </div>
-
-                        <button onclick="saveCore()"
-                            class="w-full bg-accentPurple/20 text-accentPurple border border-accentPurple/30 font-black py-3.5 mt-2 rounded-xl uppercase text-[10px] tracking-widest active:scale-95 transition">Save
-                            Core Record</button>
-                    </div>
-                </div>
-
-                <div class="glass-panel p-6 rounded-[2.5rem] mb-8 space-y-4 border-t-2 border-t-accentYellow">
-                    <div class="flex items-center gap-2">
-                        <i class="ph-fill ph-battery-charging text-accentYellow text-lg"></i>
-                        <h3 class="text-[10px] font-black text-white uppercase tracking-widest">Power Nap</h3>
-                    </div>
-
-                    <div class="space-y-3">
-                        <div class="grid grid-cols-2 gap-3">
-                            <input type="date" id="nap-date" class="input-dark text-xs font-bold text-gray-300">
-                            <input type="number" id="nap-mins" placeholder="Minutes (e.g. 45)" class="input-dark">
-                        </div>
-                        <button onclick="saveNap()"
-                            class="w-full bg-accentYellow/20 text-accentYellow border border-accentYellow/30 font-black py-3.5 rounded-xl uppercase text-[10px] tracking-widest active:scale-95 transition">Inject
-                            Nap</button>
-                    </div>
-                </div>
-
-                <div class="space-y-4">
-                    <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em] px-2">Recovery Ledger</h3>
-                    <div id="sleep-ledger" class="space-y-3">
-                    </div>
-                </div>
-
-                <div class="h-32"></div>
-            </main>
+    <div id="modal-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[10000] hidden items-center justify-center p-4">
+        <div id="sleep-modal" class="sys-card border-purple w-full max-w-[320px] hidden flex-col gap-4 modal-enter">
+            <h2 class="text-xs font-black text-white uppercase tracking-widest text-center mb-1">Log Core Sleep</h2>
+            <input type="number" id="sleep-input" class="sys-input text-xl" placeholder="Hours (e.g. 7.5)" step="0.1" min="0" max="24">
+            <div class="flex gap-2 mt-2">
+                <button onclick="closeModal()" class="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black text-gray-400 uppercase tracking-widest touch-btn hover:text-white">Cancel</button>
+                <button onclick="saveCoreSleep()" class="flex-1 py-3 rounded-xl bg-accentPurple text-white text-[10px] font-black uppercase tracking-widest touch-btn shadow-[0_0_10px_rgba(168,85,247,0.3)]">Save Log</button>
+            </div>
         </div>
     </div>
 
-    <script src="js/sidebar.js"></script>
-    <script>
-        let currentQuality = 'Average';
+    <div class="mobile-viewport">
+        <header class="p-6 pb-2 flex justify-between items-center z-50 bg-[#020202]/90 backdrop-blur-xl shrink-0">
+            <div class="flex items-center gap-4">
+                <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
+                <h1 class="text-xl font-black text-white tracking-widest uppercase">Recovery</h1>
+            </div>
+            <div class="text-[10px] font-black text-accentPurple bg-accentPurple/10 border border-accentPurple/20 px-3 py-1.5 rounded-full flex items-center gap-2">
+                <div class="w-1.5 h-1.5 rounded-full bg-accentPurple animate-pulse shadow-[0_0_5px_#A855F7]"></div> YIELD
+            </div>
+        </header>
 
-        // Data stores
-        let sleepLedger = JSON.parse(localStorage.getItem('sys_sleep_ledger')) || [];
-        let sleepGraphData = JSON.parse(localStorage.getItem('sys_sleep_logs')) || [7, 6.5, 8, 7.2, 6, 7.5, 8];
+        <main>
+            <div class="sys-card border-purple relative shrink-0">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-2">
+                        <i class="ph-fill ph-moon-stars text-accentPurple text-lg drop-shadow-[0_0_5px_rgba(168,85,247,0.5)]"></i>
+                        <h2 class="text-[11px] font-black text-gray-400 uppercase tracking-widest">Core Sleep (Today)</h2>
+                    </div>
+                    <button onclick="openSleepModal()" class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-2 py-1 border border-white/10 rounded hover:text-white transition touch-btn">
+                        Manual Log
+                    </button>
+                </div>
+                
+                <div class="flex justify-between items-end mb-4">
+                    <div>
+                        <h1 class="text-5xl font-black text-white" id="today-sleep">0.0<span class="text-2xl text-gray-500">h</span></h1>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[9px] font-bold text-gray-600 uppercase tracking-widest">7-Day Sleep Debt</p>
+                        <p class="text-xl font-black text-accentRed" id="sleep-debt">0.0h</p>
+                    </div>
+                </div>
 
-        // Initialize Dates to Today
-        const todayStr = new Date().toISOString().split('T')[0];
-        document.getElementById('core-date').value = todayStr;
-        document.getElementById('nap-date').value = todayStr;
+                <div class="bg-black/50 border border-white/5 p-3 rounded-xl flex items-center justify-between mt-2">
+                    <div>
+                        <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Cognitive Readiness</p>
+                        <p class="text-xs font-black text-white uppercase tracking-widest mt-0.5" id="cog-readiness">Awaiting Data</p>
+                    </div>
+                    <div class="w-2 h-2 rounded-full bg-gray-600" id="cog-indicator"></div>
+                </div>
+            </div>
 
-        // UI Quality Selector
-        function selectQuality(q) {
-            currentQuality = q;
-            document.querySelectorAll('.quality-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.innerText === q.toUpperCase() || (btn.innerText === 'AVG' && q === 'Average')) {
-                    btn.classList.add('active');
-                }
-            });
-        }
+            <div class="section-divider"><span>Daytime Protocols</span></div>
 
-        // Helper to format Date string
-        function formatDate(dateInputStr) {
-            const d = new Date(dateInputStr);
-            return d.toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'short', month: 'short', day: 'numeric' });
-        }
+            <div class="sys-card border-yellow relative shrink-0">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-2">
+                        <i class="ph-fill ph-sun-horizon text-accentYellow text-lg drop-shadow-[0_0_5px_rgba(251,191,36,0.5)]"></i>
+                        <h2 class="text-[11px] font-black text-gray-400 uppercase tracking-widest">Power Nap Injector</h2>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[9px] font-bold text-gray-600 uppercase tracking-widest">Logged Today</p>
+                        <p class="text-sm font-black text-accentYellow" id="today-nap">0m</p>
+                    </div>
+                </div>
 
-        // Save Core Sleep
-        function saveCore() {
-            const dateVal = document.getElementById('core-date').value;
-            const hours = parseFloat(document.getElementById('core-hours').value);
-
-            if (!dateVal || !hours || hours <= 0) return;
-
-            const dateStr = formatDate(dateVal);
-
-            sleepLedger.unshift({
-                id: Date.now(), type: 'Core', date: dateStr,
-                duration: `${hours} hrs`, quality: currentQuality
-            });
-            localStorage.setItem('sys_sleep_ledger', JSON.stringify(sleepLedger));
-
-            sleepGraphData.push(hours);
-            if (sleepGraphData.length > 7) sleepGraphData.shift();
-            localStorage.setItem('sys_sleep_logs', JSON.stringify(sleepGraphData));
-
-            document.getElementById('core-hours').value = '';
-            renderLedger();
-        }
-
-        // Save Nap
-        function saveNap() {
-            const dateVal = document.getElementById('nap-date').value;
-            const mins = parseInt(document.getElementById('nap-mins').value);
-
-            if (!dateVal || !mins || mins <= 0) return;
-
-            const dateStr = formatDate(dateVal);
-
-            sleepLedger.unshift({
-                id: Date.now(), type: 'Nap', date: dateStr,
-                duration: `${mins} mins`, quality: 'Boost'
-            });
-            localStorage.setItem('sys_sleep_ledger', JSON.stringify(sleepLedger));
-
-            document.getElementById('nap-mins').value = '';
-            renderLedger();
-        }
-
-        function deleteLog(id) {
-            sleepLedger = sleepLedger.filter(log => log.id !== id);
-            localStorage.setItem('sys_sleep_ledger', JSON.stringify(sleepLedger));
-            renderLedger();
-        }
-
-        function renderLedger() {
-            const container = document.getElementById('sleep-ledger');
-            container.innerHTML = '';
-
-            sleepLedger.forEach(log => {
-                const isNap = log.type === 'Nap';
-                const borderColor = isNap ? 'border-l-accentYellow' : 'border-l-accentPurple';
-                const textColor = isNap ? 'text-accentYellow' : 'text-accentPurple';
-                const icon = isNap ? 'ph-battery-charging' : 'ph-moon-stars';
-
-                let badgeColor = 'text-accentPurple';
-                if (log.quality === 'Optimal') badgeColor = 'text-accentTeal';
-                if (log.quality === 'Poor') badgeColor = 'text-accentRed';
-                if (isNap) badgeColor = 'text-accentYellow';
-
-                container.innerHTML += `
-                    <div class="glass-panel p-4 rounded-2xl flex justify-between items-center border-l-2 ${borderColor}">
-                        <div class="flex items-center gap-4">
-                            <i class="ph-fill ${icon} ${textColor} text-xl opacity-80"></i>
-                            <div>
-                                <p class="text-sm font-black text-white leading-none">${log.duration}</p>
-                                <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mt-1">${log.date}</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <span class="text-[8px] font-black uppercase ${badgeColor} tracking-widest bg-white/5 px-2 py-1 rounded">${log.quality}</span>
-                            <i onclick="deleteLog(${log.id})" class="ph ph-trash text-gray-600 active:text-red-500 transition text-lg cursor-pointer"></i>
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <button onclick="logNap(20)" class="bg-black/40 border border-white/10 p-3 rounded-xl touch-btn hover:border-accentYellow/50 transition flex flex-col items-center justify-center gap-1">
+                        <i class="ph-fill ph-coffee text-accentYellow text-xl"></i>
+                        <span class="text-[10px] font-black text-white uppercase tracking-widest">Caffeine Nap</span>
+                        <span class="text-[8px] font-bold text-gray-500 uppercase">20 Minutes</span>
+                    </button>
+                    <button onclick="logNap(26)" class="bg-black/40 border border-white/10 p-3 rounded-xl touch-btn hover:border-accentYellow/50 transition flex flex-col items-center justify-center gap-1">
+                        <i class="ph-fill ph-rocket-launch text-accentYellow text-xl"></i>
+                        <span class="text-[10px] font-black text-white uppercase tracking-widest">NASA Protocol</span>
+                        <span class="text-[8px] font-bold text-gray-500 uppercase">26 Minutes</span>
+                    </button>
+                </div>
+                
+                <button onclick="logNap(90)" class="w-full bg-black/40 border border-white/10 p-3 rounded-xl touch-btn hover:border-accentYellow/50 transition flex justify-between items-center px-4">
+                    <div class="flex items-center gap-3">
+                        <i class="ph-fill ph-brain text-accentPurple text-xl"></i>
+                        <div class="text-left">
+                            <p class="text-[10px] font-black text-white uppercase tracking-widest">Full REM Cycle</p>
+                            <p class="text-[8px] font-bold text-gray-500 uppercase">Memory Consolidation</p>
                         </div>
                     </div>
-                `;
-            });
+                    <span class="text-xs font-black text-accentPurple">90m</span>
+                </button>
+            </div>
 
-            if (sleepLedger.length === 0) {
-                container.innerHTML = '<p class="text-[10px] text-gray-600 italic text-center py-6 uppercase tracking-widest">No Recovery Data Logged</p>';
+            <div class="section-divider"><span>Historical Ledger</span></div>
+
+            <div>
+                <h3 class="px-4 text-[9px] font-black text-gray-600 uppercase tracking-[0.2em] mb-3">Last 7 Days Yield</h3>
+                <div id="ledger-container" class="space-y-2">
+                    </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="sidebar-injector"></div>
+    <script src="js/sidebar.js"></script>
+    <script src="js/bottom-nav.js"></script>
+
+    <script>
+        // =========================================================================
+        // RECOVERY YIELD ENGINE
+        // =========================================================================
+
+        const IDEAL_SLEEP = 7.5; // Baseline hours for students to calculate debt
+
+        function getLocalYMD(d) {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        }
+
+        const todayStr = getLocalYMD(new Date());
+
+        // --- MODAL SYSTEM ---
+        function openSleepModal() {
+            document.getElementById('modal-overlay').classList.remove('hidden');
+            document.getElementById('modal-overlay').classList.add('flex');
+            document.getElementById('sleep-modal').classList.remove('hidden');
+            document.getElementById('sleep-modal').classList.add('flex');
+            document.getElementById('sleep-input').focus();
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.add('hidden');
+            document.getElementById('modal-overlay').classList.remove('flex');
+            document.getElementById('sleep-modal').classList.add('hidden');
+            document.getElementById('sleep-modal').classList.remove('flex');
+        }
+
+        function saveCoreSleep() {
+            const hours = parseFloat(document.getElementById('sleep-input').value);
+            if (isNaN(hours) || hours < 0 || hours > 24) return;
+
+            let sleepH = JSON.parse(localStorage.getItem('sys_sleep_history')) || {};
+            sleepH[todayStr] = hours;
+            localStorage.setItem('sys_sleep_history', JSON.stringify(sleepH));
+            
+            document.getElementById('sleep-input').value = '';
+            closeModal();
+            loadRecoveryData();
+            window.dispatchEvent(new Event('storage')); // Ping Analyzer
+        }
+
+        function logNap(minutes) {
+            let napH = JSON.parse(localStorage.getItem('sys_nap_history')) || {};
+            // Naps are additive. If you take two 20m naps, it equals 40m.
+            const currentNaps = parseInt(napH[todayStr]) || 0;
+            napH[todayStr] = currentNaps + minutes;
+            localStorage.setItem('sys_nap_history', JSON.stringify(napH));
+            
+            loadRecoveryData();
+            window.dispatchEvent(new Event('storage')); // Ping Analyzer
+        }
+
+        function clearDay(dateStr) {
+            if(confirm("Clear recovery logs for this day?")) {
+                let sleepH = JSON.parse(localStorage.getItem('sys_sleep_history')) || {};
+                let napH = JSON.parse(localStorage.getItem('sys_nap_history')) || {};
+                
+                delete sleepH[dateStr];
+                delete napH[dateStr];
+                
+                localStorage.setItem('sys_sleep_history', JSON.stringify(sleepH));
+                localStorage.setItem('sys_nap_history', JSON.stringify(napH));
+                
+                loadRecoveryData();
+                window.dispatchEvent(new Event('storage'));
             }
         }
 
-        window.onload = renderLedger;
-    </script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('System OS Service Worker registered!', registration.scope);
-                    })
-                    .catch(error => {
-                        console.error('Service Worker registration failed:', error);
-                    });
-            });
+        // --- CORE DATA ENGINE ---
+        function loadRecoveryData() {
+            const sleepH = JSON.parse(localStorage.getItem('sys_sleep_history')) || {};
+            const napH = JSON.parse(localStorage.getItem('sys_nap_history')) || {};
+            
+            // 1. Today's Overview
+            const todaySleep = parseFloat(sleepH[todayStr]) || 0;
+            const todayNaps = parseInt(napH[todayStr]) || 0;
+
+            document.getElementById('today-sleep').innerHTML = `${todaySleep.toFixed(1)}<span class="text-2xl text-gray-500">h</span>`;
+            document.getElementById('today-nap').innerText = `${todayNaps}m`;
+
+            // Cognitive Readiness Logic
+            const cogText = document.getElementById('cog-readiness');
+            const cogDot = document.getElementById('cog-indicator');
+            
+            if (todaySleep === 0) {
+                cogText.innerText = "Awaiting Protocol";
+                cogText.className = "text-xs font-black text-gray-500 uppercase tracking-widest mt-0.5";
+                cogDot.className = "w-2 h-2 rounded-full bg-gray-600";
+            } else if (todaySleep < 5.5) {
+                cogText.innerText = "Memory Deficit";
+                cogText.className = "text-xs font-black text-accentRed uppercase tracking-widest mt-0.5";
+                cogDot.className = "w-2 h-2 rounded-full bg-accentRed shadow-[0_0_8px_#FF4C4C]";
+            } else if (todaySleep >= 5.5 && todaySleep < 7) {
+                cogText.innerText = "Sub-Optimal Yield";
+                cogText.className = "text-xs font-black text-accentYellow uppercase tracking-widest mt-0.5";
+                cogDot.className = "w-2 h-2 rounded-full bg-accentYellow shadow-[0_0_8px_#FBBF24]";
+            } else {
+                cogText.innerText = "Peak Neuroplasticity";
+                cogText.className = "text-xs font-black text-accentGreen uppercase tracking-widest mt-0.5";
+                cogDot.className = "w-2 h-2 rounded-full bg-accentGreen shadow-[0_0_8px_#00E676]";
+            }
+
+            // 2. Calculate 7-Day Sleep Debt
+            let debt = 0;
+            let ledgerHtml = '';
+
+            for (let i = 0; i < 7; i++) {
+                let d = new Date();
+                d.setDate(d.getDate() - i);
+                const dStr = getLocalYMD(d);
+                const displayDate = i === 0 ? "Today" : `${d.getDate()}/${d.getMonth() + 1}`;
+                
+                const sHours = parseFloat(sleepH[dStr]) || 0;
+                const nMinutes = parseInt(napH[dStr]) || 0;
+
+                // Debt calculation (only calculate debt for past days or if today is logged)
+                if (i > 0 || sHours > 0) {
+                    if (sHours < IDEAL_SLEEP) {
+                        debt += (IDEAL_SLEEP - sHours);
+                    }
+                }
+
+                // Build Ledger HTML
+                if (sHours > 0 || nMinutes > 0) {
+                    ledgerHtml += `
+                        <div class="bg-black/50 border border-white/5 p-3 rounded-xl flex justify-between items-center" oncontextmenu="clearDay('${dStr}'); return false;">
+                            <div class="flex items-center gap-3">
+                                <p class="text-xs font-black text-gray-400 w-10">${displayDate}</p>
+                                <div class="flex flex-col">
+                                    <p class="text-sm font-black text-white">${sHours > 0 ? sHours.toFixed(1) + 'h' : '--'}</p>
+                                    <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Core</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 text-right">
+                                <div class="flex flex-col items-end">
+                                    <p class="text-sm font-black text-accentYellow">${nMinutes > 0 ? nMinutes + 'm' : '--'}</p>
+                                    <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Nap</p>
+                                </div>
+                                <button onclick="clearDay('${dStr}')" class="text-gray-600 hover:text-accentRed transition p-1"><i class="ph-bold ph-x text-sm"></i></button>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            const debtEl = document.getElementById('sleep-debt');
+            debtEl.innerText = `${debt.toFixed(1)}h`;
+            debtEl.className = debt > 5 ? "text-xl font-black text-accentRed" : (debt > 0 ? "text-xl font-black text-accentYellow" : "text-xl font-black text-accentGreen");
+
+            if (!ledgerHtml) {
+                ledgerHtml = `<div class="text-center py-6 border border-dashed border-white/10 rounded-2xl bg-black/40 text-[9px] font-black text-gray-600 uppercase tracking-widest">No recovery data logged.</div>`;
+            }
+            document.getElementById('ledger-container').innerHTML = ledgerHtml;
         }
+
+        window.onload = loadRecoveryData;
+        window.addEventListener('storage', loadRecoveryData);
+
     </script>
 </body>
-
 </html>

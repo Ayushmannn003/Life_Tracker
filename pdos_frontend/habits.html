@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>System OS | Habit Forge</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -12,238 +11,285 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { bgDark: '#020202', accentTeal: '#66FCF1', accentRed: '#FF4C4C' }
+                    colors: { 
+                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6', 
+                        accentPurple: '#A855F7', accentRed: '#FF4C4C', accentYellow: '#FBBF24',
+                        accentGreen: '#00E676', cardBg: '#080A0E' 
+                    }
                 }
             }
         }
     </script>
     <style>
-        /* VIEWPORT LOCK */
-        body,
-        html {
-            background-color: #000;
-            color: #C5C6C7;
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            height: 100dvh;
-            overflow: hidden;
-            position: fixed;
-            width: 100%;
+        /* STRICT MOBILE LOCK */
+        body, html { 
+            background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; 
+            margin: 0; padding: 0; height: 100dvh; overflow: hidden; -webkit-font-smoothing: antialiased;
         }
+        .mobile-viewport { 
+            width: 100%; max-width: 430px; margin: 0 auto; position: relative; 
+            background-color: #020202; height: 100%; display: flex; flex-direction: column; 
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+        main { padding: 1.25rem; flex: 1; overflow-y: auto; padding-bottom: 7rem; display: flex; flex-direction: column; gap: 1rem; }
+        ::-webkit-scrollbar { display: none; }
+        * { -ms-overflow-style: none; scrollbar-width: none; }
 
-        .mobile-viewport {
-            width: 100%;
-            max-width: 430px;
-            height: 100dvh;
-            margin: 0 auto;
-            position: relative;
-            background-color: #020202;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
+        .touch-btn { transition: transform 0.1s; cursor: pointer; }
+        .touch-btn:active { transform: scale(0.96); }
 
-        /* SCROLLABLE AREA */
-        main {
-            flex: 1;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            padding: 1.25rem;
+        /* DEEP GLASS CARDS */
+        .sys-card { 
+            background: linear-gradient(145deg, #0A0C12 0%, #050608 100%); 
+            border: 1px solid rgba(255,255,255,0.03); border-radius: 1.5rem;
+            padding: 1.25rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.05);
+            position: relative; overflow: hidden;
         }
+        .border-green { border-top: 2px solid #00E676; }
 
-        main::-webkit-scrollbar {
-            display: none;
+        /* INPUTS */
+        .sys-input {
+            width: 100%; background: #000; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 0.75rem; padding: 1rem; color: #fff; font-size: 13px; font-weight: 600;
+            outline: none; transition: border-color 0.2s;
         }
+        .sys-input:focus { border-color: #00E676; }
 
-        .glass-panel {
-            background: rgba(13, 17, 23, 0.8);
-            backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        /* INTERACTIVE MATRIX BLOCKS */
+        .matrix-block { 
+            width: 100%; aspect-ratio: 1; border-radius: 0.4rem; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 11px; font-weight: 900; transition: all 0.2s ease; 
+            cursor: pointer; user-select: none;
         }
-
-        /* 21-DAY GRID STYLING */
-        .day-grid {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding-bottom: 10px;
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .day-grid::-webkit-scrollbar {
-            height: 2px;
-        }
-
-        .day-grid::-webkit-scrollbar-thumb {
-            background: rgba(102, 252, 241, 0.2);
-            border-radius: 10px;
-        }
-
-        .day-bubble {
-            flex: 0 0 35px;
-            height: 35px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            font-weight: 900;
-            transition: 0.2s;
-            scroll-snap-align: start;
-            background: rgba(0, 0, 0, 0.3);
-        }
-
-        .day-bubble.active {
-            background: #66FCF1;
-            color: #000;
-            border-color: #66FCF1;
-            box-shadow: 0 0 15px rgba(102, 252, 241, 0.3);
-        }
-
-        .input-dark {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 12px;
-            color: white;
-            outline: none;
-            font-size: 14px;
-        }
+        .matrix-block:active { transform: scale(0.85); }
+        .block-done { background-color: #00E676; color: #000; box-shadow: 0 0 10px rgba(0,230,118,0.5); }
+        .block-miss { background-color: rgba(255,255,255,0.03); color: #4B5563; border: 1px solid rgba(255,255,255,0.05); }
+        .block-future { background-color: transparent; color: #4B5563; border: 1px dashed rgba(255,255,255,0.1); opacity: 0.5; }
+        .block-today-pending { background-color: rgba(0,230,118,0.05); color: #00E676; border: 1px dashed #00E676; }
     </style>
 </head>
-
 <body>
 
     <div class="mobile-viewport">
-        <header
-            class="p-6 pb-2 flex justify-between items-center z-50 bg-black/20 backdrop-blur-md border-b border-white/5">
+        <header class="p-6 pb-2 flex justify-between items-center z-50 bg-[#020202]/90 backdrop-blur-xl shrink-0">
             <div class="flex items-center gap-4">
                 <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
-                <h1 class="text-xl font-black text-white tracking-widest uppercase">Forge</h1>
+                <h1 class="text-xl font-black text-white tracking-widest uppercase">Habit Forge</h1>
             </div>
-            <div
-                class="text-[9px] font-black text-accentTeal border border-accentTeal/20 bg-accentTeal/5 px-3 py-1 rounded-full uppercase">
-                21-Day Loop</div>
+            <div class="text-[10px] font-black text-accentGreen bg-accentGreen/10 border border-accentGreen/20 px-3 py-1.5 rounded-full flex items-center gap-2">
+                <div class="w-1.5 h-1.5 rounded-full bg-accentGreen animate-pulse shadow-[0_0_5px_#00E676]"></div> 21-DAY ARC
+            </div>
         </header>
 
         <main>
-            <div class="glass-panel p-4 rounded-3xl mb-8">
-                <div class="flex gap-2">
-                    <input type="text" id="habit-name" placeholder="Protocol Name..." class="flex-1 input-dark">
-                    <button onclick="addHabit()"
-                        class="bg-accentTeal text-black font-black px-5 rounded-xl active:scale-95 transition">
-                        <i class="ph-bold ph-plus text-lg"></i>
-                    </button>
+            <div class="sys-card border-green relative">
+                <div class="flex items-center gap-2 mb-3">
+                    <i class="ph-fill ph-calendar-plus text-accentGreen text-lg drop-shadow-[0_0_5px_rgba(0,230,118,0.5)]"></i>
+                    <h2 class="text-[11px] font-black text-white uppercase tracking-widest">Initialize New Vector</h2>
                 </div>
+                <form onsubmit="addHabit(event)" class="flex gap-2 relative z-10">
+                    <input type="text" id="habit-input" class="sys-input py-3" placeholder="e.g. 100 Pushups" autocomplete="off" required>
+                    <button type="submit" class="bg-accentGreen text-black px-4 rounded-xl font-black text-xl touch-btn shadow-[0_0_15px_rgba(0,230,118,0.3)]">
+                        <i class="ph-bold ph-plus"></i>
+                    </button>
+                </form>
             </div>
 
-            <div id="habit-list" class="space-y-6">
-            </div>
+            <div id="habits-container" class="space-y-4">
+                </div>
 
-            <div class="h-32"></div>
         </main>
     </div>
 
+    <div id="sidebar-injector"></div>
     <script src="js/sidebar.js"></script>
+    <script src="js/bottom-nav.js"></script>
+
     <script>
-        let habits = JSON.parse(localStorage.getItem('user_habits_21day')) || [];
+        // =========================================================================
+        // 21-DAY HABIT FORGE ENGINE (MANUAL CLICK MATRIX)
+        // =========================================================================
 
-        function addHabit() {
-            const nameInput = document.getElementById('habit-name');
-            const name = nameInput.value.trim();
-            if (!name) return;
-
-            // Capture the exact date of creation
-            const startDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-
-            habits.push({
-                id: Date.now(),
-                name: name,
-                createdOn: startDate,
-                days: Array(21).fill(false) // Create an array of 21 "false" slots
-            });
-
-            nameInput.value = '';
-            sync();
+        function getLocalYMD(d) {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
         }
 
-        function toggleDay(habitId, dayIndex) {
-            const habit = habits.find(h => h.id === habitId);
-            habit.days[dayIndex] = !habit.days[dayIndex];
-            sync();
+        function formatDisplayDate(dateStr) {
+            if(!dateStr) return "Unknown";
+            const parts = dateStr.split('-');
+            const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+            return dateObj.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
         }
 
-        function deleteHabit(id) {
-            if (confirm("Permanently delete this 21-day protocol?")) {
-                habits = habits.filter(h => h.id !== id);
-                sync();
+        const todayStr = getLocalYMD(new Date());
+
+        function loadHabits() {
+            // Using a distinct key to isolate from Analyzer
+            const habits = JSON.parse(localStorage.getItem('sys_forge_habits')) || [];
+            const container = document.getElementById('habits-container');
+            
+            if (habits.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-10 border border-dashed border-white/10 rounded-2xl bg-black/40">
+                        <i class="ph-fill ph-target text-4xl text-gray-600 mb-2"></i>
+                        <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">No Active Vectors.</p>
+                        <p class="text-[8px] font-bold text-gray-600 uppercase tracking-widest mt-1">Initialize a 21-Day Arc Above.</p>
+                    </div>`;
+                return;
             }
-        }
 
-        function sync() {
-            localStorage.setItem('user_habits_21day', JSON.stringify(habits));
-            render();
-        }
-
-        function render() {
-            const container = document.getElementById('habit-list');
-            container.innerHTML = '';
+            let html = '';
 
             habits.forEach(habit => {
-                const card = document.createElement('div');
-                card.className = "glass-panel p-5 rounded-[2.5rem] space-y-4 border-l-2 border-l-accentTeal";
+                const history = habit.history || [];
+                
+                const [sy, sm, sd] = habit.startDate.split('-');
+                let iterDate = new Date(sy, sm - 1, sd);
+                const todayObj = new Date(todayStr.split('-')[0], todayStr.split('-')[1]-1, todayStr.split('-')[2]);
+                const endObj = new Date(habit.endDate.split('-')[0], habit.endDate.split('-')[1]-1, habit.endDate.split('-')[2]);
 
-                // Build the 21-day scrollable grid
-                let gridHTML = `<div class="day-grid">`;
-                habit.days.forEach((done, index) => {
-                    gridHTML += `
-                        <div onclick="toggleDay(${habit.id}, ${index})" class="day-bubble ${done ? 'active' : ''}">
-                            ${index + 1}
-                        </div>`;
-                });
-                gridHTML += `</div>`;
+                let matrixHtml = '';
+                let totalDone = 0;
+                
+                // Construct exactly 21 clickable blocks
+                for (let i = 0; i < 21; i++) {
+                    const currentIterStr = getLocalYMD(iterDate);
+                    const iterObj = new Date(iterDate);
+                    const dayNum = iterDate.getDate();
 
-                card.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h3 class="text-sm font-black text-white uppercase tracking-widest">${habit.name}</h3>
-                            <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mt-1">Initiated: ${habit.createdOn}</p>
+                    const isDone = history.includes(currentIterStr);
+                    const isToday = currentIterStr === todayStr;
+                    const isFuture = iterObj > todayObj;
+
+                    if (isDone) totalDone++;
+
+                    let blockClass = '';
+                    if (isDone) {
+                        blockClass = 'block-done';
+                    } else if (isFuture) {
+                        blockClass = 'block-future';
+                    } else if (isToday && !isDone) {
+                        blockClass = 'block-today-pending';
+                    } else {
+                        blockClass = 'block-miss';
+                    }
+
+                    // EACH BLOCK IS NOW A MANUAL TOGGLE BUTTON
+                    matrixHtml += `<div class="matrix-block ${blockClass}" onclick="toggleSpecificDate(${habit.id}, '${currentIterStr}')">${dayNum}</div>`;
+                    
+                    iterDate.setDate(iterDate.getDate() + 1); // Advance loop by 1 day
+                }
+
+                const isArcOver = todayObj > endObj;
+                const yieldPct = Math.round((totalDone / 21) * 100);
+                
+                let statusBadge = isArcOver 
+                    ? `<span class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-2 py-1 border border-white/10 rounded bg-black/50">Arc Finished</span>`
+                    : `<span class="text-[9px] font-black text-accentGreen uppercase tracking-widest px-2 py-1 border border-accentGreen/20 rounded bg-accentGreen/10">In Progress</span>`;
+
+                html += `
+                    <div class="sys-card bg-black/40 border-white/5">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-sm font-black text-white uppercase tracking-widest">${habit.name}</h3>
+                                <div class="flex items-center gap-2 mt-1 opacity-80">
+                                    <i class="ph-fill ph-calendar text-gray-400 text-xs"></i>
+                                    <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest">
+                                        START: ${formatDisplayDate(habit.startDate)} &nbsp;|&nbsp; END: ${formatDisplayDate(habit.endDate)}
+                                    </p>
+                                </div>
+                            </div>
+                            <button onclick="deleteHabit(${habit.id})" class="text-gray-600 hover:text-accentRed transition active:scale-90 p-1">
+                                <i class="ph-fill ph-trash text-lg"></i>
+                            </button>
                         </div>
-                        <i onclick="deleteHabit(${habit.id})" class="ph ph-trash text-gray-600 active:text-red-500 transition text-lg cursor-pointer"></i>
-                    </div>
-                    ${gridHTML}
-                    <div class="flex justify-between items-center px-1">
-                        <p class="text-[7px] font-black text-gray-600 uppercase tracking-widest">Swipe for full duration →</p>
-                        <p class="text-[9px] font-black text-accentTeal uppercase tracking-widest">
-                            ${habit.days.filter(d => d).length}/21 Complete
-                        </p>
+                        
+                        <div class="flex justify-between items-end mb-3">
+                            <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Yield: <span class="text-white">${totalDone}/21 (${yieldPct}%)</span></p>
+                            ${statusBadge}
+                        </div>
+
+                        <p class="text-[8px] font-bold text-gray-600 uppercase tracking-widest mb-2 text-center">Tap any block to toggle completion</p>
+
+                        <div class="grid grid-cols-7 gap-2 p-3 bg-black/60 rounded-xl border border-white/5 w-full">
+                            ${matrixHtml}
+                        </div>
                     </div>
                 `;
-                container.appendChild(card);
             });
 
-            if (habits.length === 0) {
-                container.innerHTML = `<p class="text-[10px] text-gray-700 italic text-center py-10 uppercase tracking-widest">No 21-Day Protocols Initialized</p>`;
+            container.innerHTML = html;
+        }
+
+        // --- ADD NEW HABIT ---
+        function addHabit(e) {
+            e.preventDefault();
+            const input = document.getElementById('habit-input');
+            const name = input.value.trim();
+            if (!name) return;
+
+            const habits = JSON.parse(localStorage.getItem('sys_forge_habits')) || [];
+            
+            const startObj = new Date();
+            const startDateStr = getLocalYMD(startObj);
+            
+            const endObj = new Date();
+            endObj.setDate(endObj.getDate() + 20); 
+            const endDateStr = getLocalYMD(endObj);
+
+            const newHabit = {
+                id: Date.now(),
+                name: name,
+                startDate: startDateStr,
+                endDate: endDateStr,
+                history: []
+            };
+
+            habits.push(newHabit);
+            localStorage.setItem('sys_forge_habits', JSON.stringify(habits));
+            
+            input.value = '';
+            input.blur();
+            loadHabits();
+        }
+
+        // --- MANUALLY TOGGLE ANY SPECIFIC DATE IN THE MATRIX ---
+        function toggleSpecificDate(id, targetDateStr) {
+            let habits = JSON.parse(localStorage.getItem('sys_forge_habits')) || [];
+            const habitIndex = habits.findIndex(h => h.id === id);
+            
+            if (habitIndex > -1) {
+                let history = habits[habitIndex].history || [];
+                const dateIndex = history.indexOf(targetDateStr);
+                
+                if (dateIndex > -1) {
+                    history.splice(dateIndex, 1); // Uncheck if already checked
+                } else {
+                    history.push(targetDateStr); // Check if empty
+                }
+                
+                habits[habitIndex].history = history;
+                localStorage.setItem('sys_forge_habits', JSON.stringify(habits));
+                loadHabits(); // Instantly re-render the UI
             }
         }
 
-        window.onload = render;
-    </script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('System OS Service Worker registered!', registration.scope);
-                    })
-                    .catch(error => {
-                        console.error('Service Worker registration failed:', error);
-                    });
-            });
+        // --- DELETE HABIT ---
+        function deleteHabit(id) {
+            if(confirm("Terminate this 21-Day Arc? All history will be permanently deleted.")) {
+                let habits = JSON.parse(localStorage.getItem('sys_forge_habits')) || [];
+                habits = habits.filter(h => h.id !== id);
+                localStorage.setItem('sys_forge_habits', JSON.stringify(habits));
+                loadHabits();
+            }
         }
+
+        window.onload = loadHabits;
+
     </script>
 </body>
-
 </html>

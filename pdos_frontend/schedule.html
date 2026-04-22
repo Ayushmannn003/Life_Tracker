@@ -3,266 +3,550 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Personal OS | Schedule</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>System OS | Schedule Timeline</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
-                        darkStart: '#0B0C10',
-                        darkEnd: '#1F2833',
-                        accentTeal: '#66FCF1',
-                        accentBlue: '#45A29E',
-                        textMain: '#C5C6C7'
+                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6',
+                        accentPurple: '#A855F7', accentRed: '#FF4C4C', accentYellow: '#FBBF24',
+                        cardBg: '#080A0E'
                     }
                 }
             }
         }
     </script>
     <style>
-        body {
-            background-color: #050505;
+        /* STRICT MOBILE LOCK */
+        body,
+        html {
+            background-color: #000;
             color: #C5C6C7;
             font-family: 'Inter', sans-serif;
-            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .mobile-viewport {
+            width: 100%;
+            max-width: 430px;
+            margin: 0 auto;
+            position: relative;
+            background-color: #020202;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+        }
+
+        main {
+            padding: 1rem;
+            flex: 1;
+            padding-bottom: 6rem;
+            overflow-y: auto;
         }
 
         ::-webkit-scrollbar {
             display: none;
         }
 
-        .glass-card {
-            background: rgba(31, 40, 51, 0.4);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        * {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
-        input[type="time"]::-webkit-calendar-picker-indicator {
-            filter: invert(1);
-            opacity: 0.6;
+        .sys-card {
+            background: #080A0E;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 1.25rem;
+            padding: 1.25rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            margin-bottom: 1rem;
+        }
+
+        /* CALENDAR STYLES */
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.25rem;
+            text-align: center;
+        }
+
+        .cal-day-header {
+            font-size: 9px;
+            font-weight: 900;
+            color: #4B5563;
+            text-transform: uppercase;
+            padding-bottom: 0.5rem;
+        }
+
+        .cal-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 0.5rem;
             cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            border: 1px solid transparent;
+        }
+
+        .cal-day:active {
+            transform: scale(0.9);
+        }
+
+        .cal-day.empty {
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .cal-day.selected {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        .cal-day.today {
+            color: #66FCF1;
+            font-weight: 900;
+        }
+
+        .event-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 4px;
+        }
+
+        /* CENTERED GLASS MODAL */
+        .center-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -45%) scale(0.95);
+            width: 90%;
+            max-width: 380px;
+            background: rgba(8, 10, 14, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.75rem;
+            padding: 1.5rem;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+        }
+
+        .center-modal.active {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            z-index: 9998;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .modal-backdrop.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .sys-input {
+            width: 100%;
+            background: #000;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1rem;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            outline: none;
+        }
+
+        .sys-input:focus {
+            border-color: #66FCF1;
+        }
+
+        input[type="time"]::-webkit-calendar-picker-indicator,
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
+        .touch-btn {
+            transition: transform 0.1s;
+            cursor: pointer;
+        }
+
+        .touch-btn:active {
+            transform: scale(0.96);
+        }
+
+        /* COLOR PICKER */
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .color-option.active {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px currentColor;
+            border-color: #fff;
+        }
+
+        body,
+        html {
+            height: 100dvh;
+            overflow: hidden;
+            /* This stops the whole screen from scrolling */
+            margin: 0;
+        }
+
+        .mobile-viewport {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            /* Allows content and nav to stack */
+        }
+
+        main {
+            flex: 1;
+            overflow-y: auto;
+            /* Only your content area scrolls */
+            padding-bottom: 2rem;
         }
     </style>
 </head>
 
-<body class="flex justify-center min-h-screen">
+<body>
 
-    <div
-        class="w-full max-w-md bg-gradient-to-br from-[#0B0C10] to-[#1F2833] relative shadow-2xl overflow-x-hidden min-h-[100dvh] flex flex-col">
-
-        <div id="sidebar-injector" class="z-50"></div>
-
-        <header class="flex justify-between items-center p-6 pb-2">
+    <div class="mobile-viewport">
+        <header
+            class="sticky top-0 p-6 pb-4 flex justify-between items-center z-50 bg-[#020202]/90 backdrop-blur-xl border-b border-white/5">
             <div class="flex items-center gap-4">
-                <i id="menu-btn"
-                    class="ph ph-list text-2xl text-white cursor-pointer hover:text-accentTeal transition"></i>
-                <h1 class="text-xl font-bold text-white tracking-wide">Schedule</h1>
+                <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
+                <h1 class="text-xl font-black text-white tracking-widest uppercase">Schedule</h1>
             </div>
-            <div class="glass-card px-3 py-1.5 rounded-lg flex items-center gap-2 font-bold text-white text-sm"
-                id="header-date">
-                Apr 4
+            <div class="text-[10px] font-black text-white uppercase tracking-widest bg-white/10 border border-white/20 px-3 py-1.5 rounded-full flex items-center gap-2"
+                onclick="window.location.href='index.html'">
+                Dashboard <i class="ph-bold ph-arrow-right"></i>
             </div>
         </header>
 
-        <main class="flex-1 overflow-y-auto p-6 space-y-6 pb-12">
+        <main>
+            <div class="sys-card border-t-2 border-white">
+                <div class="flex justify-between items-center mb-4">
+                    <button onclick="changeMonth(-1)"
+                        class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition"><i
+                            class="ph-bold ph-caret-left"></i></button>
+                    <h2 id="cal-month-year" class="text-sm font-black text-white uppercase tracking-widest">April 2026
+                    </h2>
+                    <button onclick="changeMonth(1)"
+                        class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition"><i
+                            class="ph-bold ph-caret-right"></i></button>
+                </div>
+
+                <div class="cal-grid" id="cal-headers">
+                    <div class="cal-day-header">S</div>
+                    <div class="cal-day-header">M</div>
+                    <div class="cal-day-header">T</div>
+                    <div class="cal-day-header">W</div>
+                    <div class="cal-day-header">T</div>
+                    <div class="cal-day-header">F</div>
+                    <div class="cal-day-header">S</div>
+                </div>
+                <div class="cal-grid" id="cal-days">
+                </div>
+            </div>
 
             <div>
-                <h2 class="text-3xl font-bold text-white mb-1">Time Blocks</h2>
-                <p class="text-textMain text-sm">Structure your day and rate activities.</p>
-            </div>
-
-            <div class="glass-card p-5 rounded-2xl">
-                <h3
-                    class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-surfaceBorder pb-3">
-                    <i class="ph-fill ph-plus-circle text-accentTeal"></i> Add Activity
-                </h3>
-
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Activity
-                            Name</label>
-                        <input type="text" id="event-name" placeholder="e.g., Deep Work, Lunch"
-                            class="w-full bg-black/20 border border-surfaceBorder rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Start
-                                Time</label>
-                            <input type="time" id="event-start"
-                                class="w-full bg-black/20 border border-surfaceBorder rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">End
-                                Time</label>
-                            <input type="time" id="event-end"
-                                class="w-full bg-black/20 border border-surfaceBorder rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] text-textMain uppercase tracking-wider mb-1">Energy /
-                            Rating</label>
-                        <select id="event-rating"
-                            class="w-full bg-[#1F2833] border border-surfaceBorder rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-accentTeal transition text-sm">
-                            <option value="High Energy">High Energy</option>
-                            <option value="Neutral">Neutral</option>
-                            <option value="Restorative">Restorative</option>
-                            <option value="Draining">Draining</option>
-                        </select>
-                    </div>
-
-                    <button onclick="addEvent()"
-                        class="w-full bg-accentTeal/20 hover:bg-accentTeal/30 text-accentTeal border border-accentTeal/30 font-bold py-3 rounded-lg transition mt-2 flex justify-center items-center gap-2">
-                        <i class="ph-bold ph-plus"></i> Log Activity
+                <div class="flex justify-between items-center mb-3 px-1">
+                    <h2 class="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2"
+                        id="selected-date-text">
+                        <i class="ph-fill ph-calendar-blank text-white text-lg"></i> Events
+                    </h2>
+                    <button onclick="openModal()"
+                        class="text-[10px] font-black text-white bg-white/10 px-3 py-1.5 rounded-full border border-white/20 uppercase tracking-widest touch-btn">
+                        + Add Event
                     </button>
                 </div>
-            </div>
 
-            <div class="glass-card p-5 rounded-2xl min-h-[300px]">
-                <div class="flex justify-between items-center mb-4 border-b border-surfaceBorder pb-3">
-                    <h3 class="text-sm font-bold text-white uppercase tracking-wider">Today's Timeline</h3>
-                </div>
-
-                <div class="space-y-3" id="schedule-list">
+                <div id="events-list" class="space-y-2">
                 </div>
             </div>
-
         </main>
     </div>
 
-    <script src="js/api.js"></script>
+    <div class="modal-backdrop" id="modal-bg" onclick="closeModal()"></div>
+
+    <div class="center-modal" id="add-modal">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-sm font-black text-white uppercase tracking-widest">Log Event</h3>
+            <i class="ph-bold ph-x text-xl text-gray-500 cursor-pointer p-1 active:scale-90 touch-btn"
+                onclick="closeModal()"></i>
+        </div>
+
+        <form id="event-form" onsubmit="submitEvent(event)" class="space-y-4">
+            <div>
+                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Event
+                    Title <span class="text-accentRed">*</span></label>
+                <input type="text" id="event-title" class="sys-input" placeholder="e.g. AI Seminar" required>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label
+                        class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Date</label>
+                    <input type="date" id="event-date" class="sys-input text-xs" required>
+                </div>
+                <div>
+                    <label
+                        class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Time</label>
+                    <input type="time" id="event-time" class="sys-input text-xs" required>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Importance
+                    Level</label>
+                <div class="flex justify-between items-center bg-black p-3 rounded-xl border border-white/10">
+                    <div class="color-option bg-accentRed text-accentRed active"
+                        onclick="selectColor('accentRed', this)" title="Urgent"></div>
+                    <div class="color-option bg-accentYellow text-accentYellow"
+                        onclick="selectColor('accentYellow', this)" title="Warning"></div>
+                    <div class="color-option bg-accentTeal text-accentTeal" onclick="selectColor('accentTeal', this)"
+                        title="Standard"></div>
+                    <div class="color-option bg-accentPurple text-accentPurple"
+                        onclick="selectColor('accentPurple', this)" title="Note"></div>
+                    <input type="hidden" id="event-color" value="accentRed">
+                </div>
+            </div>
+
+            <button type="submit"
+                class="w-full bg-white text-black font-black text-xs uppercase tracking-widest rounded-xl touch-btn mt-4 shadow-[0_0_20px_rgba(255,255,255,0.2)] py-4">
+                Lock To Timeline
+            </button>
+        </form>
+    </div>
+
+    <div id="sidebar-injector"></div>
     <script src="js/sidebar.js"></script>
 
     <script>
-        // Set dynamic date in header
-        const options = { month: 'short', day: 'numeric' };
-        document.getElementById('header-date').innerText = new Date().toLocaleDateString('en-US', options);
+        // =========================================================================
+        // CALENDAR & SCHEDULE ENGINE
+        // =========================================================================
 
-        // Initial Mock Data
-        let scheduleEvents = [
-            { id: 1, start: "09:00", end: "11:30", activity: "Architectural Drafting", rating: "High Energy" },
-            { id: 2, start: "11:45", end: "12:45", activity: "Project Sync Meeting", rating: "Neutral" },
-            { id: 3, start: "13:00", end: "14:00", activity: "Lunch Break", rating: "Restorative" }
-        ];
+        let currentDate = new Date(); // Controls the month currently being viewed
+        let selectedDate = new Date(); // The specific day the user has clicked
+        let scheduleEvents = JSON.parse(localStorage.getItem('sys_schedule')) || [];
 
-        function renderSchedule() {
-            const list = document.getElementById('schedule-list');
+        // Helper: format Date object to YYYY-MM-DD
+        function formatDateString(dateObj) {
+            const y = dateObj.getFullYear();
+            const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const d = String(dateObj.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function formatTime12hr(time24) {
+            if (!time24) return "";
+            let [h, m] = time24.split(':');
+            let ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            return `${h}:${m} ${ampm}`;
+        }
+
+        // --- CALENDAR RENDERING ---
+        function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            document.getElementById('cal-month-year').innerText = `${monthNames[month]} ${year}`;
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            const calDays = document.getElementById('cal-days');
+            calDays.innerHTML = '';
+
+            const todayStr = formatDateString(new Date());
+            const selectedStr = formatDateString(selectedDate);
+
+            // Blank spaces for start of month
+            for (let i = 0; i < firstDay; i++) {
+                calDays.innerHTML += `<div class="cal-day empty"></div>`;
+            }
+
+            // Actual days
+            for (let i = 1; i <= daysInMonth; i++) {
+                const iterDate = new Date(year, month, i);
+                const iterStr = formatDateString(iterDate);
+
+                let classes = 'cal-day text-gray-400 hover:text-white hover:bg-white/5';
+                if (iterStr === todayStr) classes += ' today';
+                if (iterStr === selectedStr) classes += ' selected';
+
+                // Check if this date has events to show a dot
+                const dayEvents = scheduleEvents.filter(e => e.date === iterStr);
+                let dotHTML = '';
+                if (dayEvents.length > 0) {
+                    // Grab the color of the highest priority event, or just the first one
+                    const colorClass = dayEvents[0].color;
+                    dotHTML = `<div class="event-dot bg-${colorClass} shadow-[0_0_5px_currentColor]"></div>`;
+                }
+
+                calDays.innerHTML += `
+                    <div class="${classes}" onclick="selectDate(${year}, ${month}, ${i})">
+                        ${i}
+                        ${dotHTML}
+                    </div>
+                `;
+            }
+
+            renderEvents();
+        }
+
+        function changeMonth(direction) {
+            currentDate.setMonth(currentDate.getMonth() + direction);
+            renderCalendar();
+        }
+
+        function selectDate(year, month, day) {
+            selectedDate = new Date(year, month, day);
+            renderCalendar(); // Re-render to update the visual "selected" highlight
+        }
+
+        // --- EVENT LIST RENDERING ---
+        function renderEvents() {
+            const list = document.getElementById('events-list');
+            const selectedStr = formatDateString(selectedDate);
+
+            // Update Title
+            const displayOptions = { weekday: 'short', month: 'short', day: 'numeric' };
+            document.getElementById('selected-date-text').innerHTML = `<i class="ph-fill ph-calendar-blank text-white text-lg"></i> ${selectedDate.toLocaleDateString('en-US', displayOptions)}`;
+
+            const dayEvents = scheduleEvents.filter(e => e.date === selectedStr);
+
+            // Sort chronologically by time
+            dayEvents.sort((a, b) => a.time.localeCompare(b.time));
+
             list.innerHTML = '';
 
-            // Sort chronologically
-            scheduleEvents.sort((a, b) => a.start.localeCompare(b.start));
-
-            if (scheduleEvents.length === 0) {
-                list.innerHTML = `<div class="text-center text-textMain text-xs py-8">Your schedule is clear.</div>`;
+            if (dayEvents.length === 0) {
+                list.innerHTML = `<div class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] text-center border border-dashed border-white/10 rounded-xl py-6 mt-2 bg-black/30 backdrop-blur-sm">No Events Scheduled</div>`;
                 return;
             }
 
-            scheduleEvents.forEach((ev, index) => {
-                // Determine rating color
-                let ratingColor = "text-textMain border-surfaceBorder";
-                let ratingBg = "bg-black/40";
-
-                if (ev.rating === "High Energy") { ratingColor = "text-accentTeal border-accentTeal/30"; ratingBg = "bg-accentTeal/10"; }
-                if (ev.rating === "Restorative") { ratingColor = "text-accentBlue border-accentBlue/30"; ratingBg = "bg-accentBlue/10"; }
-                if (ev.rating === "Draining") { ratingColor = "text-red-400 border-red-400/30"; ratingBg = "bg-red-400/10"; }
-
-                // Show merge button only if there is a block right after this one
-                const mergeBtnHTML = (index < scheduleEvents.length - 1)
-                    ? `<button onclick="mergeEvent(${index})" class="text-textMain hover:text-accentTeal transition p-1" title="Merge next block"><i class="ph-bold ph-arrows-merge text-lg"></i></button>`
-                    : ``;
-
+            dayEvents.forEach(e => {
                 list.innerHTML += `
-                    <div class="flex items-center gap-3 bg-black/20 p-3 rounded-xl border border-surfaceBorder hover:border-surfaceBorder/80 transition relative overflow-hidden group">
-                        
-                        <div class="flex-shrink-0 text-center w-14 border-r border-surfaceBorder/50 pr-3">
-                            <p class="text-white font-bold text-sm">${ev.start}</p>
-                            <p class="text-[10px] text-textMain mt-0.5">${ev.end}</p>
+                    <div class="bg-black/60 p-3.5 rounded-xl border-l-2 border-l-${e.color} border-y border-r border-white/5 flex justify-between items-center backdrop-blur-sm">
+                        <div class="flex items-center gap-3 truncate w-full">
+                            <span class="text-[10px] font-black text-${e.color} uppercase tracking-widest shrink-0 w-14">${formatTime12hr(e.time)}</span>
+                            <div class="w-[1px] h-6 bg-white/10 shrink-0"></div>
+                            <p class="text-sm font-bold text-gray-200 truncate w-full pl-1">${e.title}</p>
                         </div>
-                        
-                        <div class="flex-1 min-w-0 pr-1">
-                            <p class="text-white font-medium text-sm truncate">${ev.activity}</p>
-                            <span class="inline-block mt-1.5 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider border ${ratingBg} ${ratingColor}">
-                                ${ev.rating}
-                            </span>
-                        </div>
-                        
-                        <div class="flex flex-col gap-1 items-center">
-                            ${mergeBtnHTML}
-                            <button onclick="deleteEvent(${ev.id})" class="text-textMain hover:text-red-400 transition p-1" title="Delete">
-                                <i class="ph-bold ph-trash text-lg"></i>
-                            </button>
-                        </div>
+                        <button onclick="deleteEvent(${e.id})" class="shrink-0 text-gray-600 hover:text-accentRed px-2 ml-2 transition">
+                            <i class="ph-bold ph-trash text-lg"></i>
+                        </button>
                     </div>
                 `;
             });
         }
 
-        function addEvent() {
-            const name = document.getElementById('event-name').value;
-            const start = document.getElementById('event-start').value;
-            const end = document.getElementById('event-end').value;
-            const rating = document.getElementById('event-rating').value;
+        // --- MODAL LOGIC ---
+        function openModal() {
+            document.getElementById('modal-bg').classList.add('active');
+            document.getElementById('add-modal').classList.add('active');
 
-            if (!name || !start || !end) return;
+            document.getElementById('event-title').value = '';
+            document.getElementById('event-date').value = formatDateString(selectedDate);
+            document.getElementById('event-time').value = '12:00';
 
-            scheduleEvents.push({
-                id: Date.now(),
-                start: start,
-                end: end,
-                activity: name,
-                rating: rating
-            });
+            setTimeout(() => document.getElementById('event-title').focus(), 100);
+        }
 
-            renderSchedule();
+        function closeModal() {
+            document.getElementById('modal-bg').classList.remove('active');
+            document.getElementById('add-modal').classList.remove('active');
+        }
 
-            // Clean inputs
-            document.getElementById('event-name').value = '';
-            document.getElementById('event-start').value = '';
-            document.getElementById('event-end').value = '';
+        function selectColor(colorClass, element) {
+            document.getElementById('event-color').value = colorClass;
+            document.querySelectorAll('.color-option').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        // --- DATA MUTATION ---
+        function submitEvent(e) {
+            e.preventDefault();
+
+            const title = document.getElementById('event-title').value.trim();
+            const date = document.getElementById('event-date').value;
+            const time = document.getElementById('event-time').value;
+            const color = document.getElementById('event-color').value;
+
+            if (!title || !date || !time) return false;
+
+            scheduleEvents.push({ id: Date.now(), title, date, time, color });
+
+            localStorage.setItem('sys_schedule', JSON.stringify(scheduleEvents));
+            window.dispatchEvent(new Event('storage')); // Alert global system
+
+            // If the user added an event to a different date than they were viewing, jump to that date
+            const [y, m, d] = date.split('-');
+            selectedDate = new Date(y, m - 1, d);
+            currentDate = new Date(y, m - 1, 1);
+
+            closeModal();
+            renderCalendar();
+
+            return false;
         }
 
         function deleteEvent(id) {
-            scheduleEvents = scheduleEvents.filter(ev => ev.id !== id);
-            renderSchedule();
+            scheduleEvents = scheduleEvents.filter(e => e.id !== id);
+            localStorage.setItem('sys_schedule', JSON.stringify(scheduleEvents));
+            window.dispatchEvent(new Event('storage'));
+            renderCalendar();
         }
 
-        function mergeEvent(index) {
-            const current = scheduleEvents[index];
-            const next = scheduleEvents[index + 1];
-
-            // Extend end time to the next block's end time
-            current.end = next.end;
-            // Append titles together cleanly
-            current.activity = `${current.activity} & ${next.activity}`;
-
-            // Remove the next event from the array since it has been absorbed
-            scheduleEvents.splice(index + 1, 1);
-
-            renderSchedule();
-        }
-
-        // Initialize UI
-        window.onload = renderSchedule;
-    </script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('System OS Service Worker registered!', registration.scope);
-                    })
-                    .catch(error => {
-                        console.error('Service Worker registration failed:', error);
-                    });
+        window.onload = () => {
+            renderCalendar();
+            window.addEventListener('storage', () => {
+                scheduleEvents = JSON.parse(localStorage.getItem('sys_schedule')) || [];
+                renderCalendar();
             });
-        }
+        };
     </script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/bottom-nav.js"></script>
 </body>
 
 </html>

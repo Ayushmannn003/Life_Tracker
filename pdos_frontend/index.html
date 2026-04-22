@@ -1,554 +1,393 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>System OS | Command Center</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,600;0,700;0,900;1,400&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="manifest" href="manifest.json">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6',
-                        accentPurple: '#A855F7', accentRed: '#FF4C4C', accentYellow: '#FBBF24'
+                    colors: { 
+                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6', 
+                        accentPurple: '#A855F7', accentRed: '#FF4C4C', accentYellow: '#FBBF24',
+                        accentGreen: '#00E676', cardBg: '#080A0E' 
                     }
                 }
             }
         }
     </script>
     <style>
-        /* UNIVERSAL MOBILE SCROLL FIX */
-        body,
-        html {
-            background-color: #000;
-            color: #C5C6C7;
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            height: 100dvh;
-            overflow: hidden;
-            position: fixed;
-            width: 100%;
+        /* STRICT MOBILE LOCK */
+        body, html { 
+            background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; 
+            margin: 0; padding: 0; height: 100dvh; overflow: hidden; -webkit-font-smoothing: antialiased;
         }
-
-        .mobile-viewport {
-            width: 100%;
-            max-width: 430px;
-            height: 100dvh;
-            margin: 0 auto;
-            position: relative;
-            background-color: #020202;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+        .mobile-viewport { 
+            width: 100%; max-width: 430px; margin: 0 auto; position: relative; 
+            background-color: #020202; height: 100%; display: flex; 
+            flex-direction: column; box-shadow: 0 0 50px rgba(0,0,0,0.8);
         }
-
-        /* MAIN CONTENT AREA */
-        main {
-            flex: 1;
-            overflow-y: auto;
-            overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
-            padding: 1.25rem;
+        main { padding: 1.25rem; flex: 1; overflow-y: auto; padding-bottom: 7rem; display: flex; flex-direction: column; gap: 0.75rem; }
+        ::-webkit-scrollbar { display: none; }
+        * { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* IMAGE CARDS WITH DEEP GLASS */
+        .img-card {
+            background-color: #080A0E; border-right: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem;
+            position: relative; overflow: hidden; cursor: pointer;
+            transition: transform 0.15s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            flex-shrink: 0;
         }
+        .img-card:active { transform: scale(0.97); }
 
-        main::-webkit-scrollbar {
-            display: none;
+        .bg-layer {
+            position: absolute; inset: 0; z-index: 0; background-size: cover; 
+            background-position: center; opacity: 0.35; mix-blend-mode: luminosity;
+            filter: grayscale(80%) contrast(1.2); transition: opacity 0.3s;
         }
+        .img-card:hover .bg-layer { opacity: 0.45; }
+        
+        .gradient-mask-full { position: absolute; inset: 0; z-index: 1; background: linear-gradient(to right, #080A0E 30%, rgba(8,10,14,0.1) 100%); }
+        .gradient-mask-grid { position: absolute; inset: 0; z-index: 1; background: linear-gradient(to bottom, #080A0E 20%, rgba(8,10,14,0.4) 100%); }
+        .gradient-mask-fade { position: absolute; inset: 0; z-index: 1; background: linear-gradient(to top, #080A0E 10%, rgba(8,10,14,0.7) 100%); }
 
-        /* Card System */
-        .module-card {
-            position: relative;
-            display: block;
-            border-radius: 1.75rem;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: transform 0.1s ease-in-out;
-            background: #0a0a0a;
-        }
+        .content-layer { position: relative; z-index: 10; padding: 1.25rem; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
 
-        .module-card:active {
-            transform: scale(0.95);
-        }
+        /* ACCENT BORDERS */
+        .accent-yellow { border-top: 2px solid #FBBF24; border-left: 2px solid #FBBF24; }
+        .accent-teal { border-top: 2px solid #66FCF1; border-left: 2px solid #66FCF1; }
+        .accent-blue { border-top: 2px solid #3B82F6; border-left: 2px solid #3B82F6; }
+        .accent-purple { border-top: 2px solid #A855F7; border-left: 2px solid #A855F7; }
+        .accent-red { border-top: 2px solid #FF4C4C; border-left: 2px solid #FF4C4C; }
+        .accent-white { border-top: 2px solid #FFFFFF; border-left: 2px solid #FFFFFF; }
+        .accent-green { border-top: 2px solid #00E676; border-left: 2px solid #00E676; }
 
-        .module-bg {
-            position: absolute;
-            inset: 0;
-            background-size: cover;
-            background-position: center;
-            opacity: 0.25;
-            filter: grayscale(100%);
-        }
+        .section-divider { text-align: center; padding: 0.75rem 0 0.25rem 0; opacity: 0.6; }
+        .section-divider span { font-size: 9px; font-weight: 900; color: #4B5563; text-transform: uppercase; letter-spacing: 0.3em; }
 
-        .vignette-bottom {
-            background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%);
-        }
-
-        .vignette-side {
-            background: linear-gradient(90deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.2) 100%);
-        }
-
-        /* Section Dividers */
-        .sector-divider {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin: 24px 0 16px 0;
-            opacity: 0.7;
-        }
-
-        .sector-line {
-            height: 1px;
-            flex: 1;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        /* INLINE LISTS (For Tasks/Rituals on Dashboard) */
+        .inline-list-container { margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.4rem; }
+        .inline-item { 
+            display: flex; justify-content: space-between; align-items: center; 
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(10px);
+            padding: 0.5rem 0.75rem; border-radius: 0.75rem; border: 1px solid rgba(255,255,255,0.05); 
         }
     </style>
 </head>
-
 <body>
 
     <div class="mobile-viewport">
-        <header
-            class="p-6 pb-3 flex justify-between items-center z-50 bg-[#020202]/80 backdrop-blur-xl border-b border-white/5 relative">
-            <div class="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none"></div>
-            <div class="flex items-center gap-4 relative z-10">
-                <i id="menu-btn"
-                    class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]"></i>
+        <header class="p-6 pb-2 flex justify-between items-center z-50 bg-[#020202]/90 backdrop-blur-xl shrink-0">
+            <div class="flex items-center gap-4">
+                <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
                 <h1 class="text-xl font-black text-white tracking-widest uppercase">System OS</h1>
             </div>
-            <div
-                class="text-[10px] font-black text-accentTeal uppercase tracking-widest bg-accentTeal/10 border border-accentTeal/20 px-3 py-1.5 rounded-full flex items-center gap-2 relative z-10">
-                <span class="w-1.5 h-1.5 rounded-full bg-accentTeal animate-pulse"></span>
-                <span id="live-clock">00:00</span>
+            <div class="text-[10px] font-black text-accentTeal uppercase tracking-widest bg-accentTeal/10 border border-accentTeal/20 px-3 py-1.5 rounded-full flex items-center gap-2">
+                <div class="w-1.5 h-1.5 rounded-full bg-accentTeal shadow-[0_0_5px_#66FCF1] animate-pulse"></div> <span id="sys-clock">--:--</span>
             </div>
         </header>
 
-        <main>
+        <main class="pt-2">
 
-            <div class="module-card border-l-2 border-l-white bg-black/40 backdrop-blur-md p-5 flex flex-col justify-center min-h-[90px] mb-4"
-                id="dashboard-quote-card">
-                <div class="flex items-center gap-2 mb-2">
-                    <i class="ph-fill ph-quotes text-white/50 text-sm"></i>
-                    <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest">Protocol Intention</p>
+            <div class="grid grid-cols-1 gap-3">
+                <div class="img-card accent-yellow min-h-[80px]" onclick="window.location.href='health.html'">
+                    <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=600&auto=format&fit=crop'); opacity: 0.15;"></div>
+                    <div class="gradient-mask-full"></div>
+                    <div class="content-layer justify-center">
+                        <div class="flex items-center gap-2 mb-1.5">
+                            <i class="ph-fill ph-quotes text-accentYellow text-sm"></i>
+                            <h2 class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Protocol Intention</h2>
+                        </div>
+                        <p class="text-sm font-bold text-gray-200 italic tracking-wide" id="daily-intention">Loading...</p>
+                    </div>
                 </div>
-                <p id="dashboard-quote-text" class="text-xs font-bold text-white italic leading-relaxed">
-                    "Awaiting daily input. Access Health Matrix."
-                </p>
+
+                <div class="img-card accent-red min-h-[90px]" onclick="window.location.href='budget.html'">
+                    <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=600&auto=format&fit=crop');"></div>
+                    <div class="gradient-mask-full"></div>
+                    <div class="content-layer flex flex-row justify-between items-center">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1.5">
+                                <i class="ph-fill ph-wallet text-accentRed text-sm"></i>
+                                <h2 class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Capital Burn</h2>
+                            </div>
+                            <h1 class="text-2xl font-black text-white" id="dash-budget-val">₹0</h1>
+                        </div>
+                        <span class="text-[9px] font-black text-accentRed bg-accentRed/10 px-2 py-1 rounded border border-accentRed/20">Live</span>
+                    </div>
+                </div>
             </div>
 
-            <div id="dynamic-ritual-container" class="mb-4" style="display: none;"></div>
+            <div class="section-divider"><span>Active Protocols</span></div>
 
-            <a href="todo.html"
-                class="module-card border-l-2 border-l-accentTeal p-5 flex flex-col justify-center min-h-[120px] mb-4">
-                <div class="module-bg"
-                    style="background-image: url('https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&q=80&w=800'); opacity: 0.15;">
-                </div>
-                <div class="absolute inset-0 vignette-side"></div>
-                <div class="relative z-10 w-full">
-                    <div class="flex justify-between items-center mb-3">
+            <div class="img-card accent-purple" onclick="window.location.href='ritual.html'">
+                <div class="bg-layer" id="ritual-bg" style="background-image: url('https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?q=80&w=600&auto=format&fit=crop');"></div>
+                <div class="gradient-mask-fade"></div>
+                <div class="content-layer">
+                    <div class="flex justify-between items-start">
                         <div class="flex items-center gap-2">
-                            <i class="ph-fill ph-list-checks text-accentTeal text-lg opacity-80"></i>
-                            <h2 class="text-sm font-black text-white uppercase tracking-widest">Task Protocol</h2>
+                            <i id="ritual-icon" class="ph-fill ph-sun-horizon text-accentPurple text-xl"></i>
+                            <h2 id="ritual-title" class="text-sm font-black text-white uppercase tracking-widest">Protocol</h2>
                         </div>
-                        <span id="todo-dash-count"
-                            class="text-[9px] font-black text-accentTeal bg-accentTeal/10 px-2 py-1 rounded border border-accentTeal/20">0
-                            Active</span>
+                        <span class="text-[9px] font-black text-accentPurple bg-accentPurple/10 px-2 py-1 rounded border border-accentPurple/20" id="ritual-badge">0 Active</span>
                     </div>
-                    <div id="todo-dash-preview" class="space-y-2">
-                    </div>
-                </div>
-            </a>
-
-            <div id="habit-arc-panel" class="mb-4 pt-2" style="display: none;">
-                <h3 class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] text-center mb-4">Habit
-                    Trackers</h3>
-                <div id="habit-dot-blocks" class="grid grid-cols-2 gap-3">
+                    <div class="inline-list-container" id="inline-rituals"></div>
                 </div>
             </div>
 
-            <div class="sector-divider">
-                <div class="sector-line"></div>
-                <span class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Time & Focus</span>
-                <div class="sector-line"></div>
+            <div class="img-card accent-teal" onclick="window.location.href='todo.html'">
+                <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1555680202-c86f0e12f086?q=80&w=600&auto=format&fit=crop');"></div>
+                <div class="gradient-mask-fade"></div>
+                <div class="content-layer">
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-center gap-2">
+                            <i class="ph-fill ph-crosshair text-accentTeal text-xl"></i>
+                            <h2 class="text-sm font-black text-white uppercase tracking-widest">Task Vectors</h2>
+                        </div>
+                        <span class="text-[9px] font-black text-accentTeal bg-accentTeal/10 px-2 py-1 rounded border border-accentTeal/20" id="task-badge">0 Pending</span>
+                    </div>
+                    <div class="inline-list-container" id="inline-tasks"></div>
+                </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                <a href="calendar.html" class="module-card h-40 border-t-2 border-t-white">
-                    <div class="module-bg"
-                        style="background-image: url('https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&q=80&w=800');">
-                    </div>
-                    <div class="absolute inset-0 vignette-bottom"></div>
-                    <div class="relative h-full p-4 flex flex-col justify-between">
-                        <i class="ph-fill ph-calendar-blank text-white text-3xl opacity-80"></i>
-                        <div>
-                            <h2 class="text-sm font-black text-white uppercase tracking-widest">Schedule</h2>
-                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Timeline</p>
-                        </div>
-                    </div>
-                </a>
+            <div class="section-divider"><span>Logistics & Focus</span></div>
 
-                <a href="focus.html" class="module-card h-40 border-t-2 border-t-accentYellow">
-                    <div class="module-bg"
-                        style="background-image: url('https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?auto=format&fit=crop&q=80&w=800');">
+            <div class="grid grid-cols-2 gap-3">
+                <div class="img-card accent-white h-32" onclick="window.location.href='schedule.html'">
+                    <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1506784951206-b91c06282869?q=80&w=400&auto=format&fit=crop');"></div>
+                    <div class="gradient-mask-grid"></div>
+                    <div class="content-layer flex flex-col justify-between">
+                        <i class="ph-bold ph-calendar-blank text-3xl text-white"></i>
+                        <h3 class="text-xs font-black text-white uppercase tracking-widest">Schedule</h3>
                     </div>
-                    <div class="absolute inset-0 vignette-bottom"></div>
-                    <div class="relative h-full p-4 flex flex-col justify-between">
-                        <i class="ph-fill ph-target text-accentYellow text-3xl opacity-80"></i>
-                        <div>
-                            <h2 class="text-sm font-black text-white uppercase tracking-widest">Focus</h2>
-                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Timebox</p>
-                        </div>
+                </div>
+                <div class="img-card accent-blue h-32" onclick="window.location.href='weekly.html'">
+                    <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=400&auto=format&fit=crop'); opacity: 0.15"></div>
+                    <div class="gradient-mask-grid"></div>
+                    <div class="content-layer flex flex-col justify-between">
+                        <i class="ph-fill ph-squares-four text-3xl text-accentBlue"></i>
+                        <h3 class="text-xs font-black text-white uppercase tracking-widest">Matrix</h3>
                     </div>
-                </a>
-
-                <a href="weekly.html" class="module-card h-32 col-span-2 border-l-2 border-l-accentBlue">
-                    <div class="module-bg"
-                        style="background-image: url('https://images.unsplash.com/photo-1506784693919-ef06d93c28d2?auto=format&fit=crop&q=80&w=800'); opacity: 0.3;">
+                </div>
+                <div class="img-card accent-purple h-32" onclick="window.location.href='academics.html'">
+                    <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=400&auto=format&fit=crop');"></div>
+                    <div class="gradient-mask-grid"></div>
+                    <div class="content-layer flex flex-col justify-between">
+                        <i class="ph-fill ph-graduation-cap text-3xl text-accentPurple"></i>
+                        <h3 class="text-xs font-black text-white uppercase tracking-widest">Academic</h3>
                     </div>
-                    <div class="absolute inset-0 vignette-side"></div>
-                    <div class="relative h-full p-6 flex flex-col justify-center">
-                        <i class="ph-fill ph-grid-four text-accentBlue text-3xl mb-1 opacity-80"></i>
-                        <h2 class="text-xl font-black text-white uppercase tracking-widest">Weekly Matrix</h2>
-                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Macro-Plan</p>
+                </div>
+                <div class="img-card accent-yellow h-32" onclick="window.location.href='focus.html'">
+                    <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=400&auto=format&fit=crop');"></div>
+                    <div class="gradient-mask-grid"></div>
+                    <div class="content-layer flex flex-col justify-between">
+                        <i class="ph-bold ph-target text-3xl text-accentYellow"></i>
+                        <h3 class="text-xs font-black text-white uppercase tracking-widest">Focus</h3>
                     </div>
-                </a>
-
-                <a href="habits.html" class="module-card h-32 col-span-2 border-l-2 border-l-accentTeal">
-                    <div class="module-bg"
-                        style="background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=800'); opacity: 0.35;">
-                    </div>
-                    <div class="absolute inset-0 vignette-side"></div>
-                    <div class="relative h-full p-6 flex flex-col justify-center">
-                        <i class="ph-fill ph-check-square-offset text-accentTeal text-3xl mb-1 opacity-80"></i>
-                        <h2 class="text-xl font-black text-white uppercase tracking-widest">Habit Forge</h2>
-                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">21-Day Arc</p>
-                    </div>
-                </a>
+                </div>
             </div>
 
-            <div class="sector-divider">
-                <div class="sector-line"></div>
-                <span class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Bio & Wealth</span>
-                <div class="sector-line"></div>
+            <div class="section-divider"><span>Biology & Yield</span></div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div class="img-card accent-red h-32" onclick="window.location.href='health.html'">
+                    <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1571019614242-c5c5adee9f50?q=80&w=400&auto=format&fit=crop');"></div>
+                    <div class="gradient-mask-grid"></div>
+                    <div class="content-layer flex flex-col justify-between">
+                        <i class="ph-fill ph-heartbeat text-3xl text-accentRed"></i>
+                        <h3 class="text-xs font-black text-white uppercase tracking-widest">Health</h3>
+                    </div>
+                </div>
+                <div class="img-card accent-purple h-32" onclick="window.location.href='sleep.html'">
+                    <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=400&auto=format&fit=crop');"></div>
+                    <div class="gradient-mask-grid"></div>
+                    <div class="content-layer flex flex-col justify-between">
+                        <i class="ph-fill ph-moon-stars text-3xl text-accentPurple"></i>
+                        <h3 class="text-xs font-black text-white uppercase tracking-widest">Recovery</h3>
+                    </div>
+                </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                <a href="health.html" class="module-card h-40 border-t-2 border-t-accentRed">
-                    <div class="module-bg"
-                        style="background-image: url('https://images.unsplash.com/photo-1530497610245-94d3c16cda28?auto=format&fit=crop&q=80&w=800');">
-                    </div>
-                    <div class="absolute inset-0 vignette-bottom"></div>
-                    <div class="relative h-full p-4 flex flex-col justify-between">
-                        <i class="ph-fill ph-heartbeat text-accentRed text-3xl opacity-80"></i>
-                        <div>
-                            <h2 class="text-sm font-black text-white uppercase tracking-widest">Health</h2>
-                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Metrics</p>
-                        </div>
-                    </div>
-                </a>
+            <div class="section-divider"><span>Habit Tracking</span></div>
 
-                <a href="sleep.html" class="module-card h-40 border-t-2 border-t-accentPurple">
-                    <div class="module-bg"
-                        style="background-image: url('https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&fit=crop&q=80&w=800');">
+            <div class="grid grid-cols-2 gap-3">
+                <div class="img-card accent-teal h-32" onclick="window.location.href='regular_habits.html'">
+                    <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1504267448839-4458d601b08e?q=80&w=400&auto=format&fit=crop');"></div>
+                    <div class="gradient-mask-grid"></div>
+                    <div class="content-layer flex flex-col justify-between">
+                        <i class="ph-fill ph-infinity text-3xl text-accentTeal"></i>
+                        <h3 class="text-xs font-black text-white uppercase tracking-widest">Routines</h3>
                     </div>
-                    <div class="absolute inset-0 vignette-bottom"></div>
-                    <div class="relative h-full p-4 flex flex-col justify-between">
-                        <i class="ph-fill ph-moon-stars text-accentPurple text-3xl opacity-80"></i>
-                        <div>
-                            <h2 class="text-sm font-black text-white uppercase tracking-widest">Recovery</h2>
-                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Sleep Arc</p>
-                        </div>
+                </div>
+                <div class="img-card accent-green h-32" onclick="window.location.href='habits.html'">
+                    <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?q=80&w=400&auto=format&fit=crop');"></div>
+                    <div class="gradient-mask-grid"></div>
+                    <div class="content-layer flex flex-col justify-between">
+                        <i class="ph-fill ph-trend-up text-3xl text-accentGreen"></i>
+                        <h3 class="text-xs font-black text-white uppercase tracking-widest">Forge</h3>
                     </div>
-                </a>
-
-                <a href="budget.html" class="module-card h-32 col-span-2 border-l-2 border-l-accentRed">
-                    <div class="module-bg"
-                        style="background-image: url('https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=800'); opacity: 0.35;">
-                    </div>
-                    <div class="absolute inset-0 vignette-side"></div>
-                    <div class="relative h-full p-6 flex flex-col justify-center">
-                        <i class="ph-fill ph-wallet text-accentRed text-3xl mb-1 opacity-80"></i>
-                        <h2 class="text-xl font-black text-white uppercase tracking-widest">Finance</h2>
-                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Capital Control</p>
-                    </div>
-                </a>
-
-                <a href="library.html" class="module-card h-32 col-span-2 border-l-2 border-l-accentBlue">
-                    <div class="module-bg"
-                        style="background-image: url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&q=80&w=800'); opacity: 0.35;">
-                    </div>
-                    <div class="absolute inset-0 vignette-side"></div>
-                    <div class="relative h-full p-6 flex flex-col justify-center">
-                        <i class="ph-fill ph-books text-accentBlue text-3xl mb-1 opacity-80"></i>
-                        <h2 class="text-xl font-black text-white uppercase tracking-widest">Library</h2>
-                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Knowledge Backlog</p>
-                    </div>
-                </a>
+                </div>
             </div>
 
-            <div class="sector-divider">
-                <div class="sector-line"></div>
-                <span class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">System & Routine</span>
-                <div class="sector-line"></div>
+            <div class="section-divider"><span>Archives</span></div>
+
+            <div class="grid grid-cols-1 gap-3">
+                <div class="img-card accent-blue h-32" onclick="window.location.href='library.html'">
+                    <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=600&auto=format&fit=crop');"></div>
+                    <div class="gradient-mask-full"></div>
+                    <div class="content-layer flex flex-col justify-center">
+                        <i class="ph-fill ph-books text-3xl text-accentBlue mb-2"></i>
+                        <h3 class="text-sm font-black text-white uppercase tracking-widest">Media Library</h3>
+                    </div>
+                </div>
+
+                <div class="img-card accent-white h-32" onclick="window.location.href='analyzer.html'">
+                    <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format&fit=crop');"></div>
+                    <div class="gradient-mask-full"></div>
+                    <div class="content-layer flex flex-col justify-center">
+                        <i class="ph-fill ph-chart-line-up text-3xl text-white mb-2"></i>
+                        <h3 class="text-sm font-black text-white uppercase tracking-widest">Analyzer Hub</h3>
+                    </div>
+                </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                <a href="regular_habits.html" class="module-card h-40 border-t-2 border-t-accentBlue">
-                    <div class="module-bg"
-                        style="background-image: url('https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?auto=format&fit=crop&q=80&w=800');">
-                    </div>
-                    <div class="absolute inset-0 vignette-bottom"></div>
-                    <div class="relative h-full p-4 flex flex-col justify-between">
-                        <i class="ph-fill ph-calendar-check text-accentBlue text-3xl opacity-80"></i>
-                        <div>
-                            <h2 class="text-sm font-black text-white uppercase tracking-widest">Routines</h2>
-                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">Monthly Tracker
-                            </p>
-                        </div>
-                    </div>
-                </a>
-
-                <a href="rituals.html" class="module-card h-40 border-t-2 border-t-white">
-                    <div class="module-bg"
-                        style="background-image: url('https://images.unsplash.com/photo-1494548162494-384bba4ab999?auto=format&fit=crop&q=80&w=800');">
-                    </div>
-                    <div class="absolute inset-0 vignette-bottom"></div>
-                    <div class="relative h-full p-4 flex flex-col justify-between">
-                        <i class="ph-fill ph-sun-horizon text-white text-3xl opacity-80"></i>
-                        <div>
-                            <h2 class="text-sm font-black text-white uppercase tracking-widest">Rituals Hub</h2>
-                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-[0.2em]">AM/PM Edits</p>
-                        </div>
-                    </div>
-                </a>
-
-                <a href="analyzer.html" class="module-card h-32 col-span-2 border-l-2 border-l-white">
-                    <div class="module-bg"
-                        style="background-image: url('https://images.unsplash.com/photo-1543286386-713bdd548da4?auto=format&fit=crop&q=80&w=800'); opacity: 0.35;">
-                    </div>
-                    <div class="absolute inset-0 vignette-side"></div>
-                    <div class="relative h-full p-6 flex flex-col justify-center">
-                        <i class="ph-fill ph-chart-line-up text-white text-3xl mb-1 opacity-80"></i>
-                        <h2 class="text-xl font-black text-white uppercase tracking-widest">Core Analytics</h2>
-                        <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em]">System Overview</p>
-                    </div>
-                </a>
-
-                <a href="academics.html" class="module-card h-32 col-span-2 border-l-2 border-l-accentPurple mt-1">
-                    <div class="module-bg"
-                        style="background-image: url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=800'); opacity: 0.35;">
-                    </div>
-                    <div class="absolute inset-0 vignette-side"></div>
-                    <div class="relative h-full p-6 flex flex-col justify-center">
-                        <i class="ph-fill ph-graduation-cap text-accentPurple text-3xl mb-1 opacity-80"></i>
-                        <h2 class="text-xl font-black text-white uppercase tracking-widest">Academic Hub</h2>
-                        <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em]">Coursework & Projects
-                        </p>
-                    </div>
-                </a>
-            </div>
-
-            <div class="h-32"></div>
         </main>
     </div>
 
+    <div id="sidebar-injector"></div>
     <script src="js/sidebar.js"></script>
-
+    <script src="js/bottom-nav.js"></script>
+    
     <script>
-        // 1. LIVE CLOCK ENGINE
+        // STRICT DATE FORMATTER
+        function getLocalYMD(d) {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        }
+
         function updateClock() {
             const now = new Date();
-            document.getElementById('live-clock').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            let h = now.getHours();
+            let m = now.getMinutes();
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            m = m < 10 ? '0' + m : m;
+            document.getElementById('sys-clock').innerText = `${h}:${m} ${ampm}`;
+            return now.getHours(); 
         }
-        setInterval(updateClock, 1000);
-        updateClock();
 
-        // 2. DAILY QUOTE ENGINE
-        function loadDashboardQuote() {
-            const todayStr = new Date().toISOString().split('T')[0];
-            const quoteData = JSON.parse(localStorage.getItem('sys_daily_quote'));
-            const quoteTextEl = document.getElementById('dashboard-quote-text');
-            const quoteCardEl = document.getElementById('dashboard-quote-card');
-
-            if (quoteData && quoteData.date === todayStr && quoteData.text.trim() !== '') {
-                quoteTextEl.innerText = `"${quoteData.text}"`;
-                quoteCardEl.classList.add('border-l-accentTeal');
-            } else {
-                quoteTextEl.innerText = "Awaiting daily intention. Access Health to initialize.";
-                quoteCardEl.classList.remove('border-l-accentTeal');
-                quoteCardEl.classList.add('border-l-accentYellow');
+        function getTagColor(tag) {
+            switch(tag) {
+                case 'Academic': return 'text-accentPurple';
+                case 'Project': return 'text-accentBlue';
+                case 'Life': return 'text-accentGreen';
+                default: return 'text-accentTeal';
             }
         }
 
-        // 3. DYNAMIC RITUAL PROTOCOL HUD
-        function loadDynamicRituals() {
-            const hour = new Date().getHours();
-            const isDawn = hour >= 4 && hour < 17;
-            const phase = isDawn ? 'morning' : 'evening';
-            const ritualsData = JSON.parse(localStorage.getItem('sys_rituals')) || { morning: [], evening: [] };
-            const activeRituals = ritualsData[phase] || [];
-            const container = document.getElementById('dynamic-ritual-container');
+        // --- MASTER SYNC ENGINE ---
+        function syncDashboard() {
+            try {
+                const todayStr = getLocalYMD(new Date());
 
-            if (activeRituals.length === 0) {
-                container.style.display = 'none';
-                return;
-            }
+                // 1. Fetch Latest Data
+                const rawTodos = localStorage.getItem('sys_todos');
+                const rawRituals = localStorage.getItem('sys_rituals');
+                const rawExpenses = localStorage.getItem('sys_expenses');
+                const customQuote = localStorage.getItem('sys_quote');
+                
+                const todos = rawTodos ? JSON.parse(rawTodos) : [];
+                const rituals = rawRituals ? JSON.parse(rawRituals) : [];
+                const expenses = rawExpenses ? JSON.parse(rawExpenses) : [];
 
-            container.style.display = 'block';
-            const themeColor = isDawn ? 'accentYellow' : 'accentPurple';
-            const themeIcon = isDawn ? 'ph-sun-horizon' : 'ph-moon-stars';
-            const themeTitle = isDawn ? 'Dawn Protocol Active' : 'Dusk Protocol Active';
+                // 2. Intention & Budget Sync
+                document.getElementById('daily-intention').innerText = customQuote || "Protocol active. Execute without friction.";
+                
+                const spentToday = expenses.filter(e => e.date === todayStr).reduce((s, e) => s + parseFloat(e.amount), 0);
+                document.getElementById('dash-budget-val').innerText = `₹${spentToday.toLocaleString()}`;
 
-            let listHTML = activeRituals.slice(0, 3).map(r => `
-                <div class="flex items-center gap-3 bg-black/50 border border-white/5 p-3 rounded-xl backdrop-blur-md">
-                    <span class="text-[10px] font-black text-${themeColor} w-12 text-right shrink-0">${r.displayTime}</span>
-                    <div class="h-3 w-[1px] bg-white/10"></div>
-                    <span class="text-xs font-bold text-gray-200 truncate">${r.name}</span>
-                </div>
-            `).join('');
+                // 3. Rituals Sync (AM/PM Aware with Inline Display)
+                const currentHour = new Date().getHours();
+                const isAM = currentHour < 12;
+                const activeType = isAM ? 'morning' : 'evening';
+                const activeRituals = rituals.filter(r => r.type === activeType && !r.completed);
+                
+                document.getElementById('ritual-title').innerText = isAM ? "AM Protocol" : "PM Protocol";
+                document.getElementById('ritual-badge').innerText = `${activeRituals.length} Active`;
+                document.getElementById('ritual-icon').className = isAM ? "ph-fill ph-sun-horizon text-accentPurple text-xl" : "ph-fill ph-moon-stars text-accentPurple text-xl";
 
-            if (activeRituals.length > 3) {
-                listHTML += `<div class="text-center mt-2 opacity-60"><span class="text-[8px] font-black text-white uppercase tracking-widest">+ ${activeRituals.length - 3} More Directives</span></div>`;
-            }
-
-            container.innerHTML = `
-                <a href="rituals.html" class="module-card border-l-2 border-l-${themeColor} p-5 block mb-4" style="background: linear-gradient(135deg, rgba(10,10,10,0.9) 0%, rgba(0,0,0,0.6) 100%);">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center gap-2">
-                            <i class="ph-fill ${themeIcon} text-${themeColor} text-xl animate-pulse drop-shadow-[0_0_8px_currentColor]"></i>
-                            <h3 class="text-[10px] font-black text-white uppercase tracking-widest">${themeTitle}</h3>
-                        </div>
-                        <i class="ph-bold ph-arrow-right text-gray-600"></i>
-                    </div>
-                    <div class="space-y-2">
-                        ${listHTML}
-                    </div>
-                </a>
-            `;
-        }
-
-        // 4. DYNAMIC TO-DO TASKS ENGINE
-        function loadDashboardTodos() {
-            const todos = JSON.parse(localStorage.getItem('sys_todo_list')) || [];
-            const todayStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-
-            const todayTasks = todos.filter(t => t.date === todayStr);
-            const activeTasks = todayTasks.filter(t => t.status !== 'completed' && t.done !== true);
-
-            const container = document.getElementById('todo-dash-preview');
-            const countEl = document.getElementById('todo-dash-count');
-
-            countEl.innerText = `${activeTasks.length} Active`;
-
-            if (todayTasks.length === 0) {
-                container.innerHTML = '<p class="text-[10px] text-gray-500 italic uppercase tracking-widest py-2">No tasks logged for today.</p>';
-                return;
-            }
-
-            if (activeTasks.length === 0) {
-                container.innerHTML = '<p class="text-[10px] text-accentTeal font-bold italic uppercase tracking-widest py-2">All directives cleared.</p>';
-                return;
-            }
-
-            let html = '';
-            activeTasks.slice(0, 3).forEach(task => {
-                let icon = task.status === 'ongoing' ? 'ph-play-circle text-accentYellow' : 'ph-circle text-gray-500';
-                let textClass = task.status === 'ongoing' ? 'text-white' : 'text-gray-300';
-
-                html += `
-                    <div class="flex items-center gap-3 bg-black/50 p-2.5 rounded-xl border border-white/5 backdrop-blur-md">
-                        <i class="ph-fill ${icon} text-lg shrink-0"></i>
-                        <p class="text-xs font-bold ${textClass} truncate">${task.text}</p>
-                    </div>
-                `;
-            });
-
-            if (activeTasks.length > 3) {
-                html += `<p class="text-[8px] text-gray-500 font-black uppercase tracking-widest text-center mt-2 pt-1">+ ${activeTasks.length - 3} MORE TASKS</p>`;
-            }
-
-            container.innerHTML = html;
-        }
-
-        // 5. DYNAMIC HABIT DOT MATRIX HUD
-        function loadDashboardHabits() {
-            const sysHabits = JSON.parse(localStorage.getItem('sys_habits')) || [];
-            const habitDotContainer = document.getElementById('habit-dot-blocks');
-            const habitPanel = document.getElementById('habit-arc-panel');
-            habitDotContainer.innerHTML = '';
-
-            if (sysHabits.length > 0) {
-                habitPanel.style.display = 'block';
-                sysHabits.forEach(habit => {
-                    let dotsHTML = '';
-                    let history = Array(28).fill(false);
-
-                    if (habit.progress && Array.isArray(habit.progress)) {
-                        for (let i = 0; i < Math.min(28, habit.progress.length); i++) {
-                            history[27 - i] = habit.progress[i];
-                        }
-                    } else if (habit.logs) {
-                        const tempD = new Date();
-                        for (let i = 27; i >= 0; i--) {
-                            const d = new Date(tempD.getTime() - (i * 24 * 60 * 60 * 1000));
-                            const dateKey = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-                            history[27 - i] = !!habit.logs[dateKey];
-                        }
-                    }
-
-                    history.forEach(isDone => {
-                        const dotColor = isDone ? 'bg-white' : 'bg-white/15';
-                        dotsHTML += `<div class="w-1.5 h-1.5 rounded-full ${dotColor}"></div>`;
+                let rHTML = '';
+                if(activeRituals.length === 0) {
+                    rHTML = `<p class="text-[9px] text-center text-gray-400 py-2 uppercase tracking-widest">-- Protocol Cleared --</p>`;
+                } else {
+                    // Show up to 3 rituals directly on the dashboard
+                    activeRituals.slice(0, 3).forEach(r => {
+                        rHTML += `
+                            <div class="inline-item">
+                                <div class="flex items-center gap-2 truncate">
+                                    <div class="w-1.5 h-1.5 rounded-full bg-accentPurple shadow-[0_0_5px_#A855F7] shrink-0"></div>
+                                    <p class="text-[11px] font-semibold truncate text-gray-200">${r.text}</p>
+                                </div>
+                                ${r.time ? `<span class="text-[8px] font-black text-gray-500 uppercase shrink-0">${r.time}</span>` : ''}
+                            </div>`;
                     });
-
-                    const todayDone = history[27] ? 'Done' : '-';
-                    let streak = 0;
-                    for (let i = 27; i >= 0; i--) {
-                        if (history[i]) streak++;
-                        else break;
+                    if(activeRituals.length > 3) {
+                        rHTML += `<p class="text-[8px] text-center text-accentPurple font-black mt-1 uppercase">+ ${activeRituals.length - 3} More Active</p>`;
                     }
+                }
+                document.getElementById('inline-rituals').innerHTML = rHTML;
 
-                    habitDotContainer.innerHTML += `
-                        <div class="bg-[#050505] p-3.5 rounded-[1.25rem] border border-white/5 shadow-lg flex flex-col items-start min-h-[110px]">
-                            <h4 class="text-[10px] font-black text-white uppercase tracking-widest mb-1.5 w-full truncate">${habit.name || habit.text || 'Habit'}</h4>
-                            <p class="text-[8px] text-gray-400 font-bold leading-none mb-1">Today: ${todayDone}</p>
-                            <p class="text-[8px] text-gray-400 font-bold leading-none mb-3">Streak: ${streak} Days</p>
-                            <div class="grid grid-cols-7 gap-1.5 self-center mt-auto">
-                                ${dotsHTML}
-                            </div>
-                        </div>
-                    `;
-                });
-            } else {
-                habitPanel.style.display = 'none';
+                // 4. TASK PROTOCOL SYNC (Inline Display)
+                const activeTasks = todos.filter(t => !t.completed);
+                document.getElementById('task-badge').innerText = `${activeTasks.length} Pending`;
+                
+                let tHTML = '';
+                if(activeTasks.length === 0) {
+                    tHTML = `<p class="text-[9px] text-center text-gray-400 py-2 uppercase tracking-widest">-- All Vectors Cleared --</p>`;
+                } else {
+                    // Show up to 3 tasks directly on the dashboard
+                    activeTasks.slice(0, 3).forEach(t => {
+                        const dotColor = getTagColor(t.tag).split(' ')[0].replace('text-', 'bg-'); // Extract bg color from text class
+                        
+                        tHTML += `
+                            <div class="inline-item">
+                                <div class="flex items-center gap-2 truncate">
+                                    <div class="w-1.5 h-1.5 rounded-sm ${dotColor} shrink-0"></div>
+                                    <p class="text-[11px] font-semibold truncate text-gray-200">${t.text}</p>
+                                </div>
+                            </div>`;
+                    });
+                    if(activeTasks.length > 3) {
+                        tHTML += `<p class="text-[8px] text-center text-accentTeal font-black mt-1 uppercase">+ ${activeTasks.length - 3} More Vectors</p>`;
+                    }
+                }
+                document.getElementById('inline-tasks').innerHTML = tHTML;
+
+            } catch (e) { 
+                console.error("Sync Engine Error", e);
             }
         }
 
-        // INIT ALL FUNCTIONS
         window.onload = () => {
-            loadDashboardQuote();
-            loadDynamicRituals();
-            loadDashboardTodos();
-            loadDashboardHabits();
+            updateClock();
+            syncDashboard();
+            
+            // Heartbeat: Sync every 2 seconds
+            setInterval(() => {
+                updateClock();
+                syncDashboard();
+            }, 2000); 
+
+            // Storage Listener: Sync instantly when another tab changes
+            window.addEventListener('storage', syncDashboard); 
         };
     </script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('System OS Service Worker registered!', registration.scope);
-                    })
-                    .catch(error => {
-                        console.error('Service Worker registration failed:', error);
-                    });
-            });
-        }
-    </script>
 </body>
-
 </html>
