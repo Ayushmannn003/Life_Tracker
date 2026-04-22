@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>System OS | Weekly Matrix</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -13,10 +11,10 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6',
+                    colors: { 
+                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6', 
                         accentPurple: '#A855F7', accentRed: '#FF4C4C', accentYellow: '#FBBF24',
-                        cardBg: '#080A0E'
+                        accentGreen: '#00E676', cardBg: '#080A0E' 
                     }
                 }
             }
@@ -24,450 +22,310 @@
     </script>
     <style>
         /* STRICT MOBILE LOCK */
-        body,
-        html {
-            background-color: #000;
-            color: #C5C6C7;
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 0;
-            -webkit-font-smoothing: antialiased;
+        body, html { 
+            background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; 
+            margin: 0; padding: 0; height: 100dvh; overflow: hidden; -webkit-font-smoothing: antialiased;
         }
+        .mobile-viewport { 
+            width: 100%; max-width: 430px; margin: 0 auto; position: relative; 
+            background-color: #020202; height: 100%; display: flex; flex-direction: column; 
+            box-shadow: 0 0 50px rgba(0,0,0,0.8); overflow: hidden;
+        }
+        
+        /* pb-[8rem] ensures content never hides behind the floating button or nav bar */
+        main { padding: 1.25rem; flex: 1; overflow-y: auto; padding-bottom: 8rem; display: flex; flex-direction: column; gap: 1rem; }
+        ::-webkit-scrollbar { display: none; }
+        * { -ms-overflow-style: none; scrollbar-width: none; }
 
-        .mobile-viewport {
-            width: 100%;
-            max-width: 430px;
-            margin: 0 auto;
-            position: relative;
-            background-color: #020202;
-            min-height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
-            overflow-x: hidden;
-        }
+        .touch-btn { transition: transform 0.1s; cursor: pointer; }
+        .touch-btn:active { transform: scale(0.96); }
 
-        main {
-            padding: 1.5rem 1.25rem;
-            flex: 1;
-            padding-bottom: 8rem;
-            overflow-y: auto;
+        /* DEEP GLASS CARDS */
+        .sys-card { 
+            background: linear-gradient(145deg, #0A0C12 0%, #050608 100%); 
+            border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem;
+            padding: 1.25rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.05);
+            position: relative; overflow: hidden; flex-shrink: 0;
         }
-
-        ::-webkit-scrollbar {
-            display: none;
-        }
-
-        * {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        .touch-btn {
-            transition: transform 0.1s;
-            cursor: pointer;
-        }
-
-        .touch-btn:active {
-            transform: scale(0.96);
-        }
-
-        /* DAY SELECTOR TABS */
-        .day-tab {
-            padding: 0.6rem 1.2rem;
-            border-radius: 1rem;
-            font-size: 10px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            transition: all 0.2s;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            color: #6B7280;
-            flex-shrink: 0;
-            cursor: pointer;
-        }
-
-        .day-tab.active {
-            background: rgba(59, 130, 246, 0.1);
-            border-color: #3B82F6;
-            color: #3B82F6;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
-        }
-
-        /* BOTTOM SHEET MODAL */
-        .bottom-sheet {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #0A0C10;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 2rem 2rem 0 0;
-            padding: 2rem 1.5rem;
-            z-index: 9999;
-            transform: translateY(100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8);
-        }
-
-        .bottom-sheet.active {
-            transform: translateY(0);
-        }
-
-        .modal-backdrop {
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(2px);
-            z-index: 9998;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-
-        .modal-backdrop.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
+        .border-blue { border-top: 2px solid #3B82F6; }
 
         /* INPUTS */
         .sys-input {
-            width: 100%;
-            background: #000;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 0.75rem;
-            padding: 1rem;
-            color: #fff;
-            font-size: 13px;
-            font-weight: 600;
-            outline: none;
-            transition: border-color 0.2s;
+            background: #000; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 0.75rem; padding: 1rem; color: #fff; font-size: 13px; font-weight: 600;
+            outline: none; transition: border-color 0.2s; width: 100%;
+        }
+        .sys-input:focus { border-color: #3B82F6; }
+
+        /* MODAL ANIMATION */
+        .modal-enter { animation: fadeIn 0.2s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
 
-        .sys-input:focus {
-            border-color: #3B82F6;
-        }
+        /* HIDE NATIVE TIME PICKER ICON ON MOBILE */
+        input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.5; }
 
-        .sys-input::placeholder {
-            color: #4B5563;
-        }
-
-        input[type="time"]::-webkit-calendar-picker-indicator {
-            filter: invert(1);
-            cursor: pointer;
-        }
-
-        select.sys-input {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236B7280' viewBox='0 0 256 256'%3E%3Cpath d='M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z'%3E%3C/path%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 1rem center;
-            padding-right: 2.5rem;
-        }
-
-        /* TIMELINE STYLES */
-        .timeline-container {
-            border-left: 2px solid rgba(59, 130, 246, 0.3);
-            padding-left: 1.25rem;
-            margin-left: 0.5rem;
-            margin-top: 1rem;
-            position: relative;
-        }
-
-        .timeline-block {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 1rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            position: relative;
-        }
-
-        .timeline-dot {
-            position: absolute;
-            left: -1.65rem;
-            top: 1.25rem;
-            width: 0.75rem;
-            height: 0.75rem;
-            border-radius: 50%;
-            background: #000;
-            border: 2px solid;
-        }
-
-        body,
-        html {
-            height: 100dvh;
-            overflow: hidden;
-            /* This stops the whole screen from scrolling */
-            margin: 0;
-        }
-
-        .mobile-viewport {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            /* Allows content and nav to stack */
-        }
-
-        main {
-            flex: 1;
-            overflow-y: auto;
-            /* Only your content area scrolls */
-            padding-bottom: 2rem;
-        }
+        /* DAY SELECTOR PILLS */
+        .day-pill { padding: 0.5rem 1rem; border-radius: 1rem; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: #6B7280; border: 1px solid rgba(255,255,255,0.05); transition: all 0.2s; white-space: nowrap; }
+        .day-pill.active { background: rgba(59,130,246,0.1); color: #3B82F6; border-color: rgba(59,130,246,0.3); }
     </style>
 </head>
-
 <body>
 
     <div class="mobile-viewport">
-        <header
-            class="sticky top-0 p-6 pb-4 flex justify-between items-center z-50 bg-[#020202]/90 backdrop-blur-xl border-b border-white/5">
+        
+        <div id="modal-overlay" class="absolute inset-0 bg-black/80 backdrop-blur-sm z-[10000] hidden items-center justify-center p-4">
+            <div id="block-modal" class="sys-card border-blue w-full max-w-[320px] flex flex-col gap-4 modal-enter shadow-[0_0_50px_rgba(0,0,0,0.9)]">
+                <div class="flex justify-between items-center mb-1">
+                    <h2 class="text-xs font-black text-white uppercase tracking-widest">Allocate Block</h2>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-white touch-btn"><i class="ph-bold ph-x text-lg"></i></button>
+                </div>
+                
+                <input type="text" id="block-title" class="sys-input" placeholder="Block Title (e.g. Deep Work)">
+                
+                <div class="flex gap-2">
+                    <div class="w-1/2">
+                        <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest ml-1 mb-1 block">Start Time</label>
+                        <input type="time" id="block-start" class="sys-input text-sm">
+                    </div>
+                    <div class="w-1/2">
+                        <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest ml-1 mb-1 block">End Time</label>
+                        <input type="time" id="block-end" class="sys-input text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest ml-1 mb-1 block">Category</label>
+                    <select id="block-category" class="sys-input text-[11px] uppercase tracking-wider text-gray-300">
+                        <option value="Deep Work">🔵 Focus / Deep Work</option>
+                        <option value="Class">🟣 University / Class</option>
+                        <option value="Review">🟡 Academic Review</option>
+                        <option value="Life">🟢 Maintenance / Life</option>
+                        <option value="Urgent">🔴 Urgent Vector</option>
+                    </select>
+                </div>
+
+                <button onclick="saveBlock()" class="w-full py-3 mt-2 rounded-xl bg-accentBlue text-white text-[10px] font-black uppercase tracking-widest touch-btn shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+                    <i class="ph-bold ph-lock-key mr-1"></i> Lock to Matrix
+                </button>
+            </div>
+        </div>
+
+        <header class="p-6 pb-2 flex justify-between items-center z-50 bg-[#020202]/90 backdrop-blur-xl shrink-0">
             <div class="flex items-center gap-4">
                 <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
                 <h1 class="text-xl font-black text-white tracking-widest uppercase">Weekly Matrix</h1>
             </div>
-            <div
-                class="text-[9px] font-black text-accentBlue uppercase tracking-widest bg-accentBlue/10 border border-accentBlue/30 px-3 py-1.5 rounded-full">
-                Time-Block
+            <div class="text-[10px] font-black text-accentBlue bg-accentBlue/10 border border-accentBlue/20 px-3 py-1.5 rounded-full flex items-center gap-2">
+                <div class="w-1.5 h-1.5 rounded-full bg-accentBlue animate-pulse shadow-[0_0_5px_#3B82F6]"></div> TIME-BLOCK
             </div>
         </header>
 
-        <main>
-            <div class="flex overflow-x-auto gap-2 pb-2 mb-6" id="day-selector" style="scrollbar-width: none;">
+        <div class="w-full overflow-x-auto py-3 px-4 flex gap-2 border-b border-white/5 shrink-0 bg-[#020202] z-40" id="day-nav">
             </div>
 
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-2">
-                    <i class="ph-fill ph-clock text-accentBlue text-lg drop-shadow-[0_0_5px_rgba(59,130,246,0.5)]"></i>
-                    <h2 class="text-xs font-black text-white uppercase tracking-widest" id="protocol-title">-- Protocol
-                    </h2>
-                </div>
-            </div>
+        <main id="matrix-container">
+            </main>
 
-            <div class="timeline-container" id="matrix-timeline">
-            </div>
-
-        </main>
-
-        <button onclick="openModal()"
-            class="absolute bottom-8 right-6 w-14 h-14 bg-accentBlue text-black rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.4)] touch-btn z-40">
-            <i class="ph-bold ph-plus text-2xl"></i>
+        <button onclick="openModal()" class="absolute bottom-24 right-6 w-14 h-14 bg-accentBlue rounded-full shadow-[0_0_20px_rgba(59,130,246,0.4)] flex items-center justify-center text-black text-2xl z-40 touch-btn border-2 border-black">
+            <i class="ph-bold ph-plus"></i>
         </button>
 
-        <div class="modal-backdrop" id="modal-bg" onclick="closeModal()"></div>
-
-        <div class="bottom-sheet" id="add-modal">
-            <div class="flex items-center justify-between mb-6">
-                <div class="flex items-center gap-2">
-                    <i class="ph-bold ph-plus-circle text-white text-lg"></i>
-                    <h3 class="text-sm font-black text-white uppercase tracking-widest">Allocate Block</h3>
-                </div>
-                <i class="ph-bold ph-x text-xl text-gray-500 cursor-pointer p-1 active:scale-90"
-                    onclick="closeModal()"></i>
-            </div>
-
-            <form id="block-form" onsubmit="submitBlock(event)" class="space-y-5">
-                <div>
-                    <input type="text" id="block-title" class="sys-input" placeholder="Block Title (e.g. Deep Work)..."
-                        autocomplete="off" required>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label
-                            class="block text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1.5 pl-1">Start
-                            Time</label>
-                        <input type="time" id="block-start" class="sys-input" required>
-                    </div>
-                    <div>
-                        <label
-                            class="block text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1.5 pl-1">End
-                            Time</label>
-                        <input type="time" id="block-end" class="sys-input" required>
-                    </div>
-                </div>
-
-                <div>
-                    <label
-                        class="block text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1.5 pl-1">Category</label>
-                    <select id="block-category" class="sys-input cursor-pointer text-sm">
-                        <option value="accentBlue">Focus / Deep Work (Blue)</option>
-                        <option value="accentPurple">Academic / Class (Purple)</option>
-                        <option value="accentTeal">Logistics / Admin (Teal)</option>
-                        <option value="accentYellow">Break / Recovery (Yellow)</option>
-                        <option value="accentRed">Urgent / Critical (Red)</option>
-                    </select>
-                </div>
-
-                <button type="submit"
-                    class="w-full bg-accentBlue text-black font-black text-[11px] uppercase tracking-widest rounded-xl touch-btn mt-2 shadow-[0_0_20px_rgba(59,130,246,0.3)] py-4 flex items-center justify-center gap-2">
-                    <i class="ph-bold ph-push-pin text-lg"></i> Lock To Matrix
-                </button>
-            </form>
-        </div>
     </div>
 
     <div id="sidebar-injector"></div>
     <script src="js/sidebar.js"></script>
+    <script src="js/bottom-nav.js"></script>
 
     <script>
         // =========================================================================
-        // WEEKLY MATRIX ENGINE
+        // WEEKLY MATRIX ENGINE (TIMELINE VIEW)
         // =========================================================================
 
-        const DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+        const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        let activeDay = getRealCurrentDay();
 
-        // Determine today (0=Mon, 6=Sun) to default the active tab
-        let currentDayIndex = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
-
-        let matrixBlocks = [];
-
-        // Safe Load from LocalStorage
-        try {
-            matrixBlocks = JSON.parse(localStorage.getItem('sys_matrix')) || [];
-        } catch (e) {
-            matrixBlocks = [];
+        function getRealCurrentDay() {
+            let d = new Date().getDay();
+            if (d === 0) return 'Sunday';
+            return daysOfWeek[d - 1];
         }
 
-        // --- UI RENDERING ---
-        function renderUI() {
-            // Render Day Tabs dynamically
-            const selector = document.getElementById('day-selector');
-            selector.innerHTML = '';
-            DAYS.forEach((day, index) => {
-                const isActive = index === currentDayIndex ? 'active' : '';
-                selector.innerHTML += `<div class="day-tab ${isActive}" onclick="selectDay(${index})">${day}</div>`;
-            });
+        // --- MODAL SYSTEM ---
+        function openModal() {
+            document.getElementById('modal-overlay').classList.remove('hidden');
+            document.getElementById('modal-overlay').classList.add('flex');
+            
+            const now = new Date();
+            let h = String(now.getHours()).padStart(2, '0');
+            let nextH = String((now.getHours() + 1) % 24).padStart(2, '0');
+            
+            document.getElementById('block-start').value = `${h}:00`;
+            document.getElementById('block-end').value = `${nextH}:00`;
+            document.getElementById('block-title').focus();
+        }
 
-            // Auto-scroll to active tab
-            const activeTab = selector.querySelector('.active');
-            if (activeTab) {
-                activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.add('hidden');
+            document.getElementById('modal-overlay').classList.remove('flex');
+            document.getElementById('block-title').value = '';
+        }
+
+        function getCategoryStyle(cat) {
+            switch(cat) {
+                case 'Class': return { color: 'text-accentPurple', border: 'border-accentPurple/30', bg: 'bg-accentPurple/10', solidBorder: 'border-accentPurple', solidBg: 'bg-accentPurple' };
+                case 'Review': return { color: 'text-accentYellow', border: 'border-accentYellow/30', bg: 'bg-accentYellow/10', solidBorder: 'border-accentYellow', solidBg: 'bg-accentYellow' };
+                case 'Life': return { color: 'text-accentGreen', border: 'border-accentGreen/30', bg: 'bg-accentGreen/10', solidBorder: 'border-accentGreen', solidBg: 'bg-accentGreen' };
+                case 'Urgent': return { color: 'text-accentRed', border: 'border-accentRed/30', bg: 'bg-accentRed/10', solidBorder: 'border-accentRed', solidBg: 'bg-accentRed' };
+                default: return { color: 'text-accentBlue', border: 'border-accentBlue/30', bg: 'bg-accentBlue/10', solidBorder: 'border-accentBlue', solidBg: 'bg-accentBlue' }; // Deep Work
             }
+        }
 
-            // Update Header Title
-            document.getElementById('protocol-title').innerText = `${DAYS[currentDayIndex]} Protocol`;
+        // --- CORE LOGIC ---
+        function renderDayNav() {
+            const nav = document.getElementById('day-nav');
+            let html = '';
+            daysOfWeek.forEach(day => {
+                const isActive = day === activeDay ? 'active' : '';
+                html += `<button onclick="switchDay('${day}')" class="day-pill touch-btn ${isActive}">${day.substring(0,3)}</button>`;
+            });
+            nav.innerHTML = html;
+            
+            const activePill = nav.querySelector('.active');
+            if(activePill) {
+                nav.scrollTo({ left: activePill.offsetLeft - 20, behavior: 'smooth' });
+            }
+        }
 
-            // Render Timeline Blocks
-            const timeline = document.getElementById('matrix-timeline');
-            timeline.innerHTML = '';
+        function switchDay(day) {
+            activeDay = day;
+            renderDayNav();
+            loadMatrix();
+        }
 
-            const dayBlocks = matrixBlocks.filter(b => b.day === DAYS[currentDayIndex]);
+        function parseTime(timeStr) {
+            const [h, m] = timeStr.split(':').map(Number);
+            return h * 60 + m;
+        }
 
-            // Sort chronologically by start time
-            dayBlocks.sort((a, b) => a.startTime.localeCompare(b.startTime));
+        function formatTime12h(timeStr) {
+            const [h, m] = timeStr.split(':');
+            let hours = parseInt(h);
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            return `${hours}:${m} ${ampm}`;
+        }
 
-            // Empty state (exactly like your reference image)
+        function formatTime12hSplit(timeStr) {
+            const [h, m] = timeStr.split(':');
+            let hours = parseInt(h);
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            return { time: `${hours}:${m}`, period: ampm };
+        }
+
+        function loadMatrix() {
+            const allBlocks = JSON.parse(localStorage.getItem('sys_weekly')) || [];
+            const container = document.getElementById('matrix-container');
+            
+            let dayBlocks = allBlocks.filter(b => b.day === activeDay);
+            dayBlocks.sort((a, b) => parseTime(a.start) - parseTime(b.start));
+
             if (dayBlocks.length === 0) {
-                timeline.innerHTML = `
-                    <div class="border border-dashed border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center opacity-50 mt-4 mr-2">
-                        <p class="text-[10px] font-black text-gray-500 uppercase tracking-[0.1em] text-center">No Time Blocks Allocated</p>
-                    </div>
-                `;
+                container.innerHTML = `
+                    <div class="text-center py-12 mt-10 border border-dashed border-white/10 rounded-2xl bg-black/40">
+                        <i class="ph-fill ph-calendar-x text-4xl text-gray-600 mb-2"></i>
+                        <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Timeline Clear.</p>
+                        <p class="text-[8px] font-bold text-gray-600 uppercase tracking-widest mt-1">Tap + to allocate a time block.</p>
+                    </div>`;
                 return;
             }
 
-            // Populate Timeline
+            // The Timeline Layout Container
+            let html = '<div class="relative border-l-2 border-white/10 ml-[4.5rem] space-y-6 mt-4">';
+            
             dayBlocks.forEach(b => {
-                const timeStr = `${formatTime(b.startTime)} - ${formatTime(b.endTime)}`;
+                const style = getCategoryStyle(b.category);
+                const startSplit = formatTime12hSplit(b.start);
 
-                timeline.innerHTML += `
-                    <div class="timeline-block mr-2">
-                        <div class="timeline-dot border-${b.color}"></div>
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-[9px] font-black text-${b.color} uppercase tracking-widest mb-1">${timeStr}</p>
-                                <h3 class="text-sm font-bold text-white">${b.title}</h3>
+                html += `
+                    <div class="relative pl-5">
+                        <div class="absolute -left-[10px] top-4 w-[18px] h-[18px] rounded-full bg-[#020202] border-[3px] ${style.solidBorder} flex items-center justify-center z-10 shadow-[0_0_10px_currentColor] ${style.color}">
+                        </div>
+                        
+                        <div class="absolute -left-[5rem] top-3 w-14 text-right pr-2">
+                            <p class="text-[14px] font-black ${style.color} leading-none tracking-tighter">${startSplit.time}</p>
+                            <p class="text-[9px] font-black text-gray-600 uppercase mt-1">${startSplit.period}</p>
+                        </div>
+
+                        <div class="bg-black/40 border border-white/5 p-4 rounded-2xl relative overflow-hidden group shadow-lg">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 ${style.solidBg}"></div>
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="text-sm font-black text-white uppercase tracking-widest">${b.title}</h3>
+                                    <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1 flex items-center gap-1">
+                                        <i class="ph-bold ph-clock"></i> ${formatTime12h(b.start)} - ${formatTime12h(b.end)}
+                                    </p>
+                                </div>
+                                <button onclick="deleteBlock(${b.id})" class="text-gray-600 hover:text-accentRed transition p-1 -mt-1 -mr-1 active:scale-90 shrink-0"><i class="ph-bold ph-x text-sm"></i></button>
                             </div>
-                            <button onclick="deleteBlock(${b.id})" class="text-gray-600 hover:text-accentRed transition active:scale-90 p-1">
-                                <i class="ph-bold ph-trash text-lg"></i>
-                            </button>
+                            <div class="mt-3">
+                                <span class="text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded border ${style.color} ${style.border} ${style.bg}">
+                                    ${b.category}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 `;
             });
+            html += '</div>';
+            container.innerHTML = html;
         }
 
-        function selectDay(index) {
-            currentDayIndex = index;
-            renderUI();
-        }
-
-        function formatTime(time24) {
-            if (!time24) return "";
-            let [h, m] = time24.split(':');
-            let ampm = h >= 12 ? 'PM' : 'AM';
-            h = h % 12 || 12;
-            return `${h}:${m} ${ampm}`;
-        }
-
-        // --- MODAL LOGIC ---
-        function openModal() {
-            document.getElementById('modal-bg').classList.add('active');
-            document.getElementById('add-modal').classList.add('active');
-
-            document.getElementById('block-title').value = '';
-            document.getElementById('block-start').value = '';
-            document.getElementById('block-end').value = '';
-
-            setTimeout(() => document.getElementById('block-title').focus(), 100);
-        }
-
-        function closeModal() {
-            document.getElementById('modal-bg').classList.remove('active');
-            document.getElementById('add-modal').classList.remove('active');
-            document.getElementById('block-title').blur();
-        }
-
-        // --- DATA ACTIONS ---
-        function submitBlock(e) {
-            e.preventDefault();
-
+        function saveBlock() {
             const title = document.getElementById('block-title').value.trim();
-            const startTime = document.getElementById('block-start').value;
-            const endTime = document.getElementById('block-end').value;
-            const color = document.getElementById('block-category').value;
+            const start = document.getElementById('block-start').value;
+            const end = document.getElementById('block-end').value;
+            const cat = document.getElementById('block-category').value;
 
-            if (!title || !startTime || !endTime) return false;
+            if (!title || !start || !end) {
+                alert("Protocol Error: Title and Time parameters required.");
+                return;
+            }
 
-            matrixBlocks.push({
+            const allBlocks = JSON.parse(localStorage.getItem('sys_weekly')) || [];
+            
+            allBlocks.push({
                 id: Date.now(),
-                day: DAYS[currentDayIndex],
-                title,
-                startTime,
-                endTime,
-                color
+                day: activeDay,
+                title: title,
+                start: start,
+                end: end,
+                category: cat
             });
 
-            saveData();
+            localStorage.setItem('sys_weekly', JSON.stringify(allBlocks));
             closeModal();
-            return false;
+            loadMatrix();
         }
 
         function deleteBlock(id) {
-            matrixBlocks = matrixBlocks.filter(b => b.id !== id);
-            saveData();
+            if(confirm("Remove this block from the matrix?")) {
+                let allBlocks = JSON.parse(localStorage.getItem('sys_weekly')) || [];
+                allBlocks = allBlocks.filter(b => b.id !== id);
+                localStorage.setItem('sys_weekly', JSON.stringify(allBlocks));
+                loadMatrix();
+            }
         }
 
-        function saveData() {
-            localStorage.setItem('sys_matrix', JSON.stringify(matrixBlocks));
-            renderUI();
-            window.dispatchEvent(new Event('storage')); // Global sync hook
-        }
-
-        // Boot
+        // Init
         window.onload = () => {
-            renderUI();
-            window.addEventListener('storage', () => {
-                matrixBlocks = JSON.parse(localStorage.getItem('sys_matrix')) || [];
-                renderUI();
-            });
+            renderDayNav();
+            loadMatrix();
         };
-    </script>
-    <script src="js/sidebar.js"></script>
-    <script src="js/bottom-nav.js"></script>
-</body>
 
+    </script>
+</body>
 </html>
