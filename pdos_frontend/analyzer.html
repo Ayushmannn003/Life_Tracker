@@ -80,7 +80,7 @@
 <body>
 
     <div class="mobile-viewport" id="capture-area">
-        <header class="p-6 pb-2 flex justify-between items-center z-50 bg-[#020202]/90 backdrop-blur-xl shrink-0">
+        <header class="p-6 pb-2 flex justify-between items-center z-50 bg-[#020202]/90 backdrop-blur-xl shrink-0" id="sys-header">
             <div class="flex items-center gap-4">
                 <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
                 <h1 class="text-xl font-black text-white tracking-tighter uppercase italic">Analyzer.log</h1>
@@ -96,12 +96,12 @@
                 <div class="flex justify-between items-center mb-4">
                     <div class="flex items-center gap-2">
                         <i class="ph-fill ph-wallet text-accentRed text-lg"></i>
-                        <h2 class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Capital Burn</h2>
+                        <h2 class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Monthly Burn</h2>
                     </div>
                     <span id="rate-burn" class="rating-badge">Calculating</span>
                 </div>
                 <h1 class="text-4xl font-black text-white" id="val-burn">₹0</h1>
-                <p class="text-[9px] font-bold text-gray-600 mt-1 uppercase">Today's Total Expenditure</p>
+                <p class="text-[9px] font-bold text-gray-600 mt-1 uppercase" id="budget-subtitle">Limit: ₹0</p>
                 <div class="mt-4 h-1 bg-white/5 rounded-full overflow-hidden">
                     <div class="h-full bg-accentRed shadow-[0_0_10px_#FF4C4C] transition-all duration-700" id="val-burn-bar" style="width: 0%"></div>
                 </div>
@@ -193,15 +193,25 @@
                 </div>
             </div>
 
-            <div class="flex gap-3 mb-4 mt-2">
-                <button onclick="downloadTextReport()" class="btn-export">
-                    <i class="ph-bold ph-terminal-window text-xl text-accentTeal"></i>
-                    Export Log
-                </button>
-                <button onclick="downloadImageReport()" class="btn-export">
-                    <i class="ph-bold ph-aperture text-xl text-accentPurple"></i>
-                    Capture View
-                </button>
+            <div class="mt-6">
+                <div class="bg-accentBlue/10 border border-accentBlue/20 p-4 rounded-xl mb-4 flex items-start gap-3 shadow-[0_0_15px_rgba(59,130,246,0.1)]">
+                    <i class="ph-fill ph-info text-accentBlue text-xl mt-0.5"></i>
+                    <div>
+                        <p class="text-[10px] font-black text-accentBlue uppercase tracking-widest mb-1">Weekly Backup Required</p>
+                        <p class="text-[9px] font-bold text-gray-400 leading-relaxed">It is recommended to export your system logs and capture your visual view at the end of every week to maintain historical continuity.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 mb-4">
+                    <button onclick="downloadTextReport()" class="btn-export">
+                        <i class="ph-bold ph-terminal-window text-xl text-accentTeal mb-1"></i>
+                        Export Log
+                    </button>
+                    <button onclick="downloadImageReport()" class="btn-export">
+                        <i class="ph-bold ph-aperture text-xl text-accentPurple mb-1"></i>
+                        Capture View
+                    </button>
+                </div>
             </div>
         </main>
     </div>
@@ -236,14 +246,12 @@
             return dates;
         }
 
-        // Ratings Engine
         function getRating(value, s, a) {
             if (value >= s) return { text: 'S-Tier', class: 'tier-s' };
             if (value >= a) return { text: 'Nominal', class: 'tier-a' };
             return { text: 'Critical', class: 'tier-c' };
         }
 
-        // Chart Engine
         function updateChart(canvasId, chartInstance, color, labels, data, callback) {
             const ctx = document.getElementById(canvasId).getContext('2d');
             const gradient = ctx.createLinearGradient(0, 0, 0, 100);
@@ -263,7 +271,7 @@
             const forgeHabits = JSON.parse(localStorage.getItem('sys_forge_habits')) || [];
             
             const currentSyncStr = JSON.stringify({routines, forgeHabits});
-            if (currentSyncStr === lastMatrixSyncData) return; // Prevent DOM flickering
+            if (currentSyncStr === lastMatrixSyncData) return;
             lastMatrixSyncData = currentSyncStr;
 
             const container = document.getElementById('routine-matrix-container');
@@ -281,7 +289,6 @@
             const todayStr = getLocalYMD(new Date());
             const todayObj = new Date(todayStr.split('-')[0], todayStr.split('-')[1]-1, todayStr.split('-')[2]);
 
-            // Helper to build tiny 21-dot grid
             const buildTinyGrid = (name, history, startIterDate, maxDays, typeColor) => {
                 let dotsHtml = '';
                 let localDone = 0;
@@ -290,7 +297,6 @@
                 for (let i = 0; i < maxDays; i++) {
                     const currentIterStr = getLocalYMD(iterDate);
                     const iterObj = new Date(iterDate);
-                    
                     const isDone = history.includes(currentIterStr);
                     const isFuture = iterObj > todayObj;
 
@@ -318,17 +324,15 @@
                 `;
             };
 
-            // 1. Process Daily Routines (Rolling 21 days backwards)
             routines.forEach(r => {
-                let d = new Date(); d.setDate(d.getDate() - 20); // 21 days ago
-                html += buildTinyGrid(r.name || 'Routine', r.history || [], d, 21, '#66FCF1'); // Teal
+                let d = new Date(); d.setDate(d.getDate() - 20);
+                html += buildTinyGrid(r.name || 'Routine', r.history || [], d, 21, '#66FCF1');
             });
 
-            // 2. Process Forge Habits (Fixed 21 days from start)
             forgeHabits.forEach(h => {
                 const [sy, sm, sd] = h.startDate.split('-');
                 let d = new Date(sy, sm - 1, sd);
-                html += buildTinyGrid(h.name || 'Forge', h.history || [], d, 21, '#00E676'); // Green
+                html += buildTinyGrid(h.name || 'Forge', h.history || [], d, 21, '#00E676');
             });
 
             container.innerHTML = html;
@@ -342,21 +346,26 @@
         // --- MASTER SYNC ENGINE ---
         function sync() {
             const todayStr = getLocalYMD(new Date());
+            const currentMonthPrefix = todayStr.substring(0, 7); // Generates "2026-04"
 
-            // Clock
             const now = new Date();
             document.getElementById('sys-clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
-            // 1. Budget Sync
+            // 1. Month-Based Budget Sync
             const exp = JSON.parse(localStorage.getItem('sys_expenses')) || [];
-            const spent = exp.filter(e => e.date === todayStr).reduce((s, e) => s + parseFloat(e.amount), 0);
-            document.getElementById('val-burn').innerText = `₹${spent.toLocaleString()}`;
-            document.getElementById('val-burn-bar').style.width = `${Math.min(100, (spent/2000)*100)}%`;
-            const burnRate = spent > 2000 ? {text:'Over-Limit', class:'tier-c'} : {text:'Within-Budget', class:'tier-s'};
+            const monthlyAllowance = parseFloat(localStorage.getItem('sys_monthly_allowance')) || 10000;
+            
+            // Filter all expenses by current month instead of today
+            const spentMonth = exp.filter(e => e.date.startsWith(currentMonthPrefix)).reduce((s, e) => s + parseFloat(e.amount), 0);
+            
+            document.getElementById('val-burn').innerText = `₹${spentMonth.toLocaleString()}`;
+            document.getElementById('budget-subtitle').innerText = `Monthly Limit: ₹${monthlyAllowance.toLocaleString()}`;
+            document.getElementById('val-burn-bar').style.width = `${Math.min(100, (spentMonth/monthlyAllowance)*100)}%`;
+            
+            const burnRate = spentMonth > monthlyAllowance ? {text:'Over-Limit', class:'tier-c'} : {text:'Nominal', class:'tier-s'};
             document.getElementById('rate-burn').innerText = burnRate.text;
             document.getElementById('rate-burn').className = 'rating-badge ' + burnRate.class;
 
-            // 2. Charts Sync (Strict Dates)
             const sleepH = JSON.parse(localStorage.getItem('sys_sleep_history')) || {};
             const napH = JSON.parse(localStorage.getItem('sys_nap_history')) || {};
             const last7Days = getLast7Days();
@@ -378,10 +387,8 @@
                 lastChartSyncData = chartSyncStr;
             }
 
-            // 3. Matrix Sync
             renderMatrixBlocks();
 
-            // 4. Tasks Sync
             const todos = JSON.parse(localStorage.getItem('sys_todos')) || [];
             const done = todos.filter(t => t.completed).length, total = todos.length;
             const pct = total ? Math.round((done/total)*100) : 0;
@@ -392,11 +399,9 @@
             document.getElementById('rate-tasks').innerText = taskRate.text;
             document.getElementById('rate-tasks').className = 'rating-badge ' + taskRate.class;
 
-            // 5. Academic Sync
             const assigns = (JSON.parse(localStorage.getItem('sys_deadlines')) || []).length;
             document.getElementById('val-academic-assignments').innerText = assigns;
 
-            // 6. Health Sync
             const hH = JSON.parse(localStorage.getItem('sys_health_history')) || {};
             const tH = hH[todayStr] || { water: 0, caffeine: 0, meditation: 0 };
             document.getElementById('val-health-water').innerText = tH.water;
@@ -407,22 +412,94 @@
             document.getElementById('rate-bio').className = 'rating-badge ' + bioRate.class;
         }
 
-        // --- EXPORT ENGINES ---
+        // --- FULL-PAGE EXPORT ENGINES ---
+
         function downloadTextReport() {
             const now = new Date();
-            const report = `SYSTEM ANALYSIS [${now.toLocaleString()}]\n\n` +
-                `Capital Burn: ${document.getElementById('val-burn').innerText} [${document.getElementById('rate-burn').innerText}]\n` +
-                `Task Yield: ${document.getElementById('val-task-pct').innerText} [${document.getElementById('rate-tasks').innerText}]\n` +
-                `Biological Hydration: ${document.getElementById('val-health-water').innerText}ml`;
+            let report = `======================================\n`;
+            report += `  SYSTEM OS | COMPREHENSIVE LOG\n`;
+            report += `  Generated: ${now.toLocaleString()}\n`;
+            report += `======================================\n\n`;
+
+            report += `[ MONTHLY CAPITAL BURN ]\n`;
+            report += `- Total Spent this Month: ${document.getElementById('val-burn').innerText}\n`;
+            report += `- Status: ${document.getElementById('rate-burn').innerText}\n\n`;
+
+            report += `[ RECOVERY YIELD ]\n`;
+            report += `- Core Sleep (7D Avg): ${document.getElementById('val-sleep-duration').innerText}\n`;
+            report += `- Power Nap (7D Avg): ${document.getElementById('val-nap-duration').innerText}\n\n`;
+
+            report += `[ HABIT MATRIX ]\n`;
+            report += `- Adherence Status: ${document.getElementById('rate-routines').innerText}\n\n`;
+
+            report += `[ EXECUTION ENGINE ]\n`;
+            report += `- Protocol Yield: ${document.getElementById('val-task-pct').innerText} (${document.getElementById('task-fraction').innerText})\n`;
+            report += `- Status: ${document.getElementById('rate-tasks').innerText}\n\n`;
+
+            report += `[ ACADEMIC MATRIX ]\n`;
+            report += `- Backlog Assignments: ${document.getElementById('val-academic-assignments').innerText}\n`;
+            report += `- Completion Vector: ${document.getElementById('val-academic-vector').innerText}\n\n`;
+
+            report += `[ BIO-METRICS ]\n`;
+            report += `- Hydration: ${document.getElementById('val-health-water').innerText} ml\n`;
+            report += `- Caffeine: ${document.getElementById('val-health-caffeine').innerText} mg\n`;
+            report += `- Zen/Meditation: ${document.getElementById('val-health-meditation').innerText}\n`;
+            report += `- Bio Status: ${document.getElementById('rate-bio').innerText}\n\n`;
+            
+            report += `======================================\n`;
+            report += `  END OF REPORT\n`;
+            report += `======================================\n`;
+
             const blob = new Blob([report], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url; a.download = `Log_${now.getTime()}.txt`; a.click();
+            const a = document.createElement('a'); 
+            a.href = url; 
+            a.download = `OS_Full_Log_${now.getTime()}.txt`; 
+            a.click();
         }
 
+        // Expanded snapshot engine for full scrolling height
         function downloadImageReport() {
-            html2canvas(document.getElementById('capture-area'), { backgroundColor: '#020202', scale: 2 }).then(canvas => {
-                const link = document.createElement('a'); link.download = `OS_Report.png`; link.href = canvas.toDataURL(); link.click();
-            });
+            const captureArea = document.getElementById('capture-area');
+            const mainContent = document.getElementById('main-content');
+            
+            // Backup styles that restrict the height
+            const origBodyOverflow = document.body.style.overflow;
+            const origHtmlOverflow = document.documentElement.style.overflow;
+            const origHeight = captureArea.style.height;
+            const origMainOverflow = mainContent.style.overflowY;
+            const origMainPadding = mainContent.style.paddingBottom;
+
+            // Force the container to expand to its full scroll height
+            document.body.style.overflow = 'visible';
+            document.documentElement.style.overflow = 'visible';
+            captureArea.style.height = 'max-content';
+            mainContent.style.overflowY = 'visible';
+            mainContent.style.paddingBottom = '2rem'; // Removes empty space at bottom
+
+            // Wait 300ms for browser to recalculate the layout
+            setTimeout(() => {
+                html2canvas(captureArea, { 
+                    backgroundColor: '#020202', 
+                    scale: 2,
+                    windowWidth: captureArea.scrollWidth,
+                    windowHeight: captureArea.scrollHeight,
+                    scrollY: -window.scrollY
+                }).then(canvas => {
+                    // Restore original locked layout
+                    document.body.style.overflow = origBodyOverflow;
+                    document.documentElement.style.overflow = origHtmlOverflow;
+                    captureArea.style.height = origHeight;
+                    mainContent.style.overflowY = origMainOverflow;
+                    mainContent.style.paddingBottom = origMainPadding;
+
+                    // Trigger Download
+                    const link = document.createElement('a'); 
+                    link.download = `OS_Visual_Log_${new Date().getTime()}.png`; 
+                    link.href = canvas.toDataURL(); 
+                    link.click();
+                });
+            }, 300);
         }
 
         window.onload = () => { 

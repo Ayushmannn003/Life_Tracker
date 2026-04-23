@@ -48,6 +48,8 @@
         .border-red { border-top: 2px solid #FF4C4C; }
         .border-purple { border-top: 2px solid #A855F7; }
         .border-blue { border-top: 2px solid #3B82F6; }
+        .border-yellow { border-top: 2px solid #FBBF24; }
+        .border-gray { border-top: 2px solid #4B5563; }
 
         /* INPUTS */
         .sys-input {
@@ -73,11 +75,21 @@
     <div id="modal-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[10000] hidden items-center justify-center p-4">
         
         <div id="allowance-modal" class="sys-card border-red w-full max-w-[320px] hidden flex-col gap-4 modal-enter">
-            <h2 class="text-xs font-black text-white uppercase tracking-widest text-center mb-1">Set Capital Limit</h2>
+            <h2 class="text-xs font-black text-white uppercase tracking-widest text-center mb-1">Set Monthly Capital</h2>
             <input type="number" id="allowance-input" class="sys-input text-center text-xl" placeholder="Amount (₹)">
             <div class="flex gap-2 mt-2">
                 <button onclick="closeModal()" class="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black text-gray-400 uppercase tracking-widest touch-btn hover:text-white">Cancel</button>
                 <button onclick="saveAllowance()" class="flex-1 py-3 rounded-xl bg-accentRed text-white text-[10px] font-black uppercase tracking-widest touch-btn shadow-[0_0_10px_rgba(255,76,76,0.3)]">Save Limit</button>
+            </div>
+        </div>
+
+        <div id="daily-limit-modal" class="sys-card border-yellow w-full max-w-[320px] hidden flex-col gap-4 modal-enter">
+            <h2 class="text-xs font-black text-white uppercase tracking-widest text-center mb-1">Set Daily Spend Limit</h2>
+            <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest text-center -mt-2">Weekly limit will automatically adapt.</p>
+            <input type="number" id="daily-limit-input" class="sys-input text-center text-xl" placeholder="Daily Amount (₹)">
+            <div class="flex gap-2 mt-2">
+                <button onclick="closeModal()" class="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black text-gray-400 uppercase tracking-widest touch-btn hover:text-white">Cancel</button>
+                <button onclick="saveDailyLimit()" class="flex-1 py-3 rounded-xl bg-accentYellow text-black text-[10px] font-black uppercase tracking-widest touch-btn shadow-[0_0_10px_rgba(251,191,36,0.3)]">Save Limit</button>
             </div>
         </div>
 
@@ -123,15 +135,15 @@
                         <i class="ph-fill ph-wallet text-accentRed text-lg drop-shadow-[0_0_5px_rgba(255,76,76,0.5)]"></i>
                         <h2 class="text-[11px] font-black text-gray-400 uppercase tracking-widest">Macro Overview</h2>
                     </div>
-                    <button onclick="openAllowanceModal()" class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-2 py-1 border border-white/10 rounded hover:text-white transition touch-btn">
+                    <button onclick="openAllowanceModal()" class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-2 py-1 border border-white/10 rounded hover:text-white transition touch-btn bg-white/5">
                         Set Allowance
                     </button>
                 </div>
                 
                 <div class="flex justify-between items-end mb-4">
                     <div>
-                        <p class="text-[9px] font-bold text-gray-600 uppercase tracking-widest">Today's Burn</p>
-                        <h1 class="text-4xl font-black text-white" id="today-total">₹0</h1>
+                        <p class="text-[9px] font-bold text-gray-600 uppercase tracking-widest">Total Month Burn</p>
+                        <h1 class="text-4xl font-black text-white" id="month-total">₹0</h1>
                     </div>
                     <div class="text-right">
                         <p class="text-[9px] font-bold text-gray-600 uppercase tracking-widest">Monthly Remaining</p>
@@ -141,6 +153,37 @@
 
                 <div class="h-1 bg-white/5 rounded-full overflow-hidden w-full">
                     <div class="h-full bg-accentRed transition-all duration-700 shadow-[0_0_10px_#FF4C4C]" id="allowance-bar" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="sys-card border-yellow relative shrink-0">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-2">
+                        <i class="ph-fill ph-target text-accentYellow text-lg drop-shadow-[0_0_5px_rgba(251,191,36,0.5)]"></i>
+                        <h2 class="text-[11px] font-black text-gray-400 uppercase tracking-widest">Micro Execution</h2>
+                    </div>
+                    <button onclick="openDailyLimitModal()" class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-2 py-1 border border-white/10 rounded hover:text-white transition touch-btn bg-white/5">
+                        Set Daily Limit
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <p class="text-[9px] font-bold text-gray-600 uppercase tracking-widest">Today's Burn</p>
+                        <h1 class="text-3xl font-black text-white" id="today-total">₹0</h1>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[9px] font-bold text-gray-600 uppercase tracking-widest" id="daily-status-label">Remaining Today</p>
+                        <p class="text-xl font-black text-accentGreen" id="daily-status-val">₹0</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center border-t border-white/5 pt-3">
+                    <div class="flex items-center gap-2">
+                        <span class="text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded border border-accentYellow/30 text-accentYellow bg-accentYellow/10">AUTO WEEKLY</span>
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Cap: ₹<span id="weekly-limit-val">0</span></p>
+                    </div>
+                    <p class="text-[11px] font-black text-gray-300 uppercase tracking-widest">Burn: <span class="text-white" id="weekly-burn-val">₹0</span></p>
                 </div>
             </div>
 
@@ -174,9 +217,15 @@
                     </div>
             </div>
 
-            <div class="section-divider"><span>Recurring Yield</span></div>
+            <div class="section-divider"><span>Archive & Recurring</span></div>
 
-            <div class="sys-card border-purple relative shrink-0">
+            <div>
+                <h3 class="px-4 text-[9px] font-black text-gray-600 uppercase tracking-[0.2em] mb-3">Historical Burn</h3>
+                <div id="history-container" class="space-y-3">
+                    </div>
+            </div>
+
+            <div class="sys-card border-purple relative shrink-0 mt-2">
                 <div class="flex justify-between items-center mb-4">
                     <div class="flex items-center gap-2">
                         <i class="ph-fill ph-arrows-clockwise text-accentPurple text-lg drop-shadow-[0_0_5px_rgba(168,85,247,0.5)]"></i>
@@ -184,7 +233,6 @@
                     </div>
                     <button onclick="openSubscriptionModal()" class="text-accentPurple text-xl touch-btn"><i class="ph-bold ph-plus-circle"></i></button>
                 </div>
-                
                 <div id="subs-container" class="space-y-3 mt-4">
                     </div>
             </div>
@@ -211,6 +259,16 @@
         const todayStr = getLocalYMD(new Date());
         const currentMonthPrefix = todayStr.substring(0, 7);
 
+        // Calculate the Monday of the current week for Weekly Limit logic
+        function getStartOfCurrentWeek() {
+            const d = new Date();
+            const day = d.getDay() || 7; // Convert Sun(0) to 7
+            if (day !== 1) d.setHours(-24 * (day - 1));
+            return getLocalYMD(d);
+        }
+
+        const currentWeekStart = getStartOfCurrentWeek();
+
         function getCategoryColor(cat) {
             switch(cat) {
                 case 'Sustenance': return 'text-accentYellow bg-accentYellow/10 border-accentYellow/20';
@@ -228,13 +286,11 @@
             document.getElementById('modal-overlay').classList.remove('hidden');
             document.getElementById('modal-overlay').classList.add('flex');
             
-            // Hide all sub-modals first
-            ['allowance-modal', 'subscription-modal', 'confirm-modal'].forEach(id => {
+            ['allowance-modal', 'daily-limit-modal', 'subscription-modal', 'confirm-modal'].forEach(id => {
                 document.getElementById(id).classList.add('hidden');
                 document.getElementById(id).classList.remove('flex');
             });
             
-            // Show target
             document.getElementById(targetModalId).classList.remove('hidden');
             document.getElementById(targetModalId).classList.add('flex');
         }
@@ -272,6 +328,21 @@
             }
         }
 
+        function openDailyLimitModal() {
+            const current = localStorage.getItem('sys_daily_limit') || 500;
+            document.getElementById('daily-limit-input').value = current;
+            openModalContainer('daily-limit-modal');
+        }
+
+        function saveDailyLimit() {
+            const limit = document.getElementById('daily-limit-input').value;
+            if (limit && !isNaN(limit)) {
+                localStorage.setItem('sys_daily_limit', limit);
+                loadFinances();
+                closeModal();
+            }
+        }
+
         function openSubscriptionModal() {
             document.getElementById('sub-title').value = '';
             document.getElementById('sub-amount').value = '';
@@ -298,37 +369,84 @@
             closeModal();
         }
 
-
         // --- CORE FINANCE LOGIC ---
         function loadFinances() {
             const expenses = JSON.parse(localStorage.getItem('sys_expenses')) || [];
-            const allowance = parseFloat(localStorage.getItem('sys_monthly_allowance')) || 10000; 
+            const monthlyAllowance = parseFloat(localStorage.getItem('sys_monthly_allowance')) || 10000; 
+            const dailyLimit = parseFloat(localStorage.getItem('sys_daily_limit')) || 500;
+            const weeklyLimit = dailyLimit * 7;
             
             let todayTotal = 0;
             let monthTotal = 0;
+            let weeklyTotal = 0;
             let ledgerHtml = '';
+            
+            // Historical grouping object
+            const historicalBurn = {};
 
             const todaysExpenses = expenses.filter(e => e.date === todayStr);
 
             expenses.forEach(e => {
-                if (e.date === todayStr) todayTotal += parseFloat(e.amount);
-                if (e.date.startsWith(currentMonthPrefix)) monthTotal += parseFloat(e.amount);
+                const amt = parseFloat(e.amount);
+                
+                // Track Today
+                if (e.date === todayStr) todayTotal += amt;
+                
+                // Track Month
+                if (e.date.startsWith(currentMonthPrefix)) monthTotal += amt;
+                
+                // Track Week
+                if (e.date >= currentWeekStart && e.date <= todayStr) weeklyTotal += amt;
+
+                // Track Historical Blocks (Ignore Today for the archive)
+                if (e.date !== todayStr) {
+                    if (!historicalBurn[e.date]) historicalBurn[e.date] = 0;
+                    historicalBurn[e.date] += amt;
+                }
             });
 
-            document.getElementById('today-total').innerText = `₹${todayTotal.toLocaleString()}`;
-            
-            const remaining = allowance - monthTotal;
+            // 1. UPDATE MACRO OVERVIEW
+            document.getElementById('month-total').innerText = `₹${monthTotal.toLocaleString()}`;
+            const remainingMonth = monthlyAllowance - monthTotal;
             const remainingEl = document.getElementById('month-remaining');
-            remainingEl.innerText = `₹${remaining.toLocaleString()}`;
-            remainingEl.className = remaining >= 0 ? "text-xl font-black text-accentGreen" : "text-xl font-black text-accentRed";
+            remainingEl.innerText = `₹${remainingMonth.toLocaleString()}`;
+            remainingEl.className = remainingMonth >= 0 ? "text-xl font-black text-accentGreen" : "text-xl font-black text-accentRed";
 
-            const barPct = Math.min(100, (monthTotal / allowance) * 100);
+            const barPct = Math.min(100, (monthTotal / monthlyAllowance) * 100);
             const barEl = document.getElementById('allowance-bar');
             barEl.style.width = `${barPct}%`;
             barEl.className = barPct > 90 
                 ? "h-full bg-accentRed transition-all duration-700 shadow-[0_0_10px_#FF4C4C]" 
                 : "h-full bg-accentTeal transition-all duration-700 shadow-[0_0_10px_#66FCF1]";
 
+            // 2. UPDATE MICRO LIMITS
+            document.getElementById('today-total').innerText = `₹${todayTotal.toLocaleString()}`;
+            
+            const dailyDiff = dailyLimit - todayTotal;
+            const statusLabel = document.getElementById('daily-status-label');
+            const statusVal = document.getElementById('daily-status-val');
+            
+            if (dailyDiff < 0) {
+                statusLabel.innerText = "Overspent By";
+                statusLabel.className = "text-[9px] font-bold text-accentRed uppercase tracking-widest";
+                statusVal.innerText = `₹${Math.abs(dailyDiff).toLocaleString()}`;
+                statusVal.className = "text-xl font-black text-accentRed";
+            } else {
+                statusLabel.innerText = "Remaining Today";
+                statusLabel.className = "text-[9px] font-bold text-gray-600 uppercase tracking-widest";
+                statusVal.innerText = `₹${dailyDiff.toLocaleString()}`;
+                statusVal.className = "text-xl font-black text-accentGreen";
+            }
+
+            document.getElementById('weekly-limit-val').innerText = weeklyLimit.toLocaleString();
+            document.getElementById('weekly-burn-val').innerText = `₹${weeklyTotal.toLocaleString()}`;
+            if (weeklyTotal > weeklyLimit) {
+                document.getElementById('weekly-burn-val').classList.replace('text-white', 'text-accentRed');
+            } else {
+                document.getElementById('weekly-burn-val').classList.replace('text-accentRed', 'text-white');
+            }
+
+            // 3. UPDATE TODAY'S LEDGER
             if (todaysExpenses.length === 0) {
                 ledgerHtml = `<div class="text-center py-6 border border-dashed border-white/10 rounded-2xl bg-black/40 text-[9px] font-black text-gray-600 uppercase tracking-widest">No capital burned today.</div>`;
             } else {
@@ -354,6 +472,37 @@
                 });
             }
             document.getElementById('ledger-container').innerHTML = ledgerHtml;
+
+            // 4. UPDATE HISTORICAL BURN (Archive)
+            const historyDates = Object.keys(historicalBurn).sort((a, b) => new Date(b) - new Date(a)); // Sort newest to oldest
+            let historyHtml = '';
+            
+            if (historyDates.length === 0) {
+                historyHtml = `<div class="text-center py-4 border border-dashed border-white/5 rounded-2xl bg-black/20 text-[8px] font-black text-gray-600 uppercase tracking-widest">Archive Empty.</div>`;
+            } else {
+                historyDates.forEach(dateStr => {
+                    const parts = dateStr.split('-');
+                    const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+                    const displayDay = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
+                    const displayDate = `${parts[2]}/${parts[1]}/${parts[0].substring(2)}`;
+                    
+                    historyHtml += `
+                        <div class="bg-black/40 border border-white/5 p-3 rounded-xl flex justify-between items-center">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 text-center">
+                                    <p class="text-[10px] font-black text-gray-400 uppercase">${displayDay}</p>
+                                    <p class="text-[8px] font-bold text-gray-600 tracking-widest">${displayDate}</p>
+                                </div>
+                                <div class="h-6 w-px bg-white/10"></div>
+                                <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Total Burn</p>
+                            </div>
+                            <p class="text-sm font-black text-gray-300 border-b border-gray-600">₹${historicalBurn[dateStr].toLocaleString()}</p>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('history-container').innerHTML = historyHtml;
+
             loadSubscriptions();
         }
 
@@ -382,7 +531,7 @@
             document.getElementById('exp-title').blur();
             
             loadFinances();
-            window.dispatchEvent(new Event('storage'));
+            window.dispatchEvent(new Event('storage')); // Ping Analyzer
         }
 
         function deleteExpense(id) {
