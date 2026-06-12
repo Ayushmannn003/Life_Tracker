@@ -2,343 +2,598 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>System OS | Recovery Yield</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: { 
-                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6', 
-                        accentPurple: '#A855F7', accentRed: '#FF4C4C', accentYellow: '#FBBF24',
-                        accentGreen: '#00E676', cardBg: '#080A0E' 
-                    }
-                }
-            }
-        }
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleep Recovery</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* STRICT MOBILE LOCK */
-        body, html { 
-            background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; 
-            margin: 0; padding: 0; height: 100dvh; overflow: hidden; -webkit-font-smoothing: antialiased;
-        }
-        .mobile-viewport { 
-            width: 100%; max-width: 430px; margin: 0 auto; position: relative; 
-            background-color: #020202; height: 100%; display: flex; flex-direction: column; 
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-        }
-        main { padding: 1.25rem; flex: 1; overflow-y: auto; padding-bottom: 9rem; display: flex; flex-direction: column; gap: 1.5rem; }
-        ::-webkit-scrollbar { display: none; }
-        * { -ms-overflow-style: none; scrollbar-width: none; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-        .touch-btn { transition: transform 0.1s; cursor: pointer; }
-        .touch-btn:active { transform: scale(0.96); }
-
-        /* DEEP GLASS CARDS */
-        .sys-card { 
-            background: linear-gradient(145deg, #0A0C12 0%, #050608 100%); 
-            border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem;
-            padding: 1.25rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.05);
-            position: relative; overflow: hidden; flex-shrink: 0;
+        :root {
+            --bg-dark: #070414;
+            --bg-card: #141125;
+            --bg-card-inner: #1e1936;
+            --text-main: #ffffff;
+            --text-muted: #9ca3af;
+            --accent-green: #69f0ae;
+            --accent-purple: #a855f7;
+            --accent-purple-dim: rgba(168, 85, 247, 0.15);
+            --border-dim: #2a2444;
         }
-        .border-purple { border-top: 2px solid #A855F7; }
-        .border-yellow { border-top: 2px solid #FBBF24; }
 
-        /* INPUTS */
-        .sys-input {
-            background: #000; border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 0.75rem; padding: 1rem; color: #fff; font-size: 13px; font-weight: 600;
-            outline: none; transition: border-color 0.2s; width: 100%; text-align: center;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
-        .sys-input:focus { border-color: #A855F7; }
 
-        .section-divider { text-align: center; padding: 0.25rem 0; opacity: 0.5; }
-        .section-divider span { font-size: 9px; font-weight: 900; color: #4B5563; text-transform: uppercase; letter-spacing: 0.4em; }
-
-        /* MODAL ANIMATION */
-        .modal-enter { animation: fadeIn 0.2s ease-out forwards; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
         }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            padding: 20px 20px 100px 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- Header --- */
+        header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-top: 10px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .icon-btn:hover { color: var(--text-main); }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* --- UI Cards --- */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .section-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            padding-left: 5px;
+        }
+
+        /* --- Manual Logging Form --- */
+        .manual-log-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-card-inner);
+            padding: 15px;
+            border-radius: 16px;
+            margin-bottom: 12px;
+            border: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        .manual-log-row:hover {
+            border-color: var(--accent-purple-dim);
+        }
+
+        .log-label {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .log-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .log-subtitle {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .log-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mini-input {
+            width: 70px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-dim);
+            color: var(--text-main);
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .mini-input:focus { border-color: var(--accent-purple); }
+
+        .btn-save-mini {
+            background: var(--accent-purple);
+            color: var(--text-main);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.1s, filter 0.2s;
+        }
+
+        .btn-save-mini:active { transform: scale(0.95); }
+        .btn-save-mini:hover { filter: brightness(1.2); }
+
+        /* --- Today's Stats --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-cell {
+            background: var(--accent-purple-dim);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            border-radius: 18px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .stat-val {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--accent-purple);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* --- History Log --- */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .history-card {
+            background: var(--bg-card-inner);
+            border-left: 3px solid var(--accent-purple);
+            border-radius: 16px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-date {
+            font-size: 0.85rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .history-details {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            gap: 10px;
+        }
+
+        .history-total {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--accent-purple);
+        }
+
+        .empty-history {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-style: italic;
+            padding: 20px 0;
+        }
+
+        /* --- Bottom Nav & Modal --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 60px); 
+            max-width: 380px;
+            background: #0d0920; 
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 30px; 
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 5px 10px; 
+            z-index: 100;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6); 
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            width: 30%; 
+            padding: 8px 0; 
+            color: #6b7280; 
+            text-decoration: none;
+            font-size: 0.65rem; 
+            font-weight: 600;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-item i { font-size: 1.1rem; }
+        .nav-item:hover:not(.active) { color: #a78bfa; }
+
+        .nav-item.active {
+            background: var(--accent-green); 
+            color: var(--bg-dark); 
+            box-shadow: 0 0 15px rgba(105, 240, 174, 0.2); 
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0; left: 50%;
+            transform: translateX(-50%) translateY(100%);
+            width: 100%;
+            max-width: 480px;
+            max-height: 85vh;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-dim);
+            border-radius: 32px 32px 0 0;
+            padding: 20px 20px 0 20px;
+            z-index: 1000;
+            transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
+        }
+
+        .bottom-sheet.active { transform: translateX(-50%) translateY(0); }
+        .drag-handle { width: 40px; height: 5px; background: var(--border-dim); border-radius: 5px; margin: 0 auto 20px auto; }
+        .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .sheet-title { font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+        .close-btn { background: var(--bg-card-inner); border: 1px solid var(--border-dim); border-radius: 50%; width: 32px; height: 32px; color: var(--text-muted); cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s; }
+        .close-btn:hover { color: var(--text-main); background: #2a2444; }
+        .sheet-content { overflow-y: auto; padding-bottom: 40px; -ms-overflow-style: none; scrollbar-width: none; }
+        .sheet-content::-webkit-scrollbar { display: none; }
+        .section-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin: 15px 0 15px 5px; }
+        
+        .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px 10px; margin-bottom: 25px; }
+        .app-icon-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; text-decoration: none; cursor: pointer; transition: transform 0.1s; }
+        .app-icon-btn:active { transform: scale(0.92); }
+        .app-icon-circle { width: 56px; height: 56px; background: var(--bg-card-inner); border: 1px solid var(--border-dim); border-radius: 18px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; transition: border-color 0.3s; }
+        .app-icon-btn:hover .app-icon-circle { border-color: rgba(255,255,255,0.2); }
+        .app-icon-label { font-size: 0.65rem; font-weight: 600; text-align: center; color: var(--text-muted); }
+
     </style>
 </head>
 <body>
 
-    <div id="modal-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[10000] hidden items-center justify-center p-4">
-        <div id="sleep-modal" class="sys-card border-purple w-full max-w-[320px] hidden flex-col gap-4 modal-enter">
-            <h2 class="text-xs font-black text-white uppercase tracking-widest text-center mb-1">Log Core Sleep</h2>
-            <input type="number" id="sleep-input" class="sys-input text-xl" placeholder="Hours (e.g. 7.5)" step="0.1" min="0" max="24">
-            <div class="flex gap-2 mt-2">
-                <button onclick="closeModal()" class="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black text-gray-400 uppercase tracking-widest touch-btn hover:text-white">Cancel</button>
-                <button onclick="saveCoreSleep()" class="flex-1 py-3 rounded-xl bg-accentPurple text-white text-[10px] font-black uppercase tracking-widest touch-btn shadow-[0_0_10px_rgba(168,85,247,0.3)]">Save Log</button>
+<div class="app-container">
+    
+    <header>
+        <button class="icon-btn" onclick="window.location.href='index.html'"><i class="fa-solid fa-arrow-left"></i></button>
+        <h1>Sleep Recovery</h1>
+    </header>
+
+    <div class="section-title">Today's Total</div>
+    <div class="stats-grid" style="margin-bottom: 25px;">
+        <div class="stat-cell">
+            <span class="stat-val" id="display-total-sleep">0h</span>
+            <span class="stat-label">Total Rest</span>
+        </div>
+        <div class="stat-cell">
+            <span class="stat-val" id="display-quality">--/10</span>
+            <span class="stat-label">Quality Score</span>
+        </div>
+    </div>
+
+    <div class="section-title">Log Recovery</div>
+    <div class="card" style="padding: 10px;">
+        
+        <div class="manual-log-row">
+            <div class="log-label">
+                <span class="log-title"><i class="fa-solid fa-moon" style="color: var(--accent-purple);"></i> Night Sleep</span>
+                <span class="log-subtitle">Main resting phase (Hrs)</span>
+            </div>
+            <div class="log-input-group">
+                <input type="number" step="0.5" min="0" id="input-main-sleep" class="mini-input" placeholder="0">
+                <button class="btn-save-mini" onclick="saveMetric('mainSleep')"><i class="fa-solid fa-check"></i></button>
+            </div>
+        </div>
+
+        <div class="manual-log-row">
+            <div class="log-label">
+                <span class="log-title"><i class="fa-solid fa-bed" style="color: var(--accent-cyan);"></i> Power Nap</span>
+                <span class="log-subtitle">Daytime recovery (Hrs)</span>
+            </div>
+            <div class="log-input-group">
+                <input type="number" step="0.5" min="0" id="input-nap" class="mini-input" placeholder="0">
+                <button class="btn-save-mini" onclick="saveMetric('nap')"><i class="fa-solid fa-check"></i></button>
+            </div>
+        </div>
+
+        <div class="manual-log-row">
+            <div class="log-label">
+                <span class="log-title"><i class="fa-solid fa-star" style="color: #eab308;"></i> Quality</span>
+                <span class="log-subtitle">Rate rest from 1 to 10</span>
+            </div>
+            <div class="log-input-group">
+                <input type="number" min="1" max="10" id="input-quality" class="mini-input" placeholder="0">
+                <button class="btn-save-mini" onclick="saveMetric('quality')"><i class="fa-solid fa-check"></i></button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="section-title">Recovery Ledger</div>
+    <div class="history-list" id="history-log">
+        </div>
+
+</div>
+
+<div class="bottom-nav">
+    <a href="index.html" class="nav-item">
+        <i class="fa-solid fa-grip"></i>
+        <span>Dashboard</span>
+    </a>
+    <div class="nav-item active" onclick="toggleActivityModal()">
+        <i class="fa-regular fa-rectangle-list"></i>
+        <span>Activity</span>
+    </div>
+    <a href="analyzer.html" class="nav-item">
+        <i class="fa-solid fa-chart-column"></i>
+        <span>Analytics</span>
+    </a>
+</div>
+
+<div class="modal-overlay" id="activity-overlay" onclick="toggleActivityModal()"></div>
+<div class="bottom-sheet" id="activity-sheet">
+    <div class="drag-handle"></div>
+    <div class="sheet-header">
+        <h2 class="sheet-title">System Modules</h2>
+        <button class="close-btn" onclick="toggleActivityModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+         <div class="sheet-content">
+            <div class="section-label">PROTOCOLS</div>
+            <div class="app-grid">
+                <a href="todo.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-solid fa-square-check"></i></div>
+                    <span class="app-icon-label">Tasks</span>
+                </a>
+                <a href="rituals.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #eab308;"><i class="fa-regular fa-sun"></i></div>
+                    <span class="app-icon-label">Rituals</span>
+                </a>
+                <a href="habits.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-regular fa-calendar-check"></i>
+                    </div>
+                    <span class="app-icon-label">Habits</span>
+                </a>
+            </div>
+
+            <div class="section-label">TIME & MACRO</div>
+            <div class="app-grid">
+                <a href="schedule.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #ffffff;"><i class="fa-regular fa-calendar"></i></div>
+                    <span class="app-icon-label">Schedule</span>
+                </a>
+                <a href="weekly.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-border-all"></i></div>
+                    <span class="app-icon-label">Matrix</span>
+                </a>
+            </div>
+
+            <div class="section-label">BIO & WEALTH</div>
+            <div class="app-grid">
+                <a href="health.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-heart-pulse"></i></div>
+                    <span class="app-icon-label">Health</span>
+                </a>
+                <a href="sleep.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-moon"></i></div>
+                    <span class="app-icon-label">Sleep</span>
+                </a>
+                <a href="budget.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-wallet"></i></div>
+                    <span class="app-icon-label">Finance</span>
+                </a>
+                <a href="diet.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: var(--accent-green);"><i
+                            class="fa-solid fa-apple-whole"></i></div>
+                    <span class="app-icon-label">Diet</span>
+                </a>
+            </div>
+
+            <div class="section-label">DATA & KNOWLEDGE</div>
+            <div class="app-grid">
+                <a href="academics.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <span class="app-icon-label">Academics</span>
+                </a>
+                <a href="library.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-book"></i></div>
+                    <span class="app-icon-label">Library</span>
+                </a>
+                <a href="analyzer.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: var(--accent-green);"><i
+                            class="fa-solid fa-chart-line"></i></div>
+                    <span class="app-icon-label">Analytics</span>
+                </a>
             </div>
         </div>
     </div>
 
-    <div class="mobile-viewport">
-        <header class="p-6 pb-2 flex justify-between items-center z-50 bg-[#020202]/90 backdrop-blur-xl shrink-0">
-            <div class="flex items-center gap-4">
-                <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
-                <h1 class="text-xl font-black text-white tracking-widest uppercase">Recovery</h1>
-            </div>
-            <div class="text-[10px] font-black text-accentPurple bg-accentPurple/10 border border-accentPurple/20 px-3 py-1.5 rounded-full flex items-center gap-2">
-                <div class="w-1.5 h-1.5 rounded-full bg-accentPurple animate-pulse shadow-[0_0_5px_#A855F7]"></div> YIELD
-            </div>
-        </header>
+<script>
+    // --- Data Management System ---
+    const todayStr = new Date().toISOString().split('T')[0];
+    
+    // Load from LocalStorage (This key syncs directly with analyzer.html)
+    let sleepData = JSON.parse(localStorage.getItem('system_os_sleep')) || {};
 
-        <main>
-            <div class="sys-card border-purple relative shrink-0">
-                <div class="flex justify-between items-start mb-4">
-                    <div class="flex items-center gap-2">
-                        <i class="ph-fill ph-moon-stars text-accentPurple text-lg drop-shadow-[0_0_5px_rgba(168,85,247,0.5)]"></i>
-                        <h2 class="text-[11px] font-black text-gray-400 uppercase tracking-widest">Core Sleep (Today)</h2>
-                    </div>
-                    <button onclick="openSleepModal()" class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-2 py-1 border border-white/10 rounded hover:text-white transition touch-btn">
-                        Manual Log
-                    </button>
-                </div>
-                
-                <div class="flex justify-between items-end mb-4">
-                    <div>
-                        <h1 class="text-5xl font-black text-white" id="today-sleep">0.0<span class="text-2xl text-gray-500">h</span></h1>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-[9px] font-bold text-gray-600 uppercase tracking-widest">7-Day Sleep Debt</p>
-                        <p class="text-xl font-black text-accentRed" id="sleep-debt">0.0h</p>
-                    </div>
-                </div>
+    // Initialize Today's Data if it doesn't exist
+    if (!sleepData[todayStr]) {
+        sleepData[todayStr] = { mainSleep: 0, nap: 0, quality: 0 };
+    }
 
-                <div class="bg-black/50 border border-white/5 p-3 rounded-xl flex items-center justify-between mt-2">
-                    <div>
-                        <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Cognitive Readiness</p>
-                        <p class="text-xs font-black text-white uppercase tracking-widest mt-0.5" id="cog-readiness">Awaiting Data</p>
-                    </div>
-                    <div class="w-2 h-2 rounded-full bg-gray-600" id="cog-indicator"></div>
-                </div>
-            </div>
-
-            <div class="section-divider"><span>Daytime Protocols</span></div>
-
-            <div class="sys-card border-yellow relative shrink-0">
-                <div class="flex justify-between items-start mb-4">
-                    <div class="flex items-center gap-2">
-                        <i class="ph-fill ph-sun-horizon text-accentYellow text-lg drop-shadow-[0_0_5px_rgba(251,191,36,0.5)]"></i>
-                        <h2 class="text-[11px] font-black text-gray-400 uppercase tracking-widest">Power Nap Injector</h2>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-[9px] font-bold text-gray-600 uppercase tracking-widest">Logged Today</p>
-                        <p class="text-sm font-black text-accentYellow" id="today-nap">0m</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3 mb-3">
-                    <button onclick="logNap(20)" class="bg-black/40 border border-white/10 p-3 rounded-xl touch-btn hover:border-accentYellow/50 transition flex flex-col items-center justify-center gap-1">
-                        <i class="ph-fill ph-coffee text-accentYellow text-xl"></i>
-                        <span class="text-[10px] font-black text-white uppercase tracking-widest">Caffeine Nap</span>
-                        <span class="text-[8px] font-bold text-gray-500 uppercase">20 Minutes</span>
-                    </button>
-                    <button onclick="logNap(26)" class="bg-black/40 border border-white/10 p-3 rounded-xl touch-btn hover:border-accentYellow/50 transition flex flex-col items-center justify-center gap-1">
-                        <i class="ph-fill ph-rocket-launch text-accentYellow text-xl"></i>
-                        <span class="text-[10px] font-black text-white uppercase tracking-widest">NASA Protocol</span>
-                        <span class="text-[8px] font-bold text-gray-500 uppercase">26 Minutes</span>
-                    </button>
-                </div>
-                
-                <button onclick="logNap(90)" class="w-full bg-black/40 border border-white/10 p-3 rounded-xl touch-btn hover:border-accentYellow/50 transition flex justify-between items-center px-4">
-                    <div class="flex items-center gap-3">
-                        <i class="ph-fill ph-brain text-accentPurple text-xl"></i>
-                        <div class="text-left">
-                            <p class="text-[10px] font-black text-white uppercase tracking-widest">Full REM Cycle</p>
-                            <p class="text-[8px] font-bold text-gray-500 uppercase">Memory Consolidation</p>
-                        </div>
-                    </div>
-                    <span class="text-xs font-black text-accentPurple">90m</span>
-                </button>
-            </div>
-
-            <div class="section-divider"><span>Historical Ledger</span></div>
-
-            <div>
-                <h3 class="px-4 text-[9px] font-black text-gray-600 uppercase tracking-[0.2em] mb-3">Last 7 Days Yield</h3>
-                <div id="ledger-container" class="space-y-2">
-                    </div>
-            </div>
-
-        </main>
-    </div>
-
-    <div id="sidebar-injector"></div>
-    <script src="js/sidebar.js"></script>
-    <script src="js/bottom-nav.js"></script>
-
-    <script>
-        // =========================================================================
-        // RECOVERY YIELD ENGINE
-        // =========================================================================
-
-        const IDEAL_SLEEP = 7.5; // Baseline hours for students to calculate debt
-
-        function getLocalYMD(d) {
-            const y = d.getFullYear();
-            const m = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            return `${y}-${m}-${day}`;
-        }
-
-        const todayStr = getLocalYMD(new Date());
-
-        // --- MODAL SYSTEM ---
-        function openSleepModal() {
-            document.getElementById('modal-overlay').classList.remove('hidden');
-            document.getElementById('modal-overlay').classList.add('flex');
-            document.getElementById('sleep-modal').classList.remove('hidden');
-            document.getElementById('sleep-modal').classList.add('flex');
-            document.getElementById('sleep-input').focus();
-        }
-
-        function closeModal() {
-            document.getElementById('modal-overlay').classList.add('hidden');
-            document.getElementById('modal-overlay').classList.remove('flex');
-            document.getElementById('sleep-modal').classList.add('hidden');
-            document.getElementById('sleep-modal').classList.remove('flex');
-        }
-
-        function saveCoreSleep() {
-            const hours = parseFloat(document.getElementById('sleep-input').value);
-            if (isNaN(hours) || hours < 0 || hours > 24) return;
-
-            let sleepH = JSON.parse(localStorage.getItem('sys_sleep_history')) || {};
-            sleepH[todayStr] = hours;
-            localStorage.setItem('sys_sleep_history', JSON.stringify(sleepH));
+    // Save inputs
+    function saveMetric(key) {
+        let inputId = key === 'mainSleep' ? 'input-main-sleep' : `input-${key}`;
+        const val = parseFloat(document.getElementById(inputId).value);
+        
+        if (!isNaN(val) && val >= 0) {
+            sleepData[todayStr][key] = val;
+            localStorage.setItem('system_os_sleep', JSON.stringify(sleepData));
             
-            document.getElementById('sleep-input').value = '';
-            closeModal();
-            loadRecoveryData();
-            window.dispatchEvent(new Event('storage')); // Ping Analyzer
-        }
+            // Give brief visual feedback
+            const btn = event.currentTarget;
+            const originalColor = btn.style.background;
+            btn.style.background = 'var(--accent-green)';
+            btn.innerHTML = '<i class="fa-solid fa-check-double"></i>';
+            setTimeout(() => {
+                btn.style.background = originalColor;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+            }, 500);
 
-        function logNap(minutes) {
-            let napH = JSON.parse(localStorage.getItem('sys_nap_history')) || {};
-            // Naps are additive. If you take two 20m naps, it equals 40m.
-            const currentNaps = parseInt(napH[todayStr]) || 0;
-            napH[todayStr] = currentNaps + minutes;
-            localStorage.setItem('sys_nap_history', JSON.stringify(napH));
+            renderUI();
+        }
+    }
+
+    // Render logic
+    function renderUI() {
+        const todayData = sleepData[todayStr];
+        
+        // Update Form Inputs
+        document.getElementById('input-main-sleep').value = todayData.mainSleep || '';
+        document.getElementById('input-nap').value = todayData.nap || '';
+        document.getElementById('input-quality').value = todayData.quality || '';
+
+        // Update Top Stats
+        const totalHrs = (todayData.mainSleep + todayData.nap).toFixed(1);
+        document.getElementById('display-total-sleep').textContent = `${totalHrs}h`;
+        document.getElementById('display-quality').textContent = todayData.quality > 0 ? `${todayData.quality}/10` : '--/10';
+
+        // Render History
+        const historyContainer = document.getElementById('history-log');
+        historyContainer.innerHTML = '';
+
+        const dates = Object.keys(sleepData).sort((a, b) => new Date(b) - new Date(a));
+        let hasHistory = false;
+
+        dates.forEach(date => {
+            if (date === todayStr) return; // Skip today
+
+            const data = sleepData[date];
+            if(data.mainSleep === 0 && data.nap === 0) return; // Skip empty days
             
-            loadRecoveryData();
-            window.dispatchEvent(new Event('storage')); // Ping Analyzer
+            hasHistory = true;
+            const dateObj = new Date(date);
+            const dateDisplay = dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+            const prevTotal = (data.mainSleep + data.nap).toFixed(1);
+
+            const card = document.createElement('div');
+            card.className = 'history-card';
+            card.innerHTML = `
+                <div>
+                    <div class="history-date">${dateDisplay}</div>
+                    <div class="history-details">
+                        <span>Night: ${data.mainSleep}h</span> • 
+                        <span>Nap: ${data.nap}h</span> • 
+                        <span>Quality: ${data.quality}/10</span>
+                    </div>
+                </div>
+                <div class="history-total">${prevTotal}h</div>
+            `;
+            historyContainer.appendChild(card);
+        });
+
+        if (!hasHistory) {
+            historyContainer.innerHTML = `<div class="empty-history">No previous sleep data logged. History will generate tomorrow.</div>`;
         }
+    }
 
-        function clearDay(dateStr) {
-            if(confirm("Clear recovery logs for this day?")) {
-                let sleepH = JSON.parse(localStorage.getItem('sys_sleep_history')) || {};
-                let napH = JSON.parse(localStorage.getItem('sys_nap_history')) || {};
-                
-                delete sleepH[dateStr];
-                delete napH[dateStr];
-                
-                localStorage.setItem('sys_sleep_history', JSON.stringify(sleepH));
-                localStorage.setItem('sys_nap_history', JSON.stringify(napH));
-                
-                loadRecoveryData();
-                window.dispatchEvent(new Event('storage'));
-            }
-        }
+    // --- App Drawer Modal ---
+    function toggleActivityModal() {
+        const overlay = document.getElementById('activity-overlay');
+        const sheet = document.getElementById('activity-sheet');
+        overlay.classList.toggle('active');
+        sheet.classList.toggle('active');
+        document.body.style.overflow = sheet.classList.contains('active') ? 'hidden' : '';
+    }
 
-        // --- CORE DATA ENGINE ---
-        function loadRecoveryData() {
-            const sleepH = JSON.parse(localStorage.getItem('sys_sleep_history')) || {};
-            const napH = JSON.parse(localStorage.getItem('sys_nap_history')) || {};
-            
-            // 1. Today's Overview
-            const todaySleep = parseFloat(sleepH[todayStr]) || 0;
-            const todayNaps = parseInt(napH[todayStr]) || 0;
+    // --- Init ---
+    document.addEventListener('DOMContentLoaded', renderUI);
 
-            document.getElementById('today-sleep').innerHTML = `${todaySleep.toFixed(1)}<span class="text-2xl text-gray-500">h</span>`;
-            document.getElementById('today-nap').innerText = `${todayNaps}m`;
+</script>
 
-            // Cognitive Readiness Logic
-            const cogText = document.getElementById('cog-readiness');
-            const cogDot = document.getElementById('cog-indicator');
-            
-            if (todaySleep === 0) {
-                cogText.innerText = "Awaiting Protocol";
-                cogText.className = "text-xs font-black text-gray-500 uppercase tracking-widest mt-0.5";
-                cogDot.className = "w-2 h-2 rounded-full bg-gray-600";
-            } else if (todaySleep < 5.5) {
-                cogText.innerText = "Memory Deficit";
-                cogText.className = "text-xs font-black text-accentRed uppercase tracking-widest mt-0.5";
-                cogDot.className = "w-2 h-2 rounded-full bg-accentRed shadow-[0_0_8px_#FF4C4C]";
-            } else if (todaySleep >= 5.5 && todaySleep < 7) {
-                cogText.innerText = "Sub-Optimal Yield";
-                cogText.className = "text-xs font-black text-accentYellow uppercase tracking-widest mt-0.5";
-                cogDot.className = "w-2 h-2 rounded-full bg-accentYellow shadow-[0_0_8px_#FBBF24]";
-            } else {
-                cogText.innerText = "Peak Neuroplasticity";
-                cogText.className = "text-xs font-black text-accentGreen uppercase tracking-widest mt-0.5";
-                cogDot.className = "w-2 h-2 rounded-full bg-accentGreen shadow-[0_0_8px_#00E676]";
-            }
-
-            // 2. Calculate 7-Day Sleep Debt
-            let debt = 0;
-            let ledgerHtml = '';
-
-            for (let i = 0; i < 7; i++) {
-                let d = new Date();
-                d.setDate(d.getDate() - i);
-                const dStr = getLocalYMD(d);
-                const displayDate = i === 0 ? "Today" : `${d.getDate()}/${d.getMonth() + 1}`;
-                
-                const sHours = parseFloat(sleepH[dStr]) || 0;
-                const nMinutes = parseInt(napH[dStr]) || 0;
-
-                // Debt calculation (only calculate debt for past days or if today is logged)
-                if (i > 0 || sHours > 0) {
-                    if (sHours < IDEAL_SLEEP) {
-                        debt += (IDEAL_SLEEP - sHours);
-                    }
-                }
-
-                // Build Ledger HTML
-                if (sHours > 0 || nMinutes > 0) {
-                    ledgerHtml += `
-                        <div class="bg-black/50 border border-white/5 p-3 rounded-xl flex justify-between items-center" oncontextmenu="clearDay('${dStr}'); return false;">
-                            <div class="flex items-center gap-3">
-                                <p class="text-xs font-black text-gray-400 w-10">${displayDate}</p>
-                                <div class="flex flex-col">
-                                    <p class="text-sm font-black text-white">${sHours > 0 ? sHours.toFixed(1) + 'h' : '--'}</p>
-                                    <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Core</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-4 text-right">
-                                <div class="flex flex-col items-end">
-                                    <p class="text-sm font-black text-accentYellow">${nMinutes > 0 ? nMinutes + 'm' : '--'}</p>
-                                    <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Nap</p>
-                                </div>
-                                <button onclick="clearDay('${dStr}')" class="text-gray-600 hover:text-accentRed transition p-1"><i class="ph-bold ph-x text-sm"></i></button>
-                            </div>
-                        </div>
-                    `;
-                }
-            }
-
-            const debtEl = document.getElementById('sleep-debt');
-            debtEl.innerText = `${debt.toFixed(1)}h`;
-            debtEl.className = debt > 5 ? "text-xl font-black text-accentRed" : (debt > 0 ? "text-xl font-black text-accentYellow" : "text-xl font-black text-accentGreen");
-
-            if (!ledgerHtml) {
-                ledgerHtml = `<div class="text-center py-6 border border-dashed border-white/10 rounded-2xl bg-black/40 text-[9px] font-black text-gray-600 uppercase tracking-widest">No recovery data logged.</div>`;
-            }
-            document.getElementById('ledger-container').innerHTML = ledgerHtml;
-        }
-
-        window.onload = loadRecoveryData;
-        window.addEventListener('storage', loadRecoveryData);
-
-    </script>
 </body>
 </html>

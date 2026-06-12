@@ -1,552 +1,842 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>System OS | Schedule Timeline</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6',
-                        accentPurple: '#A855F7', accentRed: '#FF4C4C', accentYellow: '#FBBF24',
-                        cardBg: '#080A0E'
-                    }
-                }
-            }
-        }
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Hub</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* STRICT MOBILE LOCK */
-        body,
-        html {
-            background-color: #000;
-            color: #C5C6C7;
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 0;
-            -webkit-font-smoothing: antialiased;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-        .mobile-viewport {
-            width: 100%;
-            max-width: 430px;
-            margin: 0 auto;
-            position: relative;
-            background-color: #020202;
-            min-height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
-        }
-
-        main {
-            padding: 1rem;
-            flex: 1;
-            padding-bottom: 6rem;
-            overflow-y: auto;
-        }
-
-        ::-webkit-scrollbar {
-            display: none;
+        :root {
+            --bg-dark: #070414;
+            --bg-card: #141125;
+            --bg-card-inner: #1e1936;
+            --text-main: #ffffff;
+            --text-muted: #9ca3af;
+            --accent-green: #69f0ae;
+            --accent-green-dim: rgba(105, 240, 174, 0.15);
+            --border-dim: #2a2444;
+            
+            /* Priority Colors tuned for Dark Theme */
+            --priority-high: #f87171; /* Soft Red */
+            --priority-med: #fbbf24;  /* Soft Yellow */
+            --priority-low: #38bdf8;  /* Soft Blue */
         }
 
         * {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .sys-card {
-            background: #080A0E;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 1.25rem;
-            padding: 1.25rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            margin-bottom: 1rem;
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
         }
 
-        /* CALENDAR STYLES */
-        .cal-grid {
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Smooth Top Transition Bar */
+        .page-transition-bar {
+            position: fixed;
+            top: 0; left: 0;
+            height: 3px;
+            background: var(--accent-green);
+            z-index: 9999;
+            animation: loadBar 0.8s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+        }
+
+        @keyframes loadBar {
+            0% { width: 0%; opacity: 1; }
+            80% { width: 100%; opacity: 1; }
+            100% { width: 100%; opacity: 0; }
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            padding: 20px 20px 100px 20px; /* Space for bottom nav */
+            overflow-x: hidden;
+            position: relative;
+            /* Animation moved here so it doesn't break the fixed nav bar */
+            animation: fadeIn 0.4s ease-out forwards; 
+        }
+
+        /* --- Header --- */
+        header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-top: 10px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .icon-btn:hover { color: var(--text-main); }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        /* --- Calendar Block --- */
+        .calendar-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .cal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .month-year {
+            font-weight: 800;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .cal-nav-btn {
+            background: var(--bg-card-inner);
+            border: 1px solid var(--border-dim);
+            color: var(--text-muted);
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .cal-nav-btn:hover {
+            color: var(--text-main);
+            border-color: var(--accent-green);
+        }
+
+        .days-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 0.25rem;
+            gap: 8px;
             text-align: center;
         }
 
-        .cal-day-header {
-            font-size: 9px;
-            font-weight: 900;
-            color: #4B5563;
-            text-transform: uppercase;
-            padding-bottom: 0.5rem;
+        .day-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 10px;
         }
 
-        .cal-day {
-            aspect-ratio: 1;
+        .date-cell {
+            padding: 10px 0;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            position: relative;
+            color: var(--text-muted);
+        }
+
+        .date-cell:hover {
+            background: var(--bg-card-inner);
+            color: var(--text-main);
+        }
+
+        .date-cell.today {
+            color: var(--accent-green);
+            font-weight: 800;
+        }
+
+        .date-cell.selected {
+            background: var(--accent-green-dim);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+        
+        .has-task-dot {
+            width: 5px;
+            height: 5px;
+            background-color: var(--accent-green);
+            border-radius: 50%;
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* --- Command Center Form --- */
+        .input-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .input-header {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .custom-input {
+            background: var(--bg-card-inner);
+            border: 1px solid transparent;
+            color: var(--text-main);
+            padding: 15px;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+
+        .custom-input:focus {
+            border-color: var(--accent-green);
+        }
+
+        .btn-add {
+            background: var(--accent-green);
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 16px;
+            padding: 16px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: filter 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
+            width: 100%;
+        }
+
+        .btn-add:hover { filter: brightness(1.1); }
+
+        /* --- Timeline List --- */
+        .section-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            padding-left: 5px;
+        }
+
+        .task-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .task-card {
+            background: var(--bg-card-inner);
+            border-radius: 16px;
+            padding: 18px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid transparent;
+        }
+
+        .accent-bar {
+            position: absolute;
+            left: 0; top: 15px; bottom: 15px;
+            width: 4px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .priority-high { background: var(--priority-high); }
+        .priority-med { background: var(--priority-med); }
+        .priority-low { background: var(--priority-low); }
+
+        .task-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding-left: 10px;
+        }
+        
+        .task-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+
+        .task-time {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 8px;
+            transition: color 0.2s;
+            font-size: 1.1rem;
+        }
+
+        .delete-btn:hover { color: #ef4444; }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            padding: 20px 0;
+            font-style: italic;
+        }
+
+        /* --- Smaller Bottom Navigation (Synced w/ Index) --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 60px); 
+            max-width: 380px;
+            background: #0d0920; 
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 30px; 
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 5px 10px; 
+            z-index: 100;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6); 
+        }
+
+        .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
-            font-weight: 700;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
-            border: 1px solid transparent;
-        }
-
-        .cal-day:active {
-            transform: scale(0.9);
-        }
-
-        .cal-day.empty {
-            pointer-events: none;
-            opacity: 0;
-        }
-
-        .cal-day.selected {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.3);
-            color: white;
-        }
-
-        .cal-day.today {
-            color: #66FCF1;
-            font-weight: 900;
-        }
-
-        .event-dot {
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            position: absolute;
-            bottom: 4px;
-        }
-
-        /* CENTERED GLASS MODAL */
-        .center-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -45%) scale(0.95);
-            width: 90%;
-            max-width: 380px;
-            background: rgba(8, 10, 14, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1.75rem;
-            padding: 1.5rem;
-            z-index: 9999;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
-        }
-
-        .center-modal.active {
-            transform: translate(-50%, -50%) scale(1);
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-backdrop {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(5px);
-            z-index: 9998;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-
-        .modal-backdrop.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .sys-input {
-            width: 100%;
-            background: #000;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1rem;
-            padding: 1rem;
-            color: #fff;
-            font-size: 14px;
+            gap: 4px;
+            width: 30%; 
+            padding: 8px 0; 
+            color: #6b7280; 
+            text-decoration: none;
+            font-size: 0.65rem; 
             font-weight: 600;
-            outline: none;
-        }
-
-        .sys-input:focus {
-            border-color: #66FCF1;
-        }
-
-        input[type="time"]::-webkit-calendar-picker-indicator,
-        input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(1);
+            border-radius: 20px;
+            transition: all 0.3s ease;
             cursor: pointer;
         }
 
-        .touch-btn {
-            transition: transform 0.1s;
-            cursor: pointer;
+        .nav-item i { font-size: 1.1rem; }
+        .nav-item:hover:not(.active) { color: #a78bfa; }
+
+        .nav-item.active {
+            background: var(--accent-green); 
+            color: var(--bg-dark); 
+            box-shadow: 0 0 15px rgba(105, 240, 174, 0.2); 
         }
 
-        .touch-btn:active {
-            transform: scale(0.96);
+        /* --- App Drawer Modal (Bottom Sheet) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
         }
 
-        /* COLOR PICKER */
-        .color-option {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.2s;
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
         }
 
-        .color-option.active {
-            transform: scale(1.1);
-            box-shadow: 0 0 10px currentColor;
-            border-color: #fff;
-        }
-
-        body,
-        html {
-            height: 100dvh;
-            overflow: hidden;
-            /* This stops the whole screen from scrolling */
-            margin: 0;
-        }
-
-        .mobile-viewport {
-            height: 100%;
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0; left: 50%;
+            transform: translateX(-50%) translateY(100%);
+            width: 100%;
+            max-width: 480px;
+            max-height: 85vh;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-dim);
+            border-radius: 32px 32px 0 0;
+            padding: 20px 20px 0 20px;
+            z-index: 1000;
+            transition: transform 0.4s cubic-bezier(0.33, 1, 0.68, 1);
             display: flex;
             flex-direction: column;
-            /* Allows content and nav to stack */
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
         }
 
-        main {
-            flex: 1;
-            overflow-y: auto;
-            /* Only your content area scrolls */
-            padding-bottom: 2rem;
+        .bottom-sheet.active { transform: translateX(-50%) translateY(0); }
+
+        .drag-handle {
+            width: 40px;
+            height: 5px;
+            background: var(--border-dim);
+            border-radius: 5px;
+            margin: 0 auto 20px auto;
         }
+
+        .sheet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .sheet-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .close-btn {
+            background: var(--bg-card-inner);
+            border: 1px solid var(--border-dim);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            color: var(--text-muted);
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s;
+        }
+        
+        .close-btn:hover { color: var(--text-main); background: #2a2444; }
+
+        .sheet-content {
+            overflow-y: auto;
+            padding-bottom: 40px; 
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .sheet-content::-webkit-scrollbar { display: none; }
+
+        .section-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 15px 0 15px 5px;
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px 10px;
+            margin-bottom: 25px;
+        }
+
+        .app-icon-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.2s cubic-bezier(0.33, 1, 0.68, 1);
+        }
+
+        .app-icon-btn:active { transform: scale(0.9); }
+
+        .app-icon-circle {
+            width: 56px;
+            height: 56px;
+            background: var(--bg-card-inner);
+            border: 1px solid var(--border-dim);
+            border-radius: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: border-color 0.3s;
+        }
+
+        .app-icon-btn:hover .app-icon-circle { border-color: rgba(255,255,255,0.2); }
+        .app-icon-label { font-size: 0.65rem; font-weight: 600; text-align: center; color: var(--text-muted); line-height: 1.2; }
+
     </style>
 </head>
-
 <body>
 
-    <div class="mobile-viewport">
-        <header
-            class="sticky top-0 p-6 pb-4 flex justify-between items-center z-50 bg-[#020202]/90 backdrop-blur-xl border-b border-white/5">
-            <div class="flex items-center gap-4">
-                <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
-                <h1 class="text-xl font-black text-white tracking-widest uppercase">Schedule</h1>
-            </div>
-            <div class="text-[10px] font-black text-white uppercase tracking-widest bg-white/10 border border-white/20 px-3 py-1.5 rounded-full flex items-center gap-2"
-                onclick="window.location.href='index.html'">
-                Dashboard <i class="ph-bold ph-arrow-right"></i>
-            </div>
-        </header>
+<div class="page-transition-bar"></div>
 
-        <main>
-            <div class="sys-card border-t-2 border-white">
-                <div class="flex justify-between items-center mb-4">
-                    <button onclick="changeMonth(-1)"
-                        class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition"><i
-                            class="ph-bold ph-caret-left"></i></button>
-                    <h2 id="cal-month-year" class="text-sm font-black text-white uppercase tracking-widest">April 2026
-                    </h2>
-                    <button onclick="changeMonth(1)"
-                        class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition"><i
-                            class="ph-bold ph-caret-right"></i></button>
-                </div>
+<div class="app-container">
+    
+    <header>
+        <button class="icon-btn" onclick="window.location.href='index.html'"><i class="fa-solid fa-arrow-left"></i></button>
+        <h1>Schedule Hub</h1>
+    </header>
 
-                <div class="cal-grid" id="cal-headers">
-                    <div class="cal-day-header">S</div>
-                    <div class="cal-day-header">M</div>
-                    <div class="cal-day-header">T</div>
-                    <div class="cal-day-header">W</div>
-                    <div class="cal-day-header">T</div>
-                    <div class="cal-day-header">F</div>
-                    <div class="cal-day-header">S</div>
-                </div>
-                <div class="cal-grid" id="cal-days">
-                </div>
-            </div>
-
-            <div>
-                <div class="flex justify-between items-center mb-3 px-1">
-                    <h2 class="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2"
-                        id="selected-date-text">
-                        <i class="ph-fill ph-calendar-blank text-white text-lg"></i> Events
-                    </h2>
-                    <button onclick="openModal()"
-                        class="text-[10px] font-black text-white bg-white/10 px-3 py-1.5 rounded-full border border-white/20 uppercase tracking-widest touch-btn">
-                        + Add Event
-                    </button>
-                </div>
-
-                <div id="events-list" class="space-y-2">
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <div class="modal-backdrop" id="modal-bg" onclick="closeModal()"></div>
-
-    <div class="center-modal" id="add-modal">
-        <div class="flex justify-between items-center mb-6">
-            <h3 class="text-sm font-black text-white uppercase tracking-widest">Log Event</h3>
-            <i class="ph-bold ph-x text-xl text-gray-500 cursor-pointer p-1 active:scale-90 touch-btn"
-                onclick="closeModal()"></i>
+    <div class="calendar-card">
+        <div class="cal-header">
+            <button class="cal-nav-btn" onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="month-year" id="month-display">APRIL 2026</div>
+            <button class="cal-nav-btn" onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
-
-        <form id="event-form" onsubmit="submitEvent(event)" class="space-y-4">
-            <div>
-                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Event
-                    Title <span class="text-accentRed">*</span></label>
-                <input type="text" id="event-title" class="sys-input" placeholder="e.g. AI Seminar" required>
+        <div class="days-grid">
+            <div class="day-label">SUN</div><div class="day-label">MON</div><div class="day-label">TUE</div>
+            <div class="day-label">WED</div><div class="day-label">THU</div><div class="day-label">FRI</div><div class="day-label">SAT</div>
+        </div>
+        <div class="days-grid" id="calendar-grid">
             </div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label
-                        class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Date</label>
-                    <input type="date" id="event-date" class="sys-input text-xs" required>
-                </div>
-                <div>
-                    <label
-                        class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Time</label>
-                    <input type="time" id="event-time" class="sys-input text-xs" required>
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Importance
-                    Level</label>
-                <div class="flex justify-between items-center bg-black p-3 rounded-xl border border-white/10">
-                    <div class="color-option bg-accentRed text-accentRed active"
-                        onclick="selectColor('accentRed', this)" title="Urgent"></div>
-                    <div class="color-option bg-accentYellow text-accentYellow"
-                        onclick="selectColor('accentYellow', this)" title="Warning"></div>
-                    <div class="color-option bg-accentTeal text-accentTeal" onclick="selectColor('accentTeal', this)"
-                        title="Standard"></div>
-                    <div class="color-option bg-accentPurple text-accentPurple"
-                        onclick="selectColor('accentPurple', this)" title="Note"></div>
-                    <input type="hidden" id="event-color" value="accentRed">
-                </div>
-            </div>
-
-            <button type="submit"
-                class="w-full bg-white text-black font-black text-xs uppercase tracking-widest rounded-xl touch-btn mt-4 shadow-[0_0_20px_rgba(255,255,255,0.2)] py-4">
-                Lock To Timeline
-            </button>
-        </form>
     </div>
 
-    <div id="sidebar-injector"></div>
-    <script src="js/sidebar.js"></script>
+    <div class="input-card">
+        <div class="input-header">
+            <i class="fa-solid fa-calendar-plus text-muted"></i> 
+            Log Event: <span id="selected-date-label" style="color:var(--text-main); margin-left:5px;">...</span>
+        </div>
+        <div class="form-group">
+            <input type="text" id="task-title" class="custom-input" placeholder="Event title (e.g., Seminar)...">
+            <div class="form-row">
+                <input type="time" id="task-time" class="custom-input" required>
+                <select id="task-priority" class="custom-input" style="color: var(--text-muted);">
+                    <option value="high">🔴 High Priority</option>
+                    <option value="med">🟡 Med Priority</option>
+                    <option value="low">🔵 Low Priority</option>
+                </select>
+            </div>
+            <button class="btn-add" onclick="addScheduleTask()">Add to Timeline</button>
+        </div>
+    </div>
 
-    <script>
-        // =========================================================================
-        // CALENDAR & SCHEDULE ENGINE
-        // =========================================================================
+    <div class="section-title">Timeline</div>
+    <ul class="task-list" id="schedule-list">
+        </ul>
 
-        let currentDate = new Date(); // Controls the month currently being viewed
-        let selectedDate = new Date(); // The specific day the user has clicked
-        let scheduleEvents = JSON.parse(localStorage.getItem('sys_schedule')) || [];
+</div>
 
-        // Helper: format Date object to YYYY-MM-DD
-        function formatDateString(dateObj) {
-            const y = dateObj.getFullYear();
-            const m = String(dateObj.getMonth() + 1).padStart(2, '0');
-            const d = String(dateObj.getDate()).padStart(2, '0');
-            return `${y}-${m}-${d}`;
-        }
+<div class="bottom-nav">
+    <a href="index.html" class="nav-item">
+        <i class="fa-solid fa-grip"></i>
+        <span>Dashboard</span>
+    </a>
+    <div class="nav-item" onclick="toggleActivityModal()">
+        <i class="fa-regular fa-rectangle-list"></i>
+        <span>Activity</span>
+    </div>
+    <a href="analyzer.html" class="nav-item">
+        <i class="fa-solid fa-chart-column"></i>
+        <span>Analytics</span>
+    </a>
+</div>
 
-        function formatTime12hr(time24) {
-            if (!time24) return "";
-            let [h, m] = time24.split(':');
-            let ampm = h >= 12 ? 'PM' : 'AM';
-            h = h % 12 || 12;
-            return `${h}:${m} ${ampm}`;
-        }
+<div class="modal-overlay" id="activity-overlay" onclick="toggleActivityModal()"></div>
+<div class="bottom-sheet" id="activity-sheet">
+    <div class="drag-handle"></div>
+    <div class="sheet-header">
+        <h2 class="sheet-title">System Modules</h2>
+        <button class="close-btn" onclick="toggleActivityModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
 
-        // --- CALENDAR RENDERING ---
-        function renderCalendar() {
-            const year = currentDate.getFullYear();
-            const month = currentDate.getMonth();
-
-            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            document.getElementById('cal-month-year').innerText = `${monthNames[month]} ${year}`;
-
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-            const calDays = document.getElementById('cal-days');
-            calDays.innerHTML = '';
-
-            const todayStr = formatDateString(new Date());
-            const selectedStr = formatDateString(selectedDate);
-
-            // Blank spaces for start of month
-            for (let i = 0; i < firstDay; i++) {
-                calDays.innerHTML += `<div class="cal-day empty"></div>`;
-            }
-
-            // Actual days
-            for (let i = 1; i <= daysInMonth; i++) {
-                const iterDate = new Date(year, month, i);
-                const iterStr = formatDateString(iterDate);
-
-                let classes = 'cal-day text-gray-400 hover:text-white hover:bg-white/5';
-                if (iterStr === todayStr) classes += ' today';
-                if (iterStr === selectedStr) classes += ' selected';
-
-                // Check if this date has events to show a dot
-                const dayEvents = scheduleEvents.filter(e => e.date === iterStr);
-                let dotHTML = '';
-                if (dayEvents.length > 0) {
-                    // Grab the color of the highest priority event, or just the first one
-                    const colorClass = dayEvents[0].color;
-                    dotHTML = `<div class="event-dot bg-${colorClass} shadow-[0_0_5px_currentColor]"></div>`;
-                }
-
-                calDays.innerHTML += `
-                    <div class="${classes}" onclick="selectDate(${year}, ${month}, ${i})">
-                        ${i}
-                        ${dotHTML}
+        <div class="sheet-content">
+            <div class="section-label">PROTOCOLS</div>
+            <div class="app-grid">
+                <a href="todo.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-solid fa-square-check"></i></div>
+                    <span class="app-icon-label">Tasks</span>
+                </a>
+                <a href="rituals.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #eab308;"><i class="fa-regular fa-sun"></i></div>
+                    <span class="app-icon-label">Rituals</span>
+                </a>
+                <a href="habits.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-regular fa-calendar-check"></i>
                     </div>
-                `;
-            }
+                    <span class="app-icon-label">Habits</span>
+                </a>
+            </div>
 
-            renderEvents();
-        }
+            <div class="section-label">TIME & MACRO</div>
+            <div class="app-grid">
+                <a href="schedule.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #ffffff;"><i class="fa-regular fa-calendar"></i></div>
+                    <span class="app-icon-label">Schedule</span>
+                </a>
+                <a href="weekly.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-border-all"></i></div>
+                    <span class="app-icon-label">Matrix</span>
+                </a>
+            </div>
 
-        function changeMonth(direction) {
-            currentDate.setMonth(currentDate.getMonth() + direction);
-            renderCalendar();
-        }
+            <div class="section-label">BIO & WEALTH</div>
+            <div class="app-grid">
+                <a href="health.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-heart-pulse"></i></div>
+                    <span class="app-icon-label">Health</span>
+                </a>
+                <a href="sleep.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-moon"></i></div>
+                    <span class="app-icon-label">Sleep</span>
+                </a>
+                <a href="budget.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-wallet"></i></div>
+                    <span class="app-icon-label">Finance</span>
+                </a>
+                <a href="diet.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: var(--accent-green);"><i
+                            class="fa-solid fa-apple-whole"></i></div>
+                    <span class="app-icon-label">Diet</span>
+                </a>
+            </div>
 
-        function selectDate(year, month, day) {
-            selectedDate = new Date(year, month, day);
-            renderCalendar(); // Re-render to update the visual "selected" highlight
-        }
-
-        // --- EVENT LIST RENDERING ---
-        function renderEvents() {
-            const list = document.getElementById('events-list');
-            const selectedStr = formatDateString(selectedDate);
-
-            // Update Title
-            const displayOptions = { weekday: 'short', month: 'short', day: 'numeric' };
-            document.getElementById('selected-date-text').innerHTML = `<i class="ph-fill ph-calendar-blank text-white text-lg"></i> ${selectedDate.toLocaleDateString('en-US', displayOptions)}`;
-
-            const dayEvents = scheduleEvents.filter(e => e.date === selectedStr);
-
-            // Sort chronologically by time
-            dayEvents.sort((a, b) => a.time.localeCompare(b.time));
-
-            list.innerHTML = '';
-
-            if (dayEvents.length === 0) {
-                list.innerHTML = `<div class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] text-center border border-dashed border-white/10 rounded-xl py-6 mt-2 bg-black/30 backdrop-blur-sm">No Events Scheduled</div>`;
-                return;
-            }
-
-            dayEvents.forEach(e => {
-                list.innerHTML += `
-                    <div class="bg-black/60 p-3.5 rounded-xl border-l-2 border-l-${e.color} border-y border-r border-white/5 flex justify-between items-center backdrop-blur-sm">
-                        <div class="flex items-center gap-3 truncate w-full">
-                            <span class="text-[10px] font-black text-${e.color} uppercase tracking-widest shrink-0 w-14">${formatTime12hr(e.time)}</span>
-                            <div class="w-[1px] h-6 bg-white/10 shrink-0"></div>
-                            <p class="text-sm font-bold text-gray-200 truncate w-full pl-1">${e.title}</p>
-                        </div>
-                        <button onclick="deleteEvent(${e.id})" class="shrink-0 text-gray-600 hover:text-accentRed px-2 ml-2 transition">
-                            <i class="ph-bold ph-trash text-lg"></i>
-                        </button>
+            <div class="section-label">DATA & KNOWLEDGE</div>
+            <div class="app-grid">
+                <a href="academics.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-graduation-cap"></i>
                     </div>
-                `;
-            });
+                    <span class="app-icon-label">Academics</span>
+                </a>
+                <a href="library.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-book"></i></div>
+                    <span class="app-icon-label">Library</span>
+                </a>
+                <a href="analyzer.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: var(--accent-green);"><i
+                            class="fa-solid fa-chart-line"></i></div>
+                    <span class="app-icon-label">Analytics</span>
+                </a>
+            </div>
+        </div>
+    </div>
+<script>
+    // --- State Variables ---
+    let currentDate = new Date(); 
+    let selectedDateStr = formatDate(new Date()); 
+    let scheduleData = JSON.parse(localStorage.getItem('system_os_schedule')) || [];
+
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+    // --- Utility: Format Date string to YYYY-MM-DD ---
+    function formatDate(dateObj) {
+        const y = dateObj.getFullYear();
+        const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const d = String(dateObj.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    }
+
+    // --- Utility: Convert 24hr to 12hr ---
+    function formatTimeDisplay(timeStr) {
+        if(!timeStr) return "All Day";
+        let [hours, minutes] = timeStr.split(':');
+        hours = parseInt(hours);
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; 
+        return `${hours}:${minutes} ${ampm}`;
+    }
+
+    // --- Calendar Logic ---
+    function renderCalendar() {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        
+        document.getElementById('month-display').textContent = `${monthNames[month]} ${year}`;
+        
+        const firstDay = new Date(year, month, 1).getDay(); 
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const grid = document.getElementById('calendar-grid');
+        grid.innerHTML = '';
+
+        const todayStr = formatDate(new Date());
+
+        // Empty slots before the 1st
+        for (let i = 0; i < firstDay; i++) {
+            const emptyCell = document.createElement('div');
+            grid.appendChild(emptyCell);
         }
 
-        // --- MODAL LOGIC ---
-        function openModal() {
-            document.getElementById('modal-bg').classList.add('active');
-            document.getElementById('add-modal').classList.add('active');
+        // Fill days
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateCellObj = new Date(year, month, day);
+            const dateStr = formatDate(dateCellObj);
+            
+            const cell = document.createElement('div');
+            cell.className = 'date-cell';
+            cell.textContent = day;
+            
+            if (dateStr === todayStr) cell.classList.add('today');
+            if (dateStr === selectedDateStr) cell.classList.add('selected');
 
-            document.getElementById('event-title').value = '';
-            document.getElementById('event-date').value = formatDateString(selectedDate);
-            document.getElementById('event-time').value = '12:00';
+            // Dot Indicator
+            const hasTasks = scheduleData.some(task => task.date === dateStr);
+            if (hasTasks) {
+                const dot = document.createElement('div');
+                dot.className = 'has-task-dot';
+                cell.appendChild(dot);
+            }
 
-            setTimeout(() => document.getElementById('event-title').focus(), 100);
+            cell.onclick = () => {
+                selectedDateStr = dateStr;
+                renderCalendar(); 
+                renderTasks();
+            };
+
+            grid.appendChild(cell);
         }
 
-        function closeModal() {
-            document.getElementById('modal-bg').classList.remove('active');
-            document.getElementById('add-modal').classList.remove('active');
+        document.getElementById('selected-date-label').textContent = selectedDateStr;
+    }
+
+    function changeMonth(direction) {
+        currentDate.setMonth(currentDate.getMonth() + direction);
+        renderCalendar();
+    }
+
+    // --- Data Management Logic ---
+    function addScheduleTask() {
+        const titleInput = document.getElementById('task-title');
+        const timeInput = document.getElementById('task-time');
+        const priorityInput = document.getElementById('task-priority');
+
+        if (!titleInput.value.trim()) {
+            alert("Please enter an activity title.");
+            return;
         }
 
-        function selectColor(colorClass, element) {
-            document.getElementById('event-color').value = colorClass;
-            document.querySelectorAll('.color-option').forEach(el => el.classList.remove('active'));
-            element.classList.add('active');
-        }
-
-        // --- DATA MUTATION ---
-        function submitEvent(e) {
-            e.preventDefault();
-
-            const title = document.getElementById('event-title').value.trim();
-            const date = document.getElementById('event-date').value;
-            const time = document.getElementById('event-time').value;
-            const color = document.getElementById('event-color').value;
-
-            if (!title || !date || !time) return false;
-
-            scheduleEvents.push({ id: Date.now(), title, date, time, color });
-
-            localStorage.setItem('sys_schedule', JSON.stringify(scheduleEvents));
-            window.dispatchEvent(new Event('storage')); // Alert global system
-
-            // If the user added an event to a different date than they were viewing, jump to that date
-            const [y, m, d] = date.split('-');
-            selectedDate = new Date(y, m - 1, d);
-            currentDate = new Date(y, m - 1, 1);
-
-            closeModal();
-            renderCalendar();
-
-            return false;
-        }
-
-        function deleteEvent(id) {
-            scheduleEvents = scheduleEvents.filter(e => e.id !== id);
-            localStorage.setItem('sys_schedule', JSON.stringify(scheduleEvents));
-            window.dispatchEvent(new Event('storage'));
-            renderCalendar();
-        }
-
-        window.onload = () => {
-            renderCalendar();
-            window.addEventListener('storage', () => {
-                scheduleEvents = JSON.parse(localStorage.getItem('sys_schedule')) || [];
-                renderCalendar();
-            });
+        const newTask = {
+            id: Date.now().toString(),
+            date: selectedDateStr,
+            time: timeInput.value || "00:00",
+            title: titleInput.value.trim(),
+            priority: priorityInput.value
         };
-    </script>
-    <script src="js/sidebar.js"></script>
-    <script src="js/bottom-nav.js"></script>
-</body>
 
+        scheduleData.push(newTask);
+        localStorage.setItem('system_os_schedule', JSON.stringify(scheduleData));
+        
+        // Reset Inputs
+        titleInput.value = '';
+        timeInput.value = '';
+        
+        renderCalendar(); 
+        renderTasks();
+    }
+
+    function deleteTask(id) {
+        scheduleData = scheduleData.filter(t => t.id !== id);
+        localStorage.setItem('system_os_schedule', JSON.stringify(scheduleData));
+        renderCalendar(); 
+        renderTasks();
+    }
+
+    function renderTasks() {
+        const list = document.getElementById('schedule-list');
+        list.innerHTML = '';
+
+        let dayTasks = scheduleData.filter(t => t.date === selectedDateStr);
+        dayTasks.sort((a, b) => a.time.localeCompare(b.time));
+
+        if (dayTasks.length === 0) {
+            list.innerHTML = `<div class="empty-state">No activities logged for ${selectedDateStr}.</div>`;
+            return;
+        }
+
+        dayTasks.forEach(task => {
+            const li = document.createElement('li');
+            li.className = `task-card`;
+
+            const displayTime = task.time === "00:00" ? "All Day" : formatTimeDisplay(task.time);
+
+            li.innerHTML = `
+                <div class="accent-bar priority-${task.priority}"></div>
+                <div class="task-info">
+                    <span class="task-title">${task.title}</span>
+                    <span class="task-time"><i class="fa-regular fa-clock"></i> ${displayTime}</span>
+                </div>
+                <button class="delete-btn" onclick="deleteTask('${task.id}')">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            `;
+            list.appendChild(li);
+        });
+    }
+
+    // --- App Drawer Modal Logic ---
+    function toggleActivityModal() {
+        const overlay = document.getElementById('activity-overlay');
+        const sheet = document.getElementById('activity-sheet');
+        overlay.classList.toggle('active');
+        sheet.classList.toggle('active');
+        document.body.style.overflow = sheet.classList.contains('active') ? 'hidden' : '';
+    }
+
+    // --- Initialization ---
+    renderCalendar();
+    renderTasks();
+
+    // Select input color fix
+    document.getElementById('task-priority').addEventListener('change', function() {
+        this.style.color = 'var(--text-main)';
+    });
+
+</script>
+</body>
 </html>

@@ -1,295 +1,801 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>System OS | Habit Forge</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: { 
-                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6', 
-                        accentPurple: '#A855F7', accentRed: '#FF4C4C', accentYellow: '#FBBF24',
-                        accentGreen: '#00E676', cardBg: '#080A0E' 
-                    }
-                }
-            }
-        }
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habit Forge</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* STRICT MOBILE LOCK */
-        body, html { 
-            background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; 
-            margin: 0; padding: 0; height: 100dvh; overflow: hidden; -webkit-font-smoothing: antialiased;
-        }
-        .mobile-viewport { 
-            width: 100%; max-width: 430px; margin: 0 auto; position: relative; 
-            background-color: #020202; height: 100%; display: flex; flex-direction: column; 
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-        }
-        main { padding: 1.25rem; flex: 1; overflow-y: auto; padding-bottom: 7rem; display: flex; flex-direction: column; gap: 1rem; }
-        ::-webkit-scrollbar { display: none; }
-        * { -ms-overflow-style: none; scrollbar-width: none; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-        .touch-btn { transition: transform 0.1s; cursor: pointer; }
-        .touch-btn:active { transform: scale(0.96); }
-
-        /* DEEP GLASS CARDS */
-        .sys-card { 
-            background: linear-gradient(145deg, #0A0C12 0%, #050608 100%); 
-            border: 1px solid rgba(255,255,255,0.03); border-radius: 1.5rem;
-            padding: 1.25rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.05);
-            position: relative; overflow: hidden;
+        :root {
+            --bg-dark: #070414;
+            --bg-card: #141125;
+            --bg-card-inner: #1e1936;
+            --text-main: #ffffff;
+            --text-muted: #9ca3af;
+            --accent-green: #69f0ae;
+            --accent-green-dim: rgba(105, 240, 174, 0.15);
+            --border-dim: #2a2444;
         }
-        .border-green { border-top: 2px solid #00E676; }
 
-        /* INPUTS */
-        .sys-input {
-            width: 100%; background: #000; border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 0.75rem; padding: 1rem; color: #fff; font-size: 13px; font-weight: 600;
-            outline: none; transition: border-color 0.2s;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
-        .sys-input:focus { border-color: #00E676; }
 
-        /* INTERACTIVE MATRIX BLOCKS */
-        .matrix-block { 
-            width: 100%; aspect-ratio: 1; border-radius: 0.4rem; 
-            display: flex; align-items: center; justify-content: center; 
-            font-size: 11px; font-weight: 900; transition: all 0.2s ease; 
-            cursor: pointer; user-select: none;
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
         }
-        .matrix-block:active { transform: scale(0.85); }
-        .block-done { background-color: #00E676; color: #000; box-shadow: 0 0 10px rgba(0,230,118,0.5); }
-        .block-miss { background-color: rgba(255,255,255,0.03); color: #4B5563; border: 1px solid rgba(255,255,255,0.05); }
-        .block-future { background-color: transparent; color: #4B5563; border: 1px dashed rgba(255,255,255,0.1); opacity: 0.5; }
-        .block-today-pending { background-color: rgba(0,230,118,0.05); color: #00E676; border: 1px dashed #00E676; }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            padding: 20px 20px 100px 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- Header --- */
+        header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-top: 10px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .icon-btn:hover {
+            color: var(--text-main);
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        /* --- Input Form (Command Center) --- */
+        .form-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .input-header {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .custom-input {
+            background: var(--bg-card-inner);
+            border: 1px solid transparent;
+            color: var(--text-main);
+            padding: 14px;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+            flex: 1;
+        }
+
+        .custom-input:focus {
+            border-color: var(--accent-green);
+        }
+
+        .btn-add {
+            background: var(--accent-green);
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 16px;
+            padding: 0 20px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.2s, filter 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-add:active {
+            transform: scale(0.92);
+        }
+
+        .btn-add:hover {
+            filter: brightness(1.1);
+        }
+
+        /* --- Last Month Results Block --- */
+        .history-card {
+            background: rgba(105, 240, 174, 0.03);
+            border: 1px dashed var(--accent-green-dim);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .history-header {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .history-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .history-item {
+            background: var(--bg-card-inner);
+            padding: 10px 15px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .history-score {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .empty-history {
+            grid-column: 1 / -1;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* --- Habit Matrices --- */
+        .section-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            padding-left: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .habit-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .habit-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .habit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .habit-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .habit-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .habit-score {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--accent-green);
+            background: var(--accent-green-dim);
+            padding: 4px 10px;
+            border-radius: 8px;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .delete-btn:hover {
+            color: #ef4444;
+        }
+
+        /* The Grid */
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .matrix-dot {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            /* Squircle dots */
+            background: var(--bg-card-inner);
+            border: 1px solid var(--border-dim);
+            transition: all 0.2s;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.55rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            user-select: none;
+        }
+
+        /* Hover interaction */
+        .matrix-dot:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Completed State */
+        .matrix-dot.completed {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+            color: var(--bg-dark);
+            box-shadow: 0 0 10px rgba(105, 240, 174, 0.3);
+        }
+
+        /* Today Indicator */
+        .matrix-dot.is-today {
+            border: 2px solid #ffffff;
+        }
+
+        /* --- Bottom Nav & Modal (Synced w/ Index) --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 60px);
+            max-width: 380px;
+            background: #0d0920;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 30px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 5px 10px;
+            z-index: 100;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            width: 30%;
+            padding: 8px 0;
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 0.65rem;
+            font-weight: 600;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-item i {
+            font-size: 1.1rem;
+        }
+
+        .nav-item:hover:not(.active) {
+            color: #a78bfa;
+        }
+
+        .nav-item.active {
+            background: var(--accent-green);
+            color: var(--bg-dark);
+            box-shadow: 0 0 15px rgba(105, 240, 174, 0.2);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) translateY(100%);
+            width: 100%;
+            max-width: 480px;
+            max-height: 85vh;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-dim);
+            border-radius: 32px 32px 0 0;
+            padding: 20px 20px 0 20px;
+            z-index: 1000;
+            transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        .bottom-sheet.active {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .drag-handle {
+            width: 40px;
+            height: 5px;
+            background: var(--border-dim);
+            border-radius: 5px;
+            margin: 0 auto 20px auto;
+        }
+
+        .sheet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .sheet-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .close-btn {
+            background: var(--bg-card-inner);
+            border: 1px solid var(--border-dim);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            color: var(--text-main);
+            background: #2a2444;
+        }
+
+        .sheet-content {
+            overflow-y: auto;
+            padding-bottom: 40px;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .sheet-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        .section-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 15px 0 15px 5px;
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px 10px;
+            margin-bottom: 25px;
+        }
+
+        .app-icon-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .app-icon-btn:active {
+            transform: scale(0.92);
+        }
+
+        .app-icon-circle {
+            width: 56px;
+            height: 56px;
+            background: var(--bg-card-inner);
+            border: 1px solid var(--border-dim);
+            border-radius: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            transition: border-color 0.3s;
+        }
+
+        .app-icon-btn:hover .app-icon-circle {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .app-icon-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-align: center;
+            color: var(--text-muted);
+        }
     </style>
 </head>
+
 <body>
 
-    <div class="mobile-viewport">
-        <header class="p-6 pb-2 flex justify-between items-center z-50 bg-[#020202]/90 backdrop-blur-xl shrink-0">
-            <div class="flex items-center gap-4">
-                <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
-                <h1 class="text-xl font-black text-white tracking-widest uppercase">Habit Forge</h1>
-            </div>
-            <div class="text-[10px] font-black text-accentGreen bg-accentGreen/10 border border-accentGreen/20 px-3 py-1.5 rounded-full flex items-center gap-2">
-                <div class="w-1.5 h-1.5 rounded-full bg-accentGreen animate-pulse shadow-[0_0_5px_#00E676]"></div> 21-DAY ARC
-            </div>
+    <div class="app-container">
+
+        <header>
+            <button class="icon-btn" onclick="window.location.href='index.html'"><i
+                    class="fa-solid fa-arrow-left"></i></button>
+            <h1>Habit Forge</h1>
         </header>
 
-        <main>
-            <div class="sys-card border-green relative">
-                <div class="flex items-center gap-2 mb-3">
-                    <i class="ph-fill ph-calendar-plus text-accentGreen text-lg drop-shadow-[0_0_5px_rgba(0,230,118,0.5)]"></i>
-                    <h2 class="text-[11px] font-black text-white uppercase tracking-widest">Initialize New Vector</h2>
-                </div>
-                <form onsubmit="addHabit(event)" class="flex gap-2 relative z-10">
-                    <input type="text" id="habit-input" class="sys-input py-3" placeholder="e.g. 100 Pushups" autocomplete="off" required>
-                    <button type="submit" class="bg-accentGreen text-black px-4 rounded-xl font-black text-xl touch-btn shadow-[0_0_15px_rgba(0,230,118,0.3)]">
-                        <i class="ph-bold ph-plus"></i>
-                    </button>
-                </form>
+        <div class="form-card">
+            <div class="input-header">
+                <i class="fa-solid fa-hammer text-muted"></i> FORGE NEW HABIT
             </div>
+            <div class="form-row">
+                <input type="text" id="habit-text" class="custom-input" placeholder="e.g., Code 1 hour...">
+                <button class="btn-add" onclick="addHabit()">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </div>
+        </div>
 
-            <div id="habits-container" class="space-y-4">
-                </div>
+        <div class="history-card" id="history-container" style="display: none;">
+            <div class="history-header">
+                <i class="fa-solid fa-clock-rotate-left"></i> Previous Cycle Performance
+            </div>
+            <div class="history-list" id="history-list">
+            </div>
+        </div>
 
-        </main>
+        <div class="section-title">
+            <span>Active Cycle (<span id="current-month-label">...</span>)</span>
+        </div>
+        <div class="habit-list" id="habit-list">
+        </div>
+
     </div>
 
-    <div id="sidebar-injector"></div>
-    <script src="js/sidebar.js"></script>
-    <script src="js/bottom-nav.js"></script>
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <i class="fa-solid fa-grip"></i>
+            <span>Dashboard</span>
+        </a>
+        <div class="nav-item active" onclick="toggleActivityModal()">
+            <i class="fa-regular fa-rectangle-list"></i>
+            <span>Activity</span>
+        </div>
+        <a href="analyzer.html" class="nav-item">
+            <i class="fa-solid fa-chart-column"></i>
+            <span>Analytics</span>
+        </a>
+    </div>
+
+    <div class="modal-overlay" id="activity-overlay" onclick="toggleActivityModal()"></div>
+    <div class="bottom-sheet" id="activity-sheet">
+        <div class="drag-handle"></div>
+        <div class="sheet-header">
+            <h2 class="sheet-title">System Modules</h2>
+            <button class="close-btn" onclick="toggleActivityModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="sheet-content">
+            <div class="section-label">PROTOCOLS</div>
+            <div class="app-grid">
+                <a href="todo.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-solid fa-square-check"></i></div>
+                    <span class="app-icon-label">Tasks</span>
+                </a>
+                <a href="rituals.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #eab308;"><i class="fa-regular fa-sun"></i></div>
+                    <span class="app-icon-label">Rituals</span>
+                </a>
+                <a href="habits.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-regular fa-calendar-check"></i>
+                    </div>
+                    <span class="app-icon-label">Habits</span>
+                </a>
+            </div>
+
+            <div class="section-label">TIME & MACRO</div>
+            <div class="app-grid">
+                <a href="schedule.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #ffffff;"><i class="fa-regular fa-calendar"></i></div>
+                    <span class="app-icon-label">Schedule</span>
+                </a>
+                <a href="weekly.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-border-all"></i></div>
+                    <span class="app-icon-label">Matrix</span>
+                </a>
+            </div>
+
+            <div class="section-label">BIO & WEALTH</div>
+            <div class="app-grid">
+                <a href="health.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-heart-pulse"></i></div>
+                    <span class="app-icon-label">Health</span>
+                </a>
+                <a href="sleep.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-moon"></i></div>
+                    <span class="app-icon-label">Sleep</span>
+                </a>
+                <a href="budget.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-wallet"></i></div>
+                    <span class="app-icon-label">Finance</span>
+                </a>
+                <a href="diet.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: var(--accent-green);"><i
+                            class="fa-solid fa-apple-whole"></i></div>
+                    <span class="app-icon-label">Diet</span>
+                </a>
+            </div>
+
+            <div class="section-label">DATA & KNOWLEDGE</div>
+            <div class="app-grid">
+                <a href="academics.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <span class="app-icon-label">Academics</span>
+                </a>
+                <a href="library.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-book"></i></div>
+                    <span class="app-icon-label">Library</span>
+                </a>
+                <a href="analyzer.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: var(--accent-green);"><i
+                            class="fa-solid fa-chart-line"></i></div>
+                    <span class="app-icon-label">Analytics</span>
+                </a>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // =========================================================================
-        // 21-DAY HABIT FORGE ENGINE (MANUAL CLICK MATRIX)
-        // =========================================================================
-
-        function getLocalYMD(d) {
-            const y = d.getFullYear();
-            const m = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            return `${y}-${m}-${day}`;
+        // --- App Drawer Modal ---
+        function toggleActivityModal() {
+            const overlay = document.getElementById('activity-overlay');
+            const sheet = document.getElementById('activity-sheet');
+            overlay.classList.toggle('active');
+            sheet.classList.toggle('active');
+            document.body.style.overflow = sheet.classList.contains('active') ? 'hidden' : '';
         }
 
-        function formatDisplayDate(dateStr) {
-            if(!dateStr) return "Unknown";
-            const parts = dateStr.split('-');
-            const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
-            return dateObj.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+        // --- System Logic & Cycle Management ---
+        let habits = JSON.parse(localStorage.getItem('system_os_habit_matrix')) || [];
+
+        const now = new Date();
+        const currentYearMonth = `${now.getFullYear()}-${now.getMonth()}`;
+        const daysInCurrentMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+        const todayDayNumber = now.getDate();
+
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        document.getElementById('current-month-label').textContent = monthNames[now.getMonth()];
+
+        // Automatically reset habits if a new month has started
+        function checkAndResetCycle() {
+            const savedCycle = localStorage.getItem('system_os_habit_cycle');
+
+            if (savedCycle && savedCycle !== currentYearMonth) {
+                // It's a new month! Archive previous month data.
+                habits.forEach(h => {
+                    // Calculate previous month total days
+                    const [y, m] = savedCycle.split('-');
+                    const prevDaysTotal = new Date(y, parseInt(m) + 1, 0).getDate();
+
+                    // Store results
+                    h.lastMonthScore = `${h.completedDays.length}/${prevDaysTotal}`;
+                    // Wipe grid
+                    h.completedDays = [];
+                });
+                localStorage.setItem('system_os_habit_matrix', JSON.stringify(habits));
+            }
+
+            // Update to current cycle tracker
+            localStorage.setItem('system_os_habit_cycle', currentYearMonth);
         }
 
-        const todayStr = getLocalYMD(new Date());
+        function addHabit() {
+            const input = document.getElementById('habit-text');
+            const text = input.value.trim();
+            if (!text) return;
 
-        function loadHabits() {
-            // Using a distinct key to isolate from Analyzer
-            const habits = JSON.parse(localStorage.getItem('sys_forge_habits')) || [];
-            const container = document.getElementById('habits-container');
-            
+            habits.push({
+                id: Date.now().toString(),
+                title: text,
+                completedDays: [], // Array of day numbers e.g. [1, 5, 12, 31]
+                lastMonthScore: null
+            });
+
+            input.value = '';
+            saveAndRender();
+        }
+
+        function deleteHabit(id) {
+            habits = habits.filter(h => h.id !== id);
+            saveAndRender();
+        }
+
+        // Toggle a specific day in the grid
+        window.toggleHabitDay = function (habitId, dayNum) {
+            const habit = habits.find(h => h.id === habitId);
+            if (habit) {
+                const index = habit.completedDays.indexOf(dayNum);
+                if (index > -1) {
+                    habit.completedDays.splice(index, 1); // Remove if exists
+                } else {
+                    habit.completedDays.push(dayNum); // Add if doesn't exist
+                }
+                saveAndRender();
+            }
+        };
+
+        function saveAndRender() {
+            localStorage.setItem('system_os_habit_matrix', JSON.stringify(habits));
+            renderUI();
+        }
+
+        function renderUI() {
+            // Render History Block
+            const historyContainer = document.getElementById('history-container');
+            const historyList = document.getElementById('history-list');
+            historyList.innerHTML = '';
+            let hasHistory = false;
+
+            habits.forEach(h => {
+                if (h.lastMonthScore) {
+                    hasHistory = true;
+                    historyList.innerHTML += `
+                    <div class="history-item">
+                        <span class="history-title">${h.title}</span>
+                        <span class="history-score">${h.lastMonthScore}</span>
+                    </div>
+                `;
+                }
+            });
+
+            if (hasHistory) {
+                historyContainer.style.display = 'block';
+            } else if (habits.length > 0) {
+                historyContainer.style.display = 'block';
+                historyList.innerHTML = `<div class="empty-history">Awaiting cycle completion to generate past results.</div>`;
+            }
+
+            // Render Active Habit Matrix
+            const habitList = document.getElementById('habit-list');
+            habitList.innerHTML = '';
+
             if (habits.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-10 border border-dashed border-white/10 rounded-2xl bg-black/40">
-                        <i class="ph-fill ph-target text-4xl text-gray-600 mb-2"></i>
-                        <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">No Active Vectors.</p>
-                        <p class="text-[8px] font-bold text-gray-600 uppercase tracking-widest mt-1">Initialize a 21-Day Arc Above.</p>
-                    </div>`;
+                habitList.innerHTML = `<div style="text-align: center; color: var(--text-muted); font-size: 0.85rem; font-style: italic; padding: 20px;">No habits defined in the forge.</div>`;
                 return;
             }
 
-            let html = '';
-
             habits.forEach(habit => {
-                const history = habit.history || [];
-                
-                const [sy, sm, sd] = habit.startDate.split('-');
-                let iterDate = new Date(sy, sm - 1, sd);
-                const todayObj = new Date(todayStr.split('-')[0], todayStr.split('-')[1]-1, todayStr.split('-')[2]);
-                const endObj = new Date(habit.endDate.split('-')[0], habit.endDate.split('-')[1]-1, habit.endDate.split('-')[2]);
+                const card = document.createElement('div');
+                card.className = 'habit-card';
 
-                let matrixHtml = '';
-                let totalDone = 0;
-                
-                // Construct exactly 21 clickable blocks
-                for (let i = 0; i < 21; i++) {
-                    const currentIterStr = getLocalYMD(iterDate);
-                    const iterObj = new Date(iterDate);
-                    const dayNum = iterDate.getDate();
+                // Build the 31-day Matrix Grid
+                let gridHtml = '';
+                for (let day = 1; day <= daysInCurrentMonth; day++) {
+                    const isCompleted = habit.completedDays.includes(day);
+                    const isToday = day === todayDayNumber;
 
-                    const isDone = history.includes(currentIterStr);
-                    const isToday = currentIterStr === todayStr;
-                    const isFuture = iterObj > todayObj;
+                    let classes = 'matrix-dot';
+                    if (isCompleted) classes += ' completed';
+                    if (isToday) classes += ' is-today';
 
-                    if (isDone) totalDone++;
-
-                    let blockClass = '';
-                    if (isDone) {
-                        blockClass = 'block-done';
-                    } else if (isFuture) {
-                        blockClass = 'block-future';
-                    } else if (isToday && !isDone) {
-                        blockClass = 'block-today-pending';
-                    } else {
-                        blockClass = 'block-miss';
-                    }
-
-                    // EACH BLOCK IS NOW A MANUAL TOGGLE BUTTON
-                    matrixHtml += `<div class="matrix-block ${blockClass}" onclick="toggleSpecificDate(${habit.id}, '${currentIterStr}')">${dayNum}</div>`;
-                    
-                    iterDate.setDate(iterDate.getDate() + 1); // Advance loop by 1 day
+                    gridHtml += `<div class="${classes}" onclick="toggleHabitDay('${habit.id}', ${day})">${day}</div>`;
                 }
 
-                const isArcOver = todayObj > endObj;
-                const yieldPct = Math.round((totalDone / 21) * 100);
-                
-                let statusBadge = isArcOver 
-                    ? `<span class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-2 py-1 border border-white/10 rounded bg-black/50">Arc Finished</span>`
-                    : `<span class="text-[9px] font-black text-accentGreen uppercase tracking-widest px-2 py-1 border border-accentGreen/20 rounded bg-accentGreen/10">In Progress</span>`;
-
-                html += `
-                    <div class="sys-card bg-black/40 border-white/5">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h3 class="text-sm font-black text-white uppercase tracking-widest">${habit.name}</h3>
-                                <div class="flex items-center gap-2 mt-1 opacity-80">
-                                    <i class="ph-fill ph-calendar text-gray-400 text-xs"></i>
-                                    <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest">
-                                        START: ${formatDisplayDate(habit.startDate)} &nbsp;|&nbsp; END: ${formatDisplayDate(habit.endDate)}
-                                    </p>
-                                </div>
-                            </div>
-                            <button onclick="deleteHabit(${habit.id})" class="text-gray-600 hover:text-accentRed transition active:scale-90 p-1">
-                                <i class="ph-fill ph-trash text-lg"></i>
-                            </button>
-                        </div>
-                        
-                        <div class="flex justify-between items-end mb-3">
-                            <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Yield: <span class="text-white">${totalDone}/21 (${yieldPct}%)</span></p>
-                            ${statusBadge}
-                        </div>
-
-                        <p class="text-[8px] font-bold text-gray-600 uppercase tracking-widest mb-2 text-center">Tap any block to toggle completion</p>
-
-                        <div class="grid grid-cols-7 gap-2 p-3 bg-black/60 rounded-xl border border-white/5 w-full">
-                            ${matrixHtml}
-                        </div>
+                card.innerHTML = `
+                <div class="habit-header">
+                    <div class="habit-title">${habit.title}</div>
+                    <div class="habit-meta">
+                        <div class="habit-score">${habit.completedDays.length}/${daysInCurrentMonth}</div>
+                        <button class="delete-btn" onclick="deleteHabit('${habit.id}')"><i class="fa-solid fa-xmark"></i></button>
                     </div>
-                `;
+                </div>
+                <div class="matrix-grid">
+                    ${gridHtml}
+                </div>
+            `;
+
+                habitList.appendChild(card);
             });
-
-            container.innerHTML = html;
         }
 
-        // --- ADD NEW HABIT ---
-        function addHabit(e) {
-            e.preventDefault();
-            const input = document.getElementById('habit-input');
-            const name = input.value.trim();
-            if (!name) return;
-
-            const habits = JSON.parse(localStorage.getItem('sys_forge_habits')) || [];
-            
-            const startObj = new Date();
-            const startDateStr = getLocalYMD(startObj);
-            
-            const endObj = new Date();
-            endObj.setDate(endObj.getDate() + 20); 
-            const endDateStr = getLocalYMD(endObj);
-
-            const newHabit = {
-                id: Date.now(),
-                name: name,
-                startDate: startDateStr,
-                endDate: endDateStr,
-                history: []
-            };
-
-            habits.push(newHabit);
-            localStorage.setItem('sys_forge_habits', JSON.stringify(habits));
-            
-            input.value = '';
-            input.blur();
-            loadHabits();
-        }
-
-        // --- MANUALLY TOGGLE ANY SPECIFIC DATE IN THE MATRIX ---
-        function toggleSpecificDate(id, targetDateStr) {
-            let habits = JSON.parse(localStorage.getItem('sys_forge_habits')) || [];
-            const habitIndex = habits.findIndex(h => h.id === id);
-            
-            if (habitIndex > -1) {
-                let history = habits[habitIndex].history || [];
-                const dateIndex = history.indexOf(targetDateStr);
-                
-                if (dateIndex > -1) {
-                    history.splice(dateIndex, 1); // Uncheck if already checked
-                } else {
-                    history.push(targetDateStr); // Check if empty
-                }
-                
-                habits[habitIndex].history = history;
-                localStorage.setItem('sys_forge_habits', JSON.stringify(habits));
-                loadHabits(); // Instantly re-render the UI
-            }
-        }
-
-        // --- DELETE HABIT ---
-        function deleteHabit(id) {
-            if(confirm("Terminate this 21-Day Arc? All history will be permanently deleted.")) {
-                let habits = JSON.parse(localStorage.getItem('sys_forge_habits')) || [];
-                habits = habits.filter(h => h.id !== id);
-                localStorage.setItem('sys_forge_habits', JSON.stringify(habits));
-                loadHabits();
-            }
-        }
-
-        window.onload = loadHabits;
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAndResetCycle();
+            renderUI();
+        });
 
     </script>
+
 </body>
+
 </html>

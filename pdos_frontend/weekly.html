@@ -2,330 +2,703 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>System OS | Weekly Matrix</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: { 
-                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6', 
-                        accentPurple: '#A855F7', accentRed: '#FF4C4C', accentYellow: '#FBBF24',
-                        accentGreen: '#00E676', cardBg: '#080A0E' 
-                    }
-                }
-            }
-        }
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Matrix</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* STRICT MOBILE LOCK */
-        body, html { 
-            background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; 
-            margin: 0; padding: 0; height: 100dvh; overflow: hidden; -webkit-font-smoothing: antialiased;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            /* Global Dashboard Palette */
+            --bg-dark: #070414;
+            --bg-card: #141125;
+            --bg-card-inner: #1e1936;
+            --text-main: #ffffff;
+            --text-muted: #9ca3af;
+            --accent-green: #69f0ae;
+            --accent-green-dim: rgba(105, 240, 174, 0.15);
+            --border-dim: #2a2444;
+
+            /* Matrix Category Colors */
+            --cat-blue: #3b82f6;
+            --cat-cyan: #06b6d4;
+            --cat-yellow: #eab308;
+            --cat-purple: #a855f7;
         }
-        .mobile-viewport { 
-            width: 100%; max-width: 430px; margin: 0 auto; position: relative; 
-            background-color: #020202; height: 100%; display: flex; flex-direction: column; 
-            box-shadow: 0 0 50px rgba(0,0,0,0.8); overflow: hidden;
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            min-height: 100vh;
+            padding: 20px 20px 100px 20px; /* Padding for bottom nav */
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* --- Header --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-top: 10px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .icon-btn:hover { color: var(--text-main); }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .badge-pill {
+            background: var(--accent-green-dim);
+            color: var(--accent-green);
+            border: 1px solid rgba(105, 240, 174, 0.2);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- Day Selector Nav --- */
+        .day-nav {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            -ms-overflow-style: none;  
+            scrollbar-width: none;  
         }
         
-        /* pb-[8rem] ensures content never hides behind the floating button or nav bar */
-        main { padding: 1.25rem; flex: 1; overflow-y: auto; padding-bottom: 8rem; display: flex; flex-direction: column; gap: 1rem; }
-        ::-webkit-scrollbar { display: none; }
-        * { -ms-overflow-style: none; scrollbar-width: none; }
+        .day-nav::-webkit-scrollbar { display: none; }
 
-        .touch-btn { transition: transform 0.1s; cursor: pointer; }
-        .touch-btn:active { transform: scale(0.96); }
-
-        /* DEEP GLASS CARDS */
-        .sys-card { 
-            background: linear-gradient(145deg, #0A0C12 0%, #050608 100%); 
-            border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem;
-            padding: 1.25rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.05);
-            position: relative; overflow: hidden; flex-shrink: 0;
-        }
-        .border-blue { border-top: 2px solid #3B82F6; }
-
-        /* INPUTS */
-        .sys-input {
-            background: #000; border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 0.75rem; padding: 1rem; color: #fff; font-size: 13px; font-weight: 600;
-            outline: none; transition: border-color 0.2s; width: 100%;
-        }
-        .sys-input:focus { border-color: #3B82F6; }
-
-        /* MODAL ANIMATION */
-        .modal-enter { animation: fadeIn 0.2s ease-out forwards; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+        .day-pill {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            color: var(--text-muted);
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 60px;
+            text-align: center;
         }
 
-        /* HIDE NATIVE TIME PICKER ICON ON MOBILE */
-        input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.5; }
+        .day-pill.active {
+            background: var(--accent-green-dim);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
 
-        /* DAY SELECTOR PILLS */
-        .day-pill { padding: 0.5rem 1rem; border-radius: 1rem; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: #6B7280; border: 1px solid rgba(255,255,255,0.05); transition: all 0.2s; white-space: nowrap; }
-        .day-pill.active { background: rgba(59,130,246,0.1); color: #3B82F6; border-color: rgba(59,130,246,0.3); }
+        /* --- Protocol Area / Timeline --- */
+        .protocol-header {
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+        }
+
+        .timeline-wrapper {
+            flex-grow: 1;
+            margin-bottom: 20px;
+        }
+
+        .timeline {
+            border-left: 2px solid var(--border-dim);
+            margin-left: 10px;
+            padding-left: 20px;
+            position: relative;
+            min-height: 100px;
+        }
+
+        .empty-state {
+            border: 1px dashed var(--border-dim);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .time-block {
+            background: var(--bg-card-inner);
+            border: 1px solid var(--border-dim);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 15px;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Category Accents */
+        .cat-blue { border-left: 4px solid var(--cat-blue); }
+        .cat-blue::before { background: var(--cat-blue); border: 2px solid var(--bg-dark); }
+        
+        .cat-cyan { border-left: 4px solid var(--cat-cyan); }
+        .cat-cyan::before { background: var(--cat-cyan); border: 2px solid var(--bg-dark); }
+        
+        .cat-yellow { border-left: 4px solid var(--cat-yellow); }
+        .cat-yellow::before { background: var(--cat-yellow); border: 2px solid var(--bg-dark); }
+        
+        .cat-purple { border-left: 4px solid var(--cat-purple); }
+        .cat-purple::before { background: var(--cat-purple); border: 2px solid var(--bg-dark); }
+
+        .time-block::before {
+            content: '';
+            position: absolute;
+            left: -27px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .block-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .block-title { font-size: 0.95rem; font-weight: 600; color: var(--text-main); }
+        .block-time { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 5px;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+        }
+
+        .delete-btn:hover { color: #ef4444; }
+
+        /* --- Bottom Form Card --- */
+        .allocate-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .allocate-header {
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .custom-input {
+            background: var(--bg-card-inner);
+            border: 1px solid transparent;
+            color: var(--text-main);
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+
+        .custom-input:focus {
+            border-color: var(--accent-green);
+        }
+
+        .btn-submit {
+            background: var(--accent-green);
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 14px;
+            padding: 15px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            transition: filter 0.2s, transform 0.1s;
+        }
+
+        .btn-submit:active { transform: scale(0.98); }
+        .btn-submit:hover { filter: brightness(1.1); }
+
+        /* --- Smaller Bottom Navigation (Synced w/ Index) --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 60px); 
+            max-width: 380px;
+            background: #0d0920; 
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 30px; 
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 5px 10px; 
+            z-index: 100;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6); 
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            width: 30%; 
+            padding: 8px 0; 
+            color: #6b7280; 
+            text-decoration: none;
+            font-size: 0.65rem; 
+            font-weight: 600;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-item i { font-size: 1.1rem; }
+        .nav-item:hover:not(.active) { color: #a78bfa; }
+
+        .nav-item.active {
+            background: var(--accent-green); 
+            color: var(--bg-dark); 
+            box-shadow: 0 0 15px rgba(105, 240, 174, 0.2); 
+        }
+
+        /* --- App Drawer Modal (Bottom Sheet) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0; left: 50%;
+            transform: translateX(-50%) translateY(100%);
+            width: 100%;
+            max-width: 480px;
+            max-height: 85vh;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-dim);
+            border-radius: 32px 32px 0 0;
+            padding: 20px 20px 0 20px;
+            z-index: 1000;
+            transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
+        }
+
+        .bottom-sheet.active { transform: translateX(-50%) translateY(0); }
+        .drag-handle { width: 40px; height: 5px; background: var(--border-dim); border-radius: 5px; margin: 0 auto 20px auto; }
+        .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .sheet-title { font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+        .close-btn { background: var(--bg-card-inner); border: 1px solid var(--border-dim); border-radius: 50%; width: 32px; height: 32px; color: var(--text-muted); cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s; }
+        .close-btn:hover { color: var(--text-main); background: #2a2444; }
+        .sheet-content { overflow-y: auto; padding-bottom: 40px; -ms-overflow-style: none; scrollbar-width: none; }
+        .sheet-content::-webkit-scrollbar { display: none; }
+        .section-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin: 15px 0 15px 5px; }
+        
+        .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px 10px; margin-bottom: 25px; }
+        .app-icon-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; text-decoration: none; cursor: pointer; transition: transform 0.1s; }
+        .app-icon-btn:active { transform: scale(0.92); }
+        .app-icon-circle { width: 56px; height: 56px; background: var(--bg-card-inner); border: 1px solid var(--border-dim); border-radius: 18px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; transition: border-color 0.3s; }
+        .app-icon-btn:hover .app-icon-circle { border-color: rgba(255,255,255,0.2); }
+        .app-icon-label { font-size: 0.65rem; font-weight: 600; text-align: center; color: var(--text-muted); }
+
     </style>
 </head>
 <body>
 
-    <div class="mobile-viewport">
+<div class="app-container">
+    <header>
+        <div class="header-left">
+            <button class="icon-btn" onclick="window.location.href='index.html'"><i class="fa-solid fa-arrow-left"></i></button>
+            <h1>Matrix</h1>
+        </div>
+        <div class="badge-pill">TIME-BLOCK</div>
+    </header>
+
+    <div class="day-nav" id="day-nav-container">
+        <div class="day-pill" onclick="selectDay('MON')">MON</div>
+        <div class="day-pill" onclick="selectDay('TUE')">TUE</div>
+        <div class="day-pill" onclick="selectDay('WED')">WED</div>
+        <div class="day-pill" onclick="selectDay('THU')">THU</div>
+        <div class="day-pill" onclick="selectDay('FRI')">FRI</div>
+        <div class="day-pill" onclick="selectDay('SAT')">SAT</div>
+        <div class="day-pill" onclick="selectDay('SUN')">SUN</div>
+    </div>
+
+    <div class="timeline-wrapper">
+        <div class="protocol-header">
+            <i class="fa-solid fa-clock" style="color: var(--accent-green);"></i> 
+            <span id="protocol-title">TUE PROTOCOL</span>
+        </div>
         
-        <div id="modal-overlay" class="absolute inset-0 bg-black/80 backdrop-blur-sm z-[10000] hidden items-center justify-center p-4">
-            <div id="block-modal" class="sys-card border-blue w-full max-w-[320px] flex flex-col gap-4 modal-enter shadow-[0_0_50px_rgba(0,0,0,0.9)]">
-                <div class="flex justify-between items-center mb-1">
-                    <h2 class="text-xs font-black text-white uppercase tracking-widest">Allocate Block</h2>
-                    <button onclick="closeModal()" class="text-gray-500 hover:text-white touch-btn"><i class="ph-bold ph-x text-lg"></i></button>
-                </div>
-                
-                <input type="text" id="block-title" class="sys-input" placeholder="Block Title (e.g. Deep Work)">
-                
-                <div class="flex gap-2">
-                    <div class="w-1/2">
-                        <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest ml-1 mb-1 block">Start Time</label>
-                        <input type="time" id="block-start" class="sys-input text-sm">
-                    </div>
-                    <div class="w-1/2">
-                        <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest ml-1 mb-1 block">End Time</label>
-                        <input type="time" id="block-end" class="sys-input text-sm">
-                    </div>
-                </div>
+        <div class="timeline" id="timeline-container">
+            </div>
+    </div>
 
-                <div>
-                    <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest ml-1 mb-1 block">Category</label>
-                    <select id="block-category" class="sys-input text-[11px] uppercase tracking-wider text-gray-300">
-                        <option value="Deep Work">🔵 Focus / Deep Work</option>
-                        <option value="Class">🟣 University / Class</option>
-                        <option value="Review">🟡 Academic Review</option>
-                        <option value="Life">🟢 Maintenance / Life</option>
-                        <option value="Urgent">🔴 Urgent Vector</option>
-                    </select>
-                </div>
+    <div class="allocate-card">
+        <div class="allocate-header">
+            <i class="fa-solid fa-circle-plus"></i> ALLOCATE BLOCK
+        </div>
+        
+        <div class="form-group">
+            <input type="text" id="block-title" class="custom-input" placeholder="Block Title (e.g. Deep Work)...">
+        </div>
 
-                <button onclick="saveBlock()" class="w-full py-3 mt-2 rounded-xl bg-accentBlue text-white text-[10px] font-black uppercase tracking-widest touch-btn shadow-[0_0_15px_rgba(59,130,246,0.3)]">
-                    <i class="ph-bold ph-lock-key mr-1"></i> Lock to Matrix
-                </button>
+        <div class="form-row">
+            <div class="form-group" style="margin: 0;">
+                <label>START TIME</label>
+                <input type="time" id="start-time" class="custom-input" style="color: var(--text-muted);">
+            </div>
+            <div class="form-group" style="margin: 0;">
+                <label>END TIME</label>
+                <input type="time" id="end-time" class="custom-input" style="color: var(--text-muted);">
             </div>
         </div>
 
-        <header class="p-6 pb-2 flex justify-between items-center z-50 bg-[#020202]/90 backdrop-blur-xl shrink-0">
-            <div class="flex items-center gap-4">
-                <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
-                <h1 class="text-xl font-black text-white tracking-widest uppercase">Weekly Matrix</h1>
-            </div>
-            <div class="text-[10px] font-black text-accentBlue bg-accentBlue/10 border border-accentBlue/20 px-3 py-1.5 rounded-full flex items-center gap-2">
-                <div class="w-1.5 h-1.5 rounded-full bg-accentBlue animate-pulse shadow-[0_0_5px_#3B82F6]"></div> TIME-BLOCK
-            </div>
-        </header>
+        <div class="form-group">
+            <label>CATEGORY</label>
+            <select id="block-category" class="custom-input" style="color: var(--text-muted);">
+                <option value="blue">Focus / Deep Work (Blue)</option>
+                <option value="cyan">Admin / System (Cyan)</option>
+                <option value="yellow">Meeting / Sync (Yellow)</option>
+                <option value="purple">Recovery / Personal (Purple)</option>
+            </select>
+        </div>
 
-        <div class="w-full overflow-x-auto py-3 px-4 flex gap-2 border-b border-white/5 shrink-0 bg-[#020202] z-40" id="day-nav">
-            </div>
-
-        <main id="matrix-container">
-            </main>
-
-        <button onclick="openModal()" class="absolute bottom-24 right-6 w-14 h-14 bg-accentBlue rounded-full shadow-[0_0_20px_rgba(59,130,246,0.4)] flex items-center justify-center text-black text-2xl z-40 touch-btn border-2 border-black">
-            <i class="ph-bold ph-plus"></i>
+        <button class="btn-submit" onclick="allocateBlock()">
+            <i class="fa-solid fa-thumbtack"></i> LOCK TO MATRIX
         </button>
-
     </div>
 
-    <div id="sidebar-injector"></div>
-    <script src="js/sidebar.js"></script>
-    <script src="js/bottom-nav.js"></script>
+</div>
 
-    <script>
-        // =========================================================================
-        // WEEKLY MATRIX ENGINE (TIMELINE VIEW)
-        // =========================================================================
+<div class="bottom-nav">
+    <a href="index.html" class="nav-item">
+        <i class="fa-solid fa-grip"></i>
+        <span>Dashboard</span>
+    </a>
+    <div class="nav-item active" onclick="toggleActivityModal()">
+        <i class="fa-regular fa-rectangle-list"></i>
+        <span>Activity</span>
+    </div>
+    <a href="analyzer.html" class="nav-item">
+        <i class="fa-solid fa-chart-column"></i>
+        <span>Analytics</span>
+    </a>
+</div>
 
-        const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        let activeDay = getRealCurrentDay();
+<div class="modal-overlay" id="activity-overlay" onclick="toggleActivityModal()"></div>
+<div class="bottom-sheet" id="activity-sheet">
+    <div class="drag-handle"></div>
+    <div class="sheet-header">
+        <h2 class="sheet-title">System Modules</h2>
+        <button class="close-btn" onclick="toggleActivityModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
 
-        function getRealCurrentDay() {
-            let d = new Date().getDay();
-            if (d === 0) return 'Sunday';
-            return daysOfWeek[d - 1];
-        }
-
-        // --- MODAL SYSTEM ---
-        function openModal() {
-            document.getElementById('modal-overlay').classList.remove('hidden');
-            document.getElementById('modal-overlay').classList.add('flex');
-            
-            const now = new Date();
-            let h = String(now.getHours()).padStart(2, '0');
-            let nextH = String((now.getHours() + 1) % 24).padStart(2, '0');
-            
-            document.getElementById('block-start').value = `${h}:00`;
-            document.getElementById('block-end').value = `${nextH}:00`;
-            document.getElementById('block-title').focus();
-        }
-
-        function closeModal() {
-            document.getElementById('modal-overlay').classList.add('hidden');
-            document.getElementById('modal-overlay').classList.remove('flex');
-            document.getElementById('block-title').value = '';
-        }
-
-        function getCategoryStyle(cat) {
-            switch(cat) {
-                case 'Class': return { color: 'text-accentPurple', border: 'border-accentPurple/30', bg: 'bg-accentPurple/10', solidBorder: 'border-accentPurple', solidBg: 'bg-accentPurple' };
-                case 'Review': return { color: 'text-accentYellow', border: 'border-accentYellow/30', bg: 'bg-accentYellow/10', solidBorder: 'border-accentYellow', solidBg: 'bg-accentYellow' };
-                case 'Life': return { color: 'text-accentGreen', border: 'border-accentGreen/30', bg: 'bg-accentGreen/10', solidBorder: 'border-accentGreen', solidBg: 'bg-accentGreen' };
-                case 'Urgent': return { color: 'text-accentRed', border: 'border-accentRed/30', bg: 'bg-accentRed/10', solidBorder: 'border-accentRed', solidBg: 'bg-accentRed' };
-                default: return { color: 'text-accentBlue', border: 'border-accentBlue/30', bg: 'bg-accentBlue/10', solidBorder: 'border-accentBlue', solidBg: 'bg-accentBlue' }; // Deep Work
-            }
-        }
-
-        // --- CORE LOGIC ---
-        function renderDayNav() {
-            const nav = document.getElementById('day-nav');
-            let html = '';
-            daysOfWeek.forEach(day => {
-                const isActive = day === activeDay ? 'active' : '';
-                html += `<button onclick="switchDay('${day}')" class="day-pill touch-btn ${isActive}">${day.substring(0,3)}</button>`;
-            });
-            nav.innerHTML = html;
-            
-            const activePill = nav.querySelector('.active');
-            if(activePill) {
-                nav.scrollTo({ left: activePill.offsetLeft - 20, behavior: 'smooth' });
-            }
-        }
-
-        function switchDay(day) {
-            activeDay = day;
-            renderDayNav();
-            loadMatrix();
-        }
-
-        function parseTime(timeStr) {
-            const [h, m] = timeStr.split(':').map(Number);
-            return h * 60 + m;
-        }
-
-        function formatTime12h(timeStr) {
-            const [h, m] = timeStr.split(':');
-            let hours = parseInt(h);
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12 || 12;
-            return `${hours}:${m} ${ampm}`;
-        }
-
-        function formatTime12hSplit(timeStr) {
-            const [h, m] = timeStr.split(':');
-            let hours = parseInt(h);
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12 || 12;
-            return { time: `${hours}:${m}`, period: ampm };
-        }
-
-        function loadMatrix() {
-            const allBlocks = JSON.parse(localStorage.getItem('sys_weekly')) || [];
-            const container = document.getElementById('matrix-container');
-            
-            let dayBlocks = allBlocks.filter(b => b.day === activeDay);
-            dayBlocks.sort((a, b) => parseTime(a.start) - parseTime(b.start));
-
-            if (dayBlocks.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-12 mt-10 border border-dashed border-white/10 rounded-2xl bg-black/40">
-                        <i class="ph-fill ph-calendar-x text-4xl text-gray-600 mb-2"></i>
-                        <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Timeline Clear.</p>
-                        <p class="text-[8px] font-bold text-gray-600 uppercase tracking-widest mt-1">Tap + to allocate a time block.</p>
-                    </div>`;
-                return;
-            }
-
-            // The Timeline Layout Container
-            let html = '<div class="relative border-l-2 border-white/10 ml-[4.5rem] space-y-6 mt-4">';
-            
-            dayBlocks.forEach(b => {
-                const style = getCategoryStyle(b.category);
-                const startSplit = formatTime12hSplit(b.start);
-
-                html += `
-                    <div class="relative pl-5">
-                        <div class="absolute -left-[10px] top-4 w-[18px] h-[18px] rounded-full bg-[#020202] border-[3px] ${style.solidBorder} flex items-center justify-center z-10 shadow-[0_0_10px_currentColor] ${style.color}">
-                        </div>
-                        
-                        <div class="absolute -left-[5rem] top-3 w-14 text-right pr-2">
-                            <p class="text-[14px] font-black ${style.color} leading-none tracking-tighter">${startSplit.time}</p>
-                            <p class="text-[9px] font-black text-gray-600 uppercase mt-1">${startSplit.period}</p>
-                        </div>
-
-                        <div class="bg-black/40 border border-white/5 p-4 rounded-2xl relative overflow-hidden group shadow-lg">
-                            <div class="absolute left-0 top-0 bottom-0 w-1 ${style.solidBg}"></div>
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h3 class="text-sm font-black text-white uppercase tracking-widest">${b.title}</h3>
-                                    <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1 flex items-center gap-1">
-                                        <i class="ph-bold ph-clock"></i> ${formatTime12h(b.start)} - ${formatTime12h(b.end)}
-                                    </p>
-                                </div>
-                                <button onclick="deleteBlock(${b.id})" class="text-gray-600 hover:text-accentRed transition p-1 -mt-1 -mr-1 active:scale-90 shrink-0"><i class="ph-bold ph-x text-sm"></i></button>
-                            </div>
-                            <div class="mt-3">
-                                <span class="text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded border ${style.color} ${style.border} ${style.bg}">
-                                    ${b.category}
-                                </span>
-                            </div>
-                        </div>
+        <div class="sheet-content">
+            <div class="section-label">PROTOCOLS</div>
+            <div class="app-grid">
+                <a href="todo.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-solid fa-square-check"></i></div>
+                    <span class="app-icon-label">Tasks</span>
+                </a>
+                <a href="rituals.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #eab308;"><i class="fa-regular fa-sun"></i></div>
+                    <span class="app-icon-label">Rituals</span>
+                </a>
+                <a href="habits.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-regular fa-calendar-check"></i>
                     </div>
-                `;
-            });
-            html += '</div>';
-            container.innerHTML = html;
+                    <span class="app-icon-label">Habits</span>
+                </a>
+            </div>
+
+            <div class="section-label">TIME & MACRO</div>
+            <div class="app-grid">
+                <a href="schedule.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #ffffff;"><i class="fa-regular fa-calendar"></i></div>
+                    <span class="app-icon-label">Schedule</span>
+                </a>
+                <a href="weekly.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-border-all"></i></div>
+                    <span class="app-icon-label">Matrix</span>
+                </a>
+            </div>
+
+            <div class="section-label">BIO & WEALTH</div>
+            <div class="app-grid">
+                <a href="health.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-heart-pulse"></i></div>
+                    <span class="app-icon-label">Health</span>
+                </a>
+                <a href="sleep.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-moon"></i></div>
+                    <span class="app-icon-label">Sleep</span>
+                </a>
+                <a href="budget.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-wallet"></i></div>
+                    <span class="app-icon-label">Finance</span>
+                </a>
+                <a href="diet.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: var(--accent-green);"><i
+                            class="fa-solid fa-apple-whole"></i></div>
+                    <span class="app-icon-label">Diet</span>
+                </a>
+            </div>
+
+            <div class="section-label">DATA & KNOWLEDGE</div>
+            <div class="app-grid">
+                <a href="academics.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <span class="app-icon-label">Academics</span>
+                </a>
+                <a href="library.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-book"></i></div>
+                    <span class="app-icon-label">Library</span>
+                </a>
+                <a href="analyzer.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: var(--accent-green);"><i
+                            class="fa-solid fa-chart-line"></i></div>
+                    <span class="app-icon-label">Analytics</span>
+                </a>
+            </div>
+        </div>
+    </div>
+<script>
+    const daysArr = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    let currentDay = daysArr[new Date().getDay()]; // Automatically detects current day
+    let matrixData = JSON.parse(localStorage.getItem('system_os_matrix')) || [];
+
+    // Fix Input Colors on interaction
+    const inputs = ['start-time', 'end-time', 'block-category'];
+    inputs.forEach(id => {
+        document.getElementById(id).addEventListener('change', function() {
+            this.style.color = 'var(--text-main)';
+        });
+    });
+
+    // --- App Drawer Modal ---
+    function toggleActivityModal() {
+        const overlay = document.getElementById('activity-overlay');
+        const sheet = document.getElementById('activity-sheet');
+        overlay.classList.toggle('active');
+        sheet.classList.toggle('active');
+        document.body.style.overflow = sheet.classList.contains('active') ? 'hidden' : '';
+    }
+
+    // Formats military time to 12hr AM/PM format
+    function formatTime(timeStr) {
+        if(!timeStr) return "";
+        let [hours, minutes] = timeStr.split(':');
+        hours = parseInt(hours);
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12; 
+        return `${hours}:${minutes} ${ampm}`;
+    }
+
+    function selectDay(dayString) {
+        currentDay = dayString;
+        
+        // Update UI Pills
+        const pills = document.querySelectorAll('.day-pill');
+        pills.forEach(pill => {
+            if(pill.textContent === dayString) {
+                pill.classList.add('active');
+                pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            } else {
+                pill.classList.remove('active');
+            }
+        });
+
+        // Update Title
+        document.getElementById('protocol-title').textContent = `${dayString} PROTOCOL`;
+        
+        renderTimeline();
+    }
+
+    function renderTimeline() {
+        const timeline = document.getElementById('timeline-container');
+        timeline.innerHTML = '';
+
+        // Filter for current day and sort by start time
+        let dayBlocks = matrixData.filter(b => b.day === currentDay);
+        dayBlocks.sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+        if (dayBlocks.length === 0) {
+            timeline.innerHTML = `<div class="empty-state">No time blocks allocated</div>`;
+            return;
         }
 
-        function saveBlock() {
-            const title = document.getElementById('block-title').value.trim();
-            const start = document.getElementById('block-start').value;
-            const end = document.getElementById('block-end').value;
-            const cat = document.getElementById('block-category').value;
-
-            if (!title || !start || !end) {
-                alert("Protocol Error: Title and Time parameters required.");
-                return;
-            }
-
-            const allBlocks = JSON.parse(localStorage.getItem('sys_weekly')) || [];
+        dayBlocks.forEach(block => {
+            const blockEl = document.createElement('div');
+            blockEl.className = `time-block cat-${block.category}`;
             
-            allBlocks.push({
-                id: Date.now(),
-                day: activeDay,
-                title: title,
-                start: start,
-                end: end,
-                category: cat
-            });
+            const startStr = formatTime(block.startTime);
+            const endStr = formatTime(block.endTime);
+            const timeDisplay = (startStr && endStr) ? `${startStr} - ${endStr}` : startStr || "Anytime";
 
-            localStorage.setItem('sys_weekly', JSON.stringify(allBlocks));
-            closeModal();
-            loadMatrix();
+            blockEl.innerHTML = `
+                <div class="block-info">
+                    <div class="block-title">${block.title}</div>
+                    <div class="block-time">${timeDisplay}</div>
+                </div>
+                <button class="delete-btn" onclick="deleteBlock('${block.id}')">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            `;
+            timeline.appendChild(blockEl);
+        });
+    }
+
+    function allocateBlock() {
+        const titleInput = document.getElementById('block-title');
+        const startInput = document.getElementById('start-time');
+        const endInput = document.getElementById('end-time');
+        const catInput = document.getElementById('block-category');
+
+        if (!titleInput.value.trim()) {
+            alert('Please enter a block title.');
+            return;
+        }
+        if (!startInput.value) {
+            alert('Please enter a start time.');
+            return;
         }
 
-        function deleteBlock(id) {
-            if(confirm("Remove this block from the matrix?")) {
-                let allBlocks = JSON.parse(localStorage.getItem('sys_weekly')) || [];
-                allBlocks = allBlocks.filter(b => b.id !== id);
-                localStorage.setItem('sys_weekly', JSON.stringify(allBlocks));
-                loadMatrix();
-            }
-        }
-
-        // Init
-        window.onload = () => {
-            renderDayNav();
-            loadMatrix();
+        const newBlock = {
+            id: Date.now().toString(),
+            day: currentDay,
+            title: titleInput.value.trim(),
+            startTime: startInput.value,
+            endTime: endInput.value || "",
+            category: catInput.value
         };
 
-    </script>
+        matrixData.push(newBlock);
+        localStorage.setItem('system_os_matrix', JSON.stringify(matrixData));
+
+        // Clear Form
+        titleInput.value = '';
+        startInput.value = '';
+        endInput.value = '';
+        startInput.style.color = 'var(--text-muted)';
+        endInput.style.color = 'var(--text-muted)';
+
+        renderTimeline();
+    }
+
+    function deleteBlock(id) {
+        matrixData = matrixData.filter(b => b.id !== id);
+        localStorage.setItem('system_os_matrix', JSON.stringify(matrixData));
+        renderTimeline();
+    }
+
+    // Initialize on load
+    selectDay(currentDay);
+
+</script>
 </body>
 </html>

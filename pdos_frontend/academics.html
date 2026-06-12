@@ -3,656 +3,896 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>System OS | Academic Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6',
-                        accentPurple: '#A855F7', accentRed: '#FF4C4C', accentYellow: '#FBBF24',
-                        cardBg: '#080A0E'
-                    }
-                }
-            }
-        }
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Hub</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* STRICT MOBILE LOCK */
-        body,
-        html {
-            background-color: #000;
-            color: #C5C6C7;
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 0;
-            -webkit-font-smoothing: antialiased;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-        .mobile-viewport {
-            width: 100%;
-            max-width: 430px;
-            margin: 0 auto;
-            position: relative;
-            background-color: #020202;
-            min-height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
-        }
-
-        main {
-            padding: 1rem;
-            flex: 1;
-            padding-bottom: 6rem;
-            overflow-y: auto;
-        }
-
-        ::-webkit-scrollbar {
-            display: none;
+        :root {
+            --bg-dark: #070414;
+            --bg-card: #141125;
+            --bg-card-inner: #1e1936;
+            --text-main: #ffffff;
+            --text-muted: #9ca3af;
+            --accent-green: #69f0ae;
+            --accent-green-dim: rgba(105, 240, 174, 0.15);
+            --accent-purple: #a855f7;
+            --accent-blue: #3b82f6;
+            --accent-red: #ef4444;
+            --border-dim: #2a2444;
         }
 
         * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            padding: 20px 20px 100px 20px;
+            overflow-x: hidden;
+            position: relative;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        /* --- Header --- */
+        header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-top: 10px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .icon-btn:hover {
+            color: var(--text-main);
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* --- Global Form Inputs --- */
+        .custom-input {
+            background: var(--bg-card-inner);
+            border: 1px solid transparent;
+            color: var(--text-main);
+            padding: 12px 15px;
+            border-radius: 14px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+
+        .custom-input:focus {
+            border-color: var(--accent-purple);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .btn-add {
+            background: var(--accent-purple);
+            color: var(--text-main);
+            border: none;
+            border-radius: 14px;
+            padding: 0 18px;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.1s, filter 0.2s;
+        }
+
+        .btn-add:active {
+            transform: scale(0.95);
+        }
+
+        .btn-add:hover {
+            filter: brightness(1.1);
+        }
+
+        /* --- UI Cards --- */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .section-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            padding-left: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* --- 1. Semester Timeline Block --- */
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 10px;
+        }
+
+        .days-left {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--accent-purple);
+            line-height: 1;
+            letter-spacing: -1px;
+        }
+
+        .timeline-dates {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-card-inner);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-purple);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        /* --- 2. Subjects Block --- */
+        .subject-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .subject-item {
+            background: var(--bg-card-inner);
+            border-left: 3px solid var(--accent-blue);
+            border-radius: 14px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .subj-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .subj-modules {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* --- 3. Assignments Block --- */
+        .assignment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .assignment-item {
+            background: var(--bg-card-inner);
+            border: 1px solid transparent;
+            border-radius: 16px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: border-color 0.2s;
+        }
+
+        .assign-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .assign-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            word-break: break-word;
+        }
+
+        .assign-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            /* Clickable to change status */
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        /* Status Colors */
+        .status-not-completed {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--accent-red);
+        }
+
+        .status-ongoing {
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--accent-blue);
+        }
+
+        .status-completed {
+            background: var(--accent-green-dim);
+            color: var(--accent-green);
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .delete-btn:hover {
+            color: var(--accent-red);
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            padding: 15px 0;
+            font-style: italic;
+        }
+
+        /* --- Shared Bottom Nav & App Drawer --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 60px);
+            max-width: 380px;
+            background: #0d0920;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 30px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 5px 10px;
+            z-index: 100;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            width: 30%;
+            padding: 8px 0;
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 0.65rem;
+            font-weight: 600;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-item i {
+            font-size: 1.1rem;
+        }
+
+        .nav-item:hover:not(.active) {
+            color: #a78bfa;
+        }
+
+        .nav-item.active {
+            background: #6DF2B5;
+            color: #070414;
+            box-shadow: 0 0 15px rgba(109, 242, 181, 0.2);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) translateY(100%);
+            width: 100%;
+            max-width: 480px;
+            max-height: 85vh;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-dim);
+            border-radius: 32px 32px 0 0;
+            padding: 20px 20px 0 20px;
+            z-index: 1000;
+            transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        .bottom-sheet.active {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .drag-handle {
+            width: 40px;
+            height: 5px;
+            background: var(--border-dim);
+            border-radius: 5px;
+            margin: 0 auto 20px auto;
+        }
+
+        .sheet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .sheet-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .close-btn {
+            background: var(--bg-card-inner);
+            border: 1px solid var(--border-dim);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            color: var(--text-main);
+            background: #2a2444;
+        }
+
+        .sheet-content {
+            overflow-y: auto;
+            padding-bottom: 40px;
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
 
-        /* SLEEK CARD SYSTEM */
-        .sys-card {
-            background: #080A0E;
-            border: 1px solid #14171F;
-            border-radius: 1.25rem;
-            padding: 1.25rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            margin-bottom: 1rem;
-            position: relative;
+        .sheet-content::-webkit-scrollbar {
+            display: none;
         }
 
-        .border-teal {
-            border-top: 2px solid #66FCF1;
+        .section-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 15px 0 15px 5px;
         }
 
-        .border-purple {
-            border-top: 2px solid #A855F7;
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px 10px;
+            margin-bottom: 25px;
         }
 
-        .border-red {
-            border-top: 2px solid #FF4C4C;
-        }
-
-        .touch-btn {
-            transition: transform 0.1s;
-            cursor: pointer;
-        }
-
-        .touch-btn:active {
-            transform: scale(0.96);
-        }
-
-        /* CENTERED GLASS MODALS */
-        .center-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -45%) scale(0.95);
-            width: 90%;
-            max-width: 380px;
-            background: rgba(8, 10, 14, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1.75rem;
-            padding: 1.5rem;
-            z-index: 9999;
-            opacity: 0;
-            pointer-events: none;
-            max-height: 85vh;
-            overflow-y: auto;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        }
-
-        .center-modal.active {
-            transform: translate(-50%, -50%) scale(1);
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-backdrop {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(5px);
-            z-index: 9998;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-
-        .modal-backdrop.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .sys-input {
-            width: 100%;
-            background: #000;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1rem;
-            padding: 1rem;
-            color: #fff;
-            font-size: 14px;
-            font-weight: 600;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .sys-input:focus {
-            border-color: #66FCF1;
-        }
-
-        /* SLIDER OVERRIDES */
-        input[type=range] {
-            -webkit-appearance: none;
-            width: 100%;
-            background: transparent;
-            margin: 15px 0;
-        }
-
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 6px;
-            background: #14171F;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        input[type=range]::-webkit-slider-thumb {
-            height: 24px;
-            width: 24px;
-            border-radius: 50%;
-            background: currentColor;
-            cursor: pointer;
-            -webkit-appearance: none;
-            margin-top: -9px;
-            box-shadow: 0 0 15px currentColor;
-            border: 2px solid #000;
-        }
-
-        body,
-        html {
-            height: 100dvh;
-            overflow: hidden;
-            /* This stops the whole screen from scrolling */
-            margin: 0;
-        }
-
-        .mobile-viewport {
-            height: 100%;
+        .app-icon-btn {
             display: flex;
             flex-direction: column;
-            /* Allows content and nav to stack */
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.1s;
         }
 
-        main {
-            flex: 1;
-            overflow-y: auto;
-            /* Only your content area scrolls */
-            padding-bottom: 2rem;
+        .app-icon-btn:active {
+            transform: scale(0.92);
+        }
+
+        .app-icon-circle {
+            width: 56px;
+            height: 56px;
+            background: var(--bg-card-inner);
+            border: 1px solid var(--border-dim);
+            border-radius: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            transition: border-color 0.3s;
+        }
+
+        .app-icon-btn:hover .app-icon-circle {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .app-icon-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-align: center;
+            color: var(--text-muted);
         }
     </style>
 </head>
 
 <body>
 
-    <div class="mobile-viewport">
-        <header
-            class="sticky top-0 p-6 pb-4 flex justify-between items-center z-50 bg-[#020202]/90 backdrop-blur-xl border-b border-white/5">
-            <div class="flex items-center gap-4">
-                <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
-                <h1 class="text-xl font-black text-white tracking-widest uppercase">Academic Hub</h1>
-            </div>
-            <div
-                class="text-[10px] font-black text-accentPurple uppercase tracking-widest bg-accentPurple/10 border border-accentPurple/20 px-3 py-1.5 rounded-full flex items-center gap-2">
-                Sync <i class="ph-bold ph-arrows-clockwise"></i>
-            </div>
+    <div class="app-container">
+
+        <header>
+            <button class="icon-btn" onclick="window.location.href='index.html'"><i
+                    class="fa-solid fa-arrow-left"></i></button>
+            <h1>Academics Hub</h1>
         </header>
 
-        <main>
+        <div class="section-title"><i class="fa-solid fa-hourglass-half" style="color: var(--accent-purple);"></i>
+            Semester Timeline</div>
+        <div class="card">
+            <div class="timeline-header">
+                <div>
+                    <div class="days-left" id="disp-days-left">--</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">Days Remaining</div>
+                </div>
+                <div class="timeline-dates" id="disp-dates">
+                    Start: -- <br> End: --
+                </div>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="timeline-bar"></div>
+            </div>
+
+            <div class="form-row">
+                <input type="date" id="tl-start" class="custom-input" style="color: var(--text-muted);">
+                <input type="date" id="tl-end" class="custom-input" style="color: var(--text-muted);">
+                <button class="btn-add" onclick="saveTimeline()"><i class="fa-solid fa-check"></i></button>
+            </div>
+        </div>
+
+        <div class="section-title"><i class="fa-solid fa-book" style="color: var(--accent-blue);"></i> Course
+            Architecture</div>
+        <div class="card">
+            <div class="subject-list" id="subject-list">
+            </div>
+
+            <div class="form-row" style="margin-top: 5px;">
+                <input type="text" id="subj-name" class="custom-input" placeholder="Subject Name">
+                <input type="number" id="subj-modules" class="custom-input" placeholder="Modules" style="width: 100px;">
+                <button class="btn-add" style="background: var(--accent-blue);" onclick="addSubject()"><i
+                        class="fa-solid fa-plus"></i></button>
+            </div>
+        </div>
+
+        <div class="section-title"><i class="fa-solid fa-file-signature" style="color: var(--accent-green);"></i>
+            Assignment Matrix</div>
+        <div class="card">
+            <div class="assignment-list" id="assignment-list">
+            </div>
 
             <div
-                class="sys-card border-teal m-0 relative overflow-hidden bg-gradient-to-br from-[#080A0E] to-[#020202] mb-5">
-                <div
-                    class="absolute -top-10 -right-10 w-32 h-32 bg-accentTeal/10 blur-3xl rounded-full pointer-events-none">
-                </div>
-                <button onclick="openSemesterModal()"
-                    class="absolute top-4 right-4 text-[9px] font-black text-accentTeal bg-accentTeal/10 px-3 py-1.5 rounded-full border border-accentTeal/20 uppercase tracking-widest touch-btn backdrop-blur-sm z-20">Edit
-                    Config</button>
+                style="font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-bottom: 15px; font-style: italic;">
+                Tip: Tap a status badge above to change its progress.
+            </div>
 
-                <div class="flex justify-between items-center mb-4 relative z-10 pr-20">
-                    <h2 class="text-[11px] font-black text-gray-300 uppercase tracking-widest flex items-center gap-2">
-                        <i
-                            class="ph-fill ph-hourglass-high text-accentTeal text-lg drop-shadow-[0_0_5px_rgba(102,252,241,0.5)]"></i>
-                        Semester Vector
-                    </h2>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <input type="text" id="ass-title" class="custom-input" placeholder="Assignment / Project Name">
+                <div class="form-row" style="margin-top: 0;">
+                    <input type="date" id="ass-date" class="custom-input" style="color: var(--text-muted);">
+                    <select id="ass-status" class="custom-input" style="color: var(--text-muted);">
+                        <option value="not-completed">Not Started</option>
+                        <option value="ongoing">Ongoing</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                    <button class="btn-add" style="background: var(--accent-green); color: var(--bg-dark);"
+                        onclick="addAssignment()"><i class="fa-solid fa-plus"></i></button>
                 </div>
+            </div>
+        </div>
 
-                <div class="flex justify-between items-end mb-2 relative z-10">
-                    <div>
-                        <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5"><span
-                                id="sem-start">--</span> to <span id="sem-end">--</span></p>
-                        <span
-                            class="text-[10px] font-black text-white uppercase tracking-widest px-2 py-0.5 bg-white/10 rounded border border-white/10"
-                            id="sem-days-left">-- Days Left</span>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <i class="fa-solid fa-grip"></i>
+            <span>Dashboard</span>
+        </a>
+        <div class="nav-item active" onclick="toggleActivityModal()">
+            <i class="fa-regular fa-rectangle-list"></i>
+            <span>Activity</span>
+        </div>
+        <a href="analyzer.html" class="nav-item">
+            <i class="fa-solid fa-chart-column"></i>
+            <span>Analytics</span>
+        </a>
+    </div>
+
+    <div class="modal-overlay" id="activity-overlay" onclick="toggleActivityModal()"></div>
+    <div class="bottom-sheet" id="activity-sheet">
+        <div class="drag-handle"></div>
+        <div class="sheet-header">
+            <h2 class="sheet-title">System Modules</h2>
+            <button class="close-btn" onclick="toggleActivityModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="sheet-content">
+            <div class="section-label">PROTOCOLS</div>
+            <div class="app-grid">
+                <a href="todo.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-solid fa-square-check"></i></div>
+                    <span class="app-icon-label">Tasks</span>
+                </a>
+                <a href="rituals.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #eab308;"><i class="fa-regular fa-sun"></i></div>
+                    <span class="app-icon-label">Rituals</span>
+                </a>
+                <a href="habits.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-regular fa-calendar-check"></i>
                     </div>
-                    <h3 class="text-4xl font-black text-white leading-none drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]"
-                        id="sem-pct-text">0%</h3>
-                </div>
-
-                <div class="h-1.5 bg-black rounded-full overflow-hidden border border-white/5 relative z-10 mt-3">
-                    <div class="h-full bg-accentTeal shadow-[0_0_10px_rgba(102,252,241,1)] transition-all duration-1000"
-                        id="sem-pct-bar" style="width: 0%"></div>
-                </div>
+                    <span class="app-icon-label">Habits</span>
+                </a>
             </div>
-
-            <div class="mb-5">
-                <div class="flex justify-between items-center mb-3 px-1">
-                    <h2 class="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                        <i class="ph-fill ph-books text-accentPurple text-lg"></i> Subject Matrix
-                    </h2>
-                    <button onclick="openCourseModal()"
-                        class="text-[10px] font-black text-accentPurple bg-accentPurple/10 px-3 py-1.5 rounded-full border border-accentPurple/20 uppercase tracking-widest touch-btn">
-                        + Add Subject
-                    </button>
-                </div>
-                <div id="course-list" class="space-y-2">
-                </div>
+            <div class="section-label">TIME & MACRO</div>
+            <div class="app-grid">
+                <a href="schedule.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #ffffff;"><i class="fa-regular fa-calendar"></i></div>
+                    <span class="app-icon-label">Schedule</span>
+                </a>
+                <a href="weekly.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-border-all"></i></div>
+                    <span class="app-icon-label">Matrix</span>
+                </a>
             </div>
-
-            <div class="mb-5">
-                <div class="flex justify-between items-center mb-3 px-1">
-                    <h2 class="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                        <i class="ph-fill ph-warning-circle text-accentRed text-lg"></i> Active Assignments
-                    </h2>
-                    <button onclick="openAssignmentModal()"
-                        class="text-[10px] font-black text-accentRed bg-accentRed/10 px-3 py-1.5 rounded-full border border-accentRed/20 uppercase tracking-widest touch-btn">
-                        + Add Task
-                    </button>
-                </div>
-                <div id="assignment-list" class="space-y-2">
-                </div>
+            <div class="section-label">BIO & WEALTH</div>
+            <div class="app-grid">
+                <a href="health.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-heart-pulse"></i></div>
+                    <span class="app-icon-label">Health</span>
+                </a>
+                <a href="sleep.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-moon"></i></div>
+                    <span class="app-icon-label">Sleep</span>
+                </a>
+                <a href="budget.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-wallet"></i></div>
+                    <span class="app-icon-label">Finance</span>
+                </a>
+                <a href="diet.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: var(--accent-green);"><i
+                            class="fa-solid fa-apple-whole"></i></div>
+                    <span class="app-icon-label">Diet</span>
+                </a>
             </div>
-
-        </main>
-    </div>
-
-    <div class="modal-backdrop" id="modal-bg" onclick="closeModals()"></div>
-
-    <div class="center-modal" id="semester-modal">
-        <div class="flex justify-between items-center mb-6">
-            <h3 class="text-sm font-black text-accentTeal uppercase tracking-widest">Timeline Config</h3>
-            <i class="ph-bold ph-x text-xl text-gray-500 cursor-pointer p-1 active:scale-90 touch-btn"
-                onclick="closeModals()"></i>
-        </div>
-        <div class="space-y-4">
-            <div>
-                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Semester
-                    Start</label>
-                <input type="date" id="input-sem-start" class="sys-input text-center text-accentTeal">
-            </div>
-            <div>
-                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Semester
-                    End</label>
-                <input type="date" id="input-sem-end" class="sys-input text-center text-accentTeal">
-            </div>
-            <button onclick="submitSemester()"
-                class="w-full bg-accentTeal text-black font-black text-xs uppercase tracking-widest rounded-xl touch-btn mt-4 py-4 shadow-[0_0_20px_rgba(102,252,241,0.5)]">Save
-                Vector</button>
-        </div>
-    </div>
-
-    <div class="center-modal" id="course-modal">
-        <div class="flex justify-between items-center mb-6">
-            <h3 class="text-sm font-black text-accentPurple uppercase tracking-widest" id="course-modal-title">Subject
-                Config</h3>
-            <i class="ph-bold ph-x text-xl text-gray-500 cursor-pointer p-1 active:scale-90 touch-btn"
-                onclick="closeModals()"></i>
-        </div>
-        <div class="space-y-4">
-            <input type="hidden" id="edit-course-id">
-            <div>
-                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Course
-                    Designation</label>
-                <input type="text" id="input-course-name" class="sys-input" placeholder="e.g. Data Structures"
-                    autocomplete="off">
-            </div>
-
-            <div class="bg-black p-4 rounded-xl border border-white/5">
-                <div class="flex justify-between items-center">
-                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Attendance
-                        Target</label>
-                    <span id="target-val" class="text-lg font-black text-accentPurple">75%</span>
-                </div>
-                <input type="range" id="input-course-target" class="text-accentPurple" min="0" max="100" value="75"
-                    oninput="document.getElementById('target-val').innerText = this.value + '%'">
-            </div>
-
-            <div id="course-override-section" class="space-y-4" style="display: none;">
-                <div class="bg-black p-4 rounded-xl border border-white/5">
-                    <div class="flex justify-between items-center">
-                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Total Classes
-                            Run</label>
-                        <span id="total-val" class="text-lg font-black text-white">0</span>
+            <div class="section-label">DATA & KNOWLEDGE</div>
+            <div class="app-grid">
+                <a href="academics.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-graduation-cap"></i>
                     </div>
-                    <input type="number" id="input-course-total" class="sys-input mt-2"
-                        oninput="document.getElementById('total-val').innerText = this.value || 0; syncAttendedMax();">
-                </div>
-                <div class="bg-black p-4 rounded-xl border border-white/5">
-                    <div class="flex justify-between items-center">
-                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Classes
-                            Attended</label>
-                        <span id="attended-val" class="text-lg font-black text-accentPurple">0</span>
-                    </div>
-                    <input type="number" id="input-course-attended" class="sys-input text-accentPurple mt-2"
-                        oninput="document.getElementById('attended-val').innerText = this.value || 0">
-                </div>
-            </div>
-
-            <div class="flex gap-2 pt-2">
-                <button id="btn-delete-course" onclick="deleteCourse()"
-                    class="w-14 bg-accentRed/10 text-accentRed border border-accentRed/20 rounded-xl touch-btn"
-                    style="display: none;"><i class="ph-bold ph-trash text-xl"></i></button>
-                <button onclick="submitCourse()"
-                    class="flex-1 bg-accentPurple text-white font-black text-xs uppercase tracking-widest rounded-xl touch-btn py-4 shadow-[0_0_20px_rgba(168,85,247,0.5)]">Save
-                    Subject</button>
+                    <span class="app-icon-label">Academics</span>
+                </a>
+                <a href="library.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-book"></i></div>
+                    <span class="app-icon-label">Library</span>
+                </a>
+                <a href="analyzer.html" class="app-icon-btn">
+                    <div class="app-icon-circle" style="color: var(--accent-green);"><i
+                            class="fa-solid fa-chart-line"></i></div>
+                    <span class="app-icon-label">Analytics</span>
+                </a>
             </div>
         </div>
     </div>
-
-    <div class="center-modal" id="assignment-modal">
-        <div class="flex justify-between items-center mb-6">
-            <h3 class="text-sm font-black text-accentRed uppercase tracking-widest" id="assignment-modal-title">Task
-                Directive</h3>
-            <i class="ph-bold ph-x text-xl text-gray-500 cursor-pointer p-1 active:scale-90 touch-btn"
-                onclick="closeModals()"></i>
-        </div>
-        <div class="space-y-4">
-            <input type="hidden" id="edit-assignment-id">
-            <div>
-                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Task
-                    Details</label>
-                <input type="text" id="input-assignment-title" class="sys-input" placeholder="e.g. AI Project Report"
-                    autocomplete="off">
-            </div>
-            <div>
-                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Execution
-                    Deadline</label>
-                <input type="date" id="input-assignment-date" class="sys-input text-center text-accentRed">
-            </div>
-            <div class="flex gap-2 pt-2">
-                <button id="btn-delete-assignment" onclick="deleteAssignment()"
-                    class="w-14 bg-accentRed/10 text-accentRed border border-accentRed/20 rounded-xl touch-btn"
-                    style="display: none;"><i class="ph-bold ph-trash text-xl"></i></button>
-                <button onclick="submitAssignment()"
-                    class="flex-1 bg-accentRed text-white font-black text-xs uppercase tracking-widest rounded-xl touch-btn py-4 shadow-[0_0_20px_rgba(255,76,76,0.5)]">Lock
-                    Deadline</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="sidebar-injector"></div>
-    <script src="js/sidebar.js"></script>
-    <script src="js/bottom-nav.js"></script>
 
     <script>
-        // =========================================================================
-        // ACADEMIC HUB LOGIC ENGINE (SYNCS DIRECTLY WITH INDEX.HTML LOCALSTORAGE)
-        // =========================================================================
+        // --- Fix Input Colors ---
+        ['tl-start', 'tl-end', 'ass-date', 'ass-status'].forEach(id => {
+            document.getElementById(id).addEventListener('change', function () {
+                this.style.color = 'var(--text-main)';
+            });
+        });
 
-        // 1. Core Data Retrieval
-        let semConfig = JSON.parse(localStorage.getItem('sys_semester_config')) || { start: '2026-01-01', end: '2026-06-01' };
-        let courses = JSON.parse(localStorage.getItem('sys_courses')) || [];
-        let deadlines = JSON.parse(localStorage.getItem('sys_deadlines')) || [];
+        // --- State Management ---
+        let timeline = JSON.parse(localStorage.getItem('system_os_acad_time')) || { start: '', end: '' };
+        let subjects = JSON.parse(localStorage.getItem('system_os_acad_subj')) || [];
+        let assignments = JSON.parse(localStorage.getItem('system_os_acad_ass')) || [];
 
-        function saveAndRender() {
-            localStorage.setItem('sys_semester_config', JSON.stringify(semConfig));
-            localStorage.setItem('sys_courses', JSON.stringify(courses));
-            localStorage.setItem('sys_deadlines', JSON.stringify(deadlines));
-            renderDashboard();
-            window.dispatchEvent(new Event('storage')); // Alert index.html to update automatically
+        // --- 1. Timeline Logic ---
+        function saveTimeline() {
+            const start = document.getElementById('tl-start').value;
+            const end = document.getElementById('tl-end').value;
+
+            if (start && end) {
+                if (new Date(end) <= new Date(start)) {
+                    alert("End date must be after start date.");
+                    return;
+                }
+                timeline = { start, end };
+                localStorage.setItem('system_os_acad_time', JSON.stringify(timeline));
+                renderTimeline();
+            }
         }
 
-        // 2. Modal Management
-        function closeModals() {
-            document.getElementById('modal-bg').classList.remove('active');
-            document.querySelectorAll('.center-modal').forEach(m => m.classList.remove('active'));
-            document.body.style.overflow = '';
-        }
+        function renderTimeline() {
+            if (timeline.start) document.getElementById('tl-start').value = timeline.start;
+            if (timeline.end) document.getElementById('tl-end').value = timeline.end;
 
-        // --- Semester Setup ---
-        function openSemesterModal() {
-            document.getElementById('input-sem-start').value = semConfig.start;
-            document.getElementById('input-sem-end').value = semConfig.end;
-            document.getElementById('modal-bg').classList.add('active');
-            document.getElementById('semester-modal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
+            const dispLeft = document.getElementById('disp-days-left');
+            const dispDates = document.getElementById('disp-dates');
+            const bar = document.getElementById('timeline-bar');
 
-        function submitSemester() {
-            semConfig.start = document.getElementById('input-sem-start').value;
-            semConfig.end = document.getElementById('input-sem-end').value;
-            closeModals(); saveAndRender();
-        }
+            if (!timeline.start || !timeline.end) return;
 
-        // --- Course/Subject Setup ---
-        function openCourseModal(id = null) {
-            document.getElementById('modal-bg').classList.add('active');
-            document.getElementById('course-modal').classList.add('active');
-            document.body.style.overflow = 'hidden';
+            const sDate = new Date(timeline.start);
+            const eDate = new Date(timeline.end);
+            const today = new Date();
 
-            const overrideSection = document.getElementById('course-override-section');
-            const delBtn = document.getElementById('btn-delete-course');
+            const formatDate = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            dispDates.innerHTML = `Start: ${formatDate(sDate)} <br> End: ${formatDate(eDate)}`;
 
-            if (id) {
-                const c = courses.find(x => x.id === id);
-                document.getElementById('course-modal-title').innerText = "Edit Subject";
-                document.getElementById('edit-course-id').value = c.id;
-                document.getElementById('input-course-name').value = c.name;
-                document.getElementById('input-course-target').value = c.target;
-                document.getElementById('target-val').innerText = c.target + '%';
+            const totalDiff = eDate.getTime() - sDate.getTime();
+            const totalDays = Math.ceil(totalDiff / (1000 * 3600 * 24));
 
-                document.getElementById('input-course-total').value = c.total;
-                document.getElementById('total-val').innerText = c.total;
-                document.getElementById('input-course-attended').value = c.attended;
-                document.getElementById('attended-val').innerText = c.attended;
+            const passedDiff = today.getTime() - sDate.getTime();
+            const passedDays = Math.max(0, Math.ceil(passedDiff / (1000 * 3600 * 24)));
 
-                overrideSection.style.display = 'block';
-                delBtn.style.display = 'block';
+            let daysLeft = totalDays - passedDays;
+
+            if (today < sDate) {
+                dispLeft.textContent = totalDays;
+                bar.style.width = '0%';
+            } else if (today > eDate) {
+                dispLeft.textContent = "0";
+                bar.style.width = '100%';
             } else {
-                document.getElementById('course-modal-title').innerText = "Initialize Subject";
-                document.getElementById('edit-course-id').value = '';
-                document.getElementById('input-course-name').value = '';
-                document.getElementById('input-course-target').value = '75';
-                document.getElementById('target-val').innerText = '75%';
-
-                overrideSection.style.display = 'none';
-                delBtn.style.display = 'none';
+                dispLeft.textContent = daysLeft;
+                const pct = (passedDays / totalDays) * 100;
+                bar.style.width = `${pct}%`;
             }
         }
 
-        function submitCourse() {
-            const id = document.getElementById('edit-course-id').value;
-            const name = document.getElementById('input-course-name').value.trim();
-            const target = parseInt(document.getElementById('input-course-target').value) || 75;
+        // --- 2. Subjects Logic ---
+        function addSubject() {
+            const name = document.getElementById('subj-name').value.trim();
+            const mods = document.getElementById('subj-modules').value;
 
-            if (!name) return;
+            if (!name || !mods) return;
 
-            if (id) {
-                let c = courses.find(x => x.id == id);
-                c.name = name; c.target = target;
-                c.total = parseInt(document.getElementById('input-course-total').value) || 0;
-                c.attended = parseInt(document.getElementById('input-course-attended').value) || 0;
-            } else {
-                courses.push({ id: Date.now(), name, target, attended: 0, total: 0 });
+            subjects.push({ id: Date.now().toString(), name, modules: mods });
+            localStorage.setItem('system_os_acad_subj', JSON.stringify(subjects));
+
+            document.getElementById('subj-name').value = '';
+            document.getElementById('subj-modules').value = '';
+            renderSubjects();
+        }
+
+        function deleteSubject(id) {
+            subjects = subjects.filter(s => s.id !== id);
+            localStorage.setItem('system_os_acad_subj', JSON.stringify(subjects));
+            renderSubjects();
+        }
+
+        function renderSubjects() {
+            const list = document.getElementById('subject-list');
+            list.innerHTML = '';
+
+            if (subjects.length === 0) {
+                list.innerHTML = `<div class="empty-state">No subjects loaded into architecture.</div>`;
+                return;
             }
-            closeModals(); saveAndRender();
+
+            subjects.forEach(s => {
+                list.innerHTML += `
+                <div class="subject-item">
+                    <div>
+                        <div class="subj-title">${s.name}</div>
+                        <div class="subj-modules">Total Modules: ${s.modules}</div>
+                    </div>
+                    <button class="delete-btn" onclick="deleteSubject('${s.id}')"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            `;
+            });
         }
 
-        function deleteCourse() {
-            const id = document.getElementById('edit-course-id').value;
-            courses = courses.filter(c => c.id != id);
-            closeModals(); saveAndRender();
-        }
-
-        function logClass(id, isPresent, event) {
-            event.stopPropagation();
-            let c = courses.find(x => x.id == id);
-            if (c) {
-                c.total += 1;
-                if (isPresent) c.attended += 1;
-                saveAndRender();
-            }
-        }
-
-        // --- Assignment/Directive Setup ---
-        function openAssignmentModal(id = null) {
-            document.getElementById('modal-bg').classList.add('active');
-            document.getElementById('assignment-modal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-
-            const delBtn = document.getElementById('btn-delete-assignment');
-
-            if (id) {
-                const d = deadlines.find(x => x.id === id);
-                document.getElementById('assignment-modal-title').innerText = "Edit Directive";
-                document.getElementById('edit-assignment-id').value = d.id;
-                document.getElementById('input-assignment-title').value = d.title;
-                document.getElementById('input-assignment-date').value = d.date;
-                delBtn.style.display = 'block';
-            } else {
-                document.getElementById('assignment-modal-title').innerText = "New Directive";
-                document.getElementById('edit-assignment-id').value = '';
-                document.getElementById('input-assignment-title').value = '';
-                document.getElementById('input-assignment-date').value = '';
-                delBtn.style.display = 'none';
-            }
-        }
-
-        function submitAssignment() {
-            const id = document.getElementById('edit-assignment-id').value;
-            const title = document.getElementById('input-assignment-title').value.trim();
-            const date = document.getElementById('input-assignment-date').value;
+        // --- 3. Assignments Logic ---
+        function addAssignment() {
+            const title = document.getElementById('ass-title').value.trim();
+            const date = document.getElementById('ass-date').value;
+            const status = document.getElementById('ass-status').value;
 
             if (!title || !date) return;
 
-            if (id) {
-                let d = deadlines.find(x => x.id == id);
-                d.title = title; d.date = date;
-            } else {
-                deadlines.push({ id: Date.now(), title, date });
+            assignments.push({ id: Date.now().toString(), title, date, status });
+            localStorage.setItem('system_os_acad_ass', JSON.stringify(assignments));
+
+            document.getElementById('ass-title').value = '';
+            document.getElementById('ass-date').value = '';
+            document.getElementById('ass-date').style.color = 'var(--text-muted)';
+
+            renderAssignments();
+        }
+
+        function deleteAssignment(id) {
+            assignments = assignments.filter(a => a.id !== id);
+            localStorage.setItem('system_os_acad_ass', JSON.stringify(assignments));
+            renderAssignments();
+        }
+
+        // Click badge to cycle through states
+        window.cycleStatus = function (id) {
+            const ass = assignments.find(a => a.id === id);
+            if (ass) {
+                if (ass.status === 'not-completed') ass.status = 'ongoing';
+                else if (ass.status === 'ongoing') ass.status = 'completed';
+                else ass.status = 'not-completed';
+
+                localStorage.setItem('system_os_acad_ass', JSON.stringify(assignments));
+                renderAssignments();
             }
-            closeModals(); saveAndRender();
         }
 
-        function deleteAssignment() {
-            const id = document.getElementById('edit-assignment-id').value;
-            deadlines = deadlines.filter(d => d.id != id);
-            closeModals(); saveAndRender();
-        }
+        function renderAssignments() {
+            const list = document.getElementById('assignment-list');
+            list.innerHTML = '';
 
-        function completeAssignment(id, event) {
-            event.stopPropagation();
-            deadlines = deadlines.filter(d => d.id != id);
-            saveAndRender();
-        }
+            if (assignments.length === 0) {
+                list.innerHTML = `<div class="empty-state">No assignments currently deployed.</div>`;
+                return;
+            }
 
-        // 3. Dashboard UI Rendering
-        function renderDashboard() {
-            // Render Semester
-            const now = new Date();
-            const start = new Date(semConfig.start);
-            const end = new Date(semConfig.end);
-            const totalDays = (end - start) / (1000 * 60 * 60 * 24);
-            const daysPassed = (now - start) / (1000 * 60 * 60 * 24);
-            const daysLeft = Math.ceil(totalDays - daysPassed);
-            let pct = Math.max(0, Math.min(100, (daysPassed / totalDays) * 100));
+            // Sort by Date
+            assignments.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-            document.getElementById('sem-start').innerText = isNaN(start) ? "--" : start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-            document.getElementById('sem-end').innerText = isNaN(end) ? "--" : end.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-            document.getElementById('sem-days-left').innerText = daysLeft > 0 ? `${daysLeft} Days Left` : `Vector Complete`;
-            document.getElementById('sem-pct-text').innerText = `${Math.round(pct || 0)}%`;
-            document.getElementById('sem-pct-bar').style.width = `${pct || 0}%`;
+            const statusLabels = {
+                'not-completed': 'Not Started',
+                'ongoing': 'Ongoing',
+                'completed': 'Completed'
+            };
 
-            // Render Courses
-            const courseList = document.getElementById('course-list');
-            courseList.innerHTML = '';
+            assignments.forEach(a => {
+                const d = new Date(a.date);
+                const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
-            if (courses.length === 0) courseList.innerHTML = '<p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest text-center py-4 border border-white/5 rounded-xl border-dashed">No Subjects Logged.</p>';
+                // Add red border if past due and not completed
+                const isPastDue = new Date() > d && a.status !== 'completed';
+                const borderStyle = isPastDue ? 'border-color: var(--accent-red);' : '';
 
-            courses.forEach(c => {
-                let currentPct = c.total === 0 ? 100 : Math.round((c.attended / c.total) * 100);
-                let isSafe = currentPct >= c.target;
-                let color = isSafe ? 'accentPurple' : 'accentRed';
-
-                courseList.innerHTML += `
-                    <div class="bg-[#080A0E] p-4 rounded-xl border-l-2 border-l-${color} border-y border-r border-white/5 relative overflow-hidden shadow-md cursor-pointer active:scale-95 transition" onclick="openCourseModal(${c.id})">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="text-xs font-black text-white pr-10 uppercase tracking-wide truncate">${c.name}</h3>
-                            <span class="text-xl font-black text-${color} leading-none drop-shadow-[0_0_5px_currentColor]">${currentPct}<span class="text-[10px] text-gray-500">%</span></span>
-                        </div>
-                        <div class="h-1.5 bg-black rounded-full overflow-hidden border border-white/5 mb-3">
-                            <div class="h-full bg-${color} transition-all duration-500" style="width: ${currentPct}%"></div>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Target: ${c.target}% | Attended: <span class="text-white">${c.attended}/${c.total}</span></p>
-                            <div class="flex gap-2">
-                                <button onclick="logClass(${c.id}, false, event)" class="w-8 h-8 rounded bg-accentRed/10 text-accentRed border border-accentRed/20 flex items-center justify-center hover:bg-accentRed/20 transition"><i class="ph-bold ph-x text-sm"></i></button>
-                                <button onclick="logClass(${c.id}, true, event)" class="w-8 h-8 rounded bg-accentPurple/10 text-accentPurple border border-accentPurple/20 flex items-center justify-center hover:bg-accentPurple/20 transition"><i class="ph-bold ph-check text-sm"></i></button>
+                list.innerHTML += `
+                <div class="assignment-item" style="${borderStyle}">
+                    <div class="assign-top">
+                        <div style="flex: 1; padding-right:10px;">
+                            <div class="assign-title">${a.title}</div>
+                            <div class="assign-date">
+                                <i class="fa-regular fa-calendar"></i> Due: ${dateStr}
+                                ${isPastDue ? '<span style="color: var(--accent-red); font-weight: 700; margin-left: 5px;">(Late)</span>' : ''}
                             </div>
                         </div>
-                    </div>
-                `;
-            });
-
-            // Render Assignments
-            const assignmentList = document.getElementById('assignment-list');
-            assignmentList.innerHTML = '';
-
-            if (deadlines.length === 0) assignmentList.innerHTML = '<p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest text-center py-4 border border-white/5 rounded-xl border-dashed">No Active Directives.</p>';
-
-            deadlines.sort((a, b) => new Date(a.date) - new Date(b.date)).forEach(d => {
-                const dateStr = new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                const daysUntil = (new Date(d.date) - now) / 86400000;
-                let color = daysUntil <= 2 ? 'accentRed' : 'white';
-
-                assignmentList.innerHTML += `
-                    <div class="bg-black/80 p-3 rounded-xl border border-white/5 flex justify-between items-center cursor-pointer active:scale-95 transition" onclick="openAssignmentModal(${d.id})">
-                        <div class="flex items-center gap-3 overflow-hidden">
-                            <button onclick="completeAssignment(${d.id}, event)" class="shrink-0 w-7 h-7 rounded border border-white/20 flex items-center justify-center text-gray-500 hover:text-accentTeal hover:border-accentTeal transition bg-black">
-                                <i class="ph-bold ph-check text-xs opacity-0 hover:opacity-100"></i>
-                            </button>
-                            <p class="text-xs font-bold text-gray-200 truncate pr-2">${d.title}</p>
+                        <div class="status-badge status-${a.status}" onclick="cycleStatus('${a.id}')">
+                            ${statusLabels[a.status]}
                         </div>
-                        <span class="shrink-0 text-[9px] font-black text-${color} uppercase tracking-widest bg-${color}/10 px-2.5 py-1 rounded border border-${color}/20">${dateStr}</span>
                     </div>
-                `;
+                    <div style="display: flex; justify-content: flex-end; margin-top: 8px;">
+                        <button class="delete-btn" onclick="deleteAssignment('${a.id}')"><i class="fa-solid fa-trash-can" style="font-size: 0.85rem;"></i></button>
+                    </div>
+                </div>
+            `;
             });
         }
 
-        // Boot system
-        window.onload = () => {
-            renderDashboard();
-            window.addEventListener('storage', () => {
-                semConfig = JSON.parse(localStorage.getItem('sys_semester_config')) || { start: '2026-01-01', end: '2026-06-01' };
-                courses = JSON.parse(localStorage.getItem('sys_courses')) || [];
-                deadlines = JSON.parse(localStorage.getItem('sys_deadlines')) || [];
-                renderDashboard();
-            });
-        };
+        // --- App Drawer Modal ---
+        function toggleActivityModal() {
+            const overlay = document.getElementById('activity-overlay');
+            const sheet = document.getElementById('activity-sheet');
+            overlay.classList.toggle('active');
+            sheet.classList.toggle('active');
+            document.body.style.overflow = sheet.classList.contains('active') ? 'hidden' : '';
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTimeline();
+            renderSubjects();
+            renderAssignments();
+        });
+
     </script>
 </body>
 

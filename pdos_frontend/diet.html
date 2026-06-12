@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrition Matrix</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-dark: #070414;
+            --bg-card: #141125;
+            --bg-card-inner: #1e1936;
+            --text-main: #ffffff;
+            --text-muted: #9ca3af;
+            --accent-green: #69f0ae;
+            --accent-green-dim: rgba(105, 240, 174, 0.15);
+            --accent-red: #ef4444;
+            --accent-blue: #3b82f6;
+            --accent-yellow: #eab308;
+            --accent-purple: #a855f7;
+            --border-dim: #2a2444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            min-height: 100vh;
+            padding: 20px 20px 100px 20px;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        /* --- Header --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-top: 10px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .icon-btn:hover { color: var(--text-main); }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* --- Macro Targets --- */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .section-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            padding-left: 5px;
+        }
+
+        .macro-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .macro-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .macro-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .macro-val { font-size: 1.5rem; font-weight: 800; line-height: 1; }
+        .macro-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+        
+        .progress-track {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-card-inner);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.4s ease, background-color 0.4s ease;
+        }
+
+        /* --- Day Selector Nav --- */
+        .day-nav {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            -ms-overflow-style: none;  
+            scrollbar-width: none;  
+        }
+        
+        .day-nav::-webkit-scrollbar { display: none; }
+
+        .day-pill {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            color: var(--text-muted);
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .day-pill.active {
+            background: var(--accent-green-dim);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        /* --- Diet Matrix List --- */
+        .diet-wrapper { flex-grow: 1; margin-bottom: 20px; }
+
+        .empty-state {
+            border: 1px dashed var(--border-dim);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .meal-block {
+            background: var(--bg-card-inner);
+            border: 1px solid var(--border-dim);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .accent-bar {
+            position: absolute;
+            left: 0; top: 12px; bottom: 12px;
+            width: 4px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .cat-breakfast .accent-bar { background: var(--accent-yellow); }
+        .cat-lunch .accent-bar { background: var(--accent-blue); }
+        .cat-dinner .accent-bar { background: var(--accent-purple); }
+        .cat-snack .accent-bar { background: var(--accent-green); }
+
+        .meal-info { display: flex; flex-direction: column; gap: 4px; padding-left: 10px; }
+        .meal-title { font-size: 0.95rem; font-weight: 700; color: var(--text-main); }
+        .meal-macros { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; display: flex; gap: 10px; }
+        .meal-macros span { color: var(--text-main); }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 5px;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+        }
+
+        .delete-btn:hover { color: var(--accent-red); }
+
+        /* --- Inputs --- */
+        .form-row { display: flex; gap: 10px; margin-bottom: 10px; }
+        
+        .custom-input {
+            background: var(--bg-card-inner);
+            border: 1px solid transparent;
+            color: var(--text-main);
+            padding: 12px;
+            border-radius: 14px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+            flex: 1;
+            width: 100%;
+        }
+
+        .custom-input:focus { border-color: var(--accent-green); }
+
+        .btn-add {
+            background: var(--accent-green);
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 14px;
+            padding: 12px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            width: 100%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            transition: filter 0.2s, transform 0.1s;
+        }
+
+        .btn-add:active { transform: scale(0.98); }
+        .btn-add:hover { filter: brightness(1.1); }
+
+        .btn-config {
+            background: var(--border-dim);
+            color: var(--text-main);
+            border: none;
+            border-radius: 10px;
+            padding: 6px 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-config:hover { background: var(--text-muted); color: var(--bg-dark); }
+
+        /* --- Settings Overlay --- */
+        .config-overlay {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 20px;
+            z-index: 10;
+        }
+
+        /* --- App Drawer & Nav (Standard) --- */
+        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 60px); max-width: 380px; background: #0d0920; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 30px; display: flex; justify-content: space-around; align-items: center; padding: 5px 10px; z-index: 100; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 30%; padding: 8px 0; color: #6b7280; text-decoration: none; font-size: 0.65rem; font-weight: 600; border-radius: 20px; transition: all 0.3s ease; cursor: pointer; }
+        .nav-item i { font-size: 1.1rem; }
+        .nav-item:hover:not(.active) { color: #a78bfa; }
+        .nav-item.active { background: #6DF2B5; color: #070414; box-shadow: 0 0 15px rgba(109, 242, 181, 0.2); }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .bottom-sheet { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%); width: 100%; max-width: 480px; max-height: 85vh; background: var(--bg-card); border-top: 1px solid var(--border-dim); border-radius: 32px 32px 0 0; padding: 20px 20px 0 20px; z-index: 1000; transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1); display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
+        .bottom-sheet.active { transform: translateX(-50%) translateY(0); }
+        .drag-handle { width: 40px; height: 5px; background: var(--border-dim); border-radius: 5px; margin: 0 auto 20px auto; }
+        .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .sheet-title { font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+        .close-btn { background: var(--bg-card-inner); border: 1px solid var(--border-dim); border-radius: 50%; width: 32px; height: 32px; color: var(--text-muted); cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s; }
+        .close-btn:hover { color: var(--text-main); background: #2a2444; }
+        .sheet-content { overflow-y: auto; padding-bottom: 40px; -ms-overflow-style: none; scrollbar-width: none; }
+        .sheet-content::-webkit-scrollbar { display: none; }
+        .section-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin: 15px 0 15px 5px; }
+        .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px 10px; margin-bottom: 25px; }
+        .app-icon-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; text-decoration: none; cursor: pointer; transition: transform 0.1s; }
+        .app-icon-btn:active { transform: scale(0.92); }
+        .app-icon-circle { width: 56px; height: 56px; background: var(--bg-card-inner); border: 1px solid var(--border-dim); border-radius: 18px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; transition: border-color 0.3s; }
+        .app-icon-btn:hover .app-icon-circle { border-color: rgba(255,255,255,0.2); }
+        .app-icon-label { font-size: 0.65rem; font-weight: 600; text-align: center; color: var(--text-muted); }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <div class="header-left">
+            <button class="icon-btn" onclick="window.location.href='index.html'"><i class="fa-solid fa-arrow-left"></i></button>
+            <h1>Nutrition Matrix</h1>
+        </div>
+    </header>
+
+    <div class="card" style="position: relative;">
+        
+        <div id="macro-display">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <span class="section-title" style="margin:0; padding:0;">Daily Targets</span>
+                <button class="btn-config" onclick="toggleConfig(true)"><i class="fa-solid fa-gear"></i> Set Macros</button>
+            </div>
+            
+            <div class="macro-grid">
+                <div class="macro-cell">
+                    <div class="macro-header">
+                        <span class="macro-val" id="disp-cals">0</span>
+                        <span class="macro-label" id="target-cals">/ 0 kcal</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="bar-cals" style="background: var(--accent-yellow);"></div>
+                    </div>
+                </div>
+                <div class="macro-cell">
+                    <div class="macro-header">
+                        <span class="macro-val" id="disp-protein">0g</span>
+                        <span class="macro-label" id="target-protein">/ 0g</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="bar-protein" style="background: var(--accent-blue);"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="config-overlay" id="macro-config">
+            <span class="section-title" style="margin:0; padding:0; display:block; margin-bottom: 15px;">Configure Targets</span>
+            <div class="form-row">
+                <input type="number" id="cfg-cal" class="custom-input" placeholder="Target Calories (kcal)">
+                <input type="number" id="cfg-pro" class="custom-input" placeholder="Target Protein (g)">
+            </div>
+            <button class="btn-add" onclick="saveTargets()">Save Targets</button>
+            <button class="btn-config" style="width: 100%; margin-top: 10px; padding: 12px; background: transparent; border: 1px dashed var(--border-dim);" onclick="toggleConfig(false)">Cancel</button>
+        </div>
+    </div>
+
+    <div class="day-nav" id="day-nav-container">
+        <div class="day-pill" onclick="selectDay('MON')">MON</div>
+        <div class="day-pill" onclick="selectDay('TUE')">TUE</div>
+        <div class="day-pill" onclick="selectDay('WED')">WED</div>
+        <div class="day-pill" onclick="selectDay('THU')">THU</div>
+        <div class="day-pill" onclick="selectDay('FRI')">FRI</div>
+        <div class="day-pill" onclick="selectDay('SAT')">SAT</div>
+        <div class="day-pill" onclick="selectDay('SUN')">SUN</div>
+    </div>
+
+    <div class="diet-wrapper">
+        <div id="meal-list-container">
+            </div>
+    </div>
+
+    <div class="card">
+        <div class="section-title" style="margin-bottom: 15px;"><i class="fa-solid fa-utensils"></i> Add to Plan</div>
+        
+        <input type="text" id="meal-name" class="custom-input" style="margin-bottom: 10px;" placeholder="Meal Name (e.g. Chicken & Rice)">
+        
+        <div class="form-row">
+            <input type="number" id="meal-cal" class="custom-input" placeholder="Calories">
+            <input type="number" id="meal-pro" class="custom-input" placeholder="Protein (g)">
+        </div>
+
+        <select id="meal-cat" class="custom-input" style="color: var(--text-muted); margin-bottom: 15px;">
+            <option value="breakfast">Breakfast</option>
+            <option value="lunch">Lunch</option>
+            <option value="dinner">Dinner</option>
+            <option value="snack">Snack / Shake</option>
+        </select>
+
+        <button class="btn-add" onclick="addMeal()">
+            <i class="fa-solid fa-plus"></i> Lock Meal
+        </button>
+    </div>
+
+</div>
+
+<div class="bottom-nav">
+    <a href="index.html" class="nav-item">
+        <i class="fa-solid fa-grip"></i>
+        <span>Dashboard</span>
+    </a>
+    <div class="nav-item active" onclick="toggleActivityModal()">
+        <i class="fa-regular fa-rectangle-list"></i>
+        <span>Activity</span>
+    </div>
+    <a href="analyzer.html" class="nav-item">
+        <i class="fa-solid fa-chart-column"></i>
+        <span>Analytics</span>
+    </a>
+</div>
+
+<div class="modal-overlay" id="activity-overlay" onclick="toggleActivityModal()"></div>
+<div class="bottom-sheet" id="activity-sheet">
+    <div class="drag-handle"></div>
+    <div class="sheet-header">
+        <h2 class="sheet-title">System Modules</h2>
+        <button class="close-btn" onclick="toggleActivityModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div class="sheet-content">
+        <div class="section-label">PROTOCOLS</div>
+        <div class="app-grid">
+            <a href="todo.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-solid fa-square-check"></i></div>
+                <span class="app-icon-label">Tasks</span>
+            </a>
+            <a href="rituals.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #eab308;"><i class="fa-regular fa-sun"></i></div>
+                <span class="app-icon-label">Rituals</span>
+            </a>
+            <a href="habits.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-regular fa-calendar-check"></i></div>
+                <span class="app-icon-label">Habits</span>
+            </a>
+        </div>
+        <div class="section-label">TIME & MACRO</div>
+        <div class="app-grid">
+            <a href="schedule.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #ffffff;"><i class="fa-regular fa-calendar"></i></div>
+                <span class="app-icon-label">Schedule</span>
+            </a>
+            <a href="weekly.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-border-all"></i></div>
+                <span class="app-icon-label">Matrix</span>
+            </a>
+        </div>
+        <div class="section-label">BIO & WEALTH</div>
+        <div class="app-grid">
+            <a href="health.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-heart-pulse"></i></div>
+                <span class="app-icon-label">Health</span>
+            </a>
+            <a href="sleep.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-moon"></i></div>
+                <span class="app-icon-label">Sleep</span>
+            </a>
+            <a href="budget.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-wallet"></i></div>
+                <span class="app-icon-label">Finance</span>
+            </a>
+            <a href="diet.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: var(--accent-green);"><i class="fa-solid fa-apple-whole"></i></div>
+                <span class="app-icon-label">Diet</span>
+            </a>
+        </div>
+        <div class="section-label">DATA & KNOWLEDGE</div>
+        <div class="app-grid">
+            <a href="academics.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-graduation-cap"></i></div>
+                <span class="app-icon-label">Academics</span>
+            </a>
+            <a href="library.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-book"></i></div>
+                <span class="app-icon-label">Library</span>
+            </a>
+            <a href="analyzer.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: var(--accent-green);"><i class="fa-solid fa-chart-line"></i></div>
+                <span class="app-icon-label">Analytics</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- Data Management ---
+    const daysArr = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    let currentDay = daysArr[new Date().getDay()]; 
+    let dietData = JSON.parse(localStorage.getItem('system_os_diet')) || [];
+    let targets = JSON.parse(localStorage.getItem('system_os_diet_targets')) || { cals: 0, pro: 0 };
+
+    document.getElementById('meal-cat').addEventListener('change', function() {
+        this.style.color = 'var(--text-main)';
+    });
+
+    // --- Macro Config Logic ---
+    function toggleConfig(show) {
+        document.getElementById('macro-config').style.display = show ? 'block' : 'none';
+        if (show) {
+            document.getElementById('cfg-cal').value = targets.cals || '';
+            document.getElementById('cfg-pro').value = targets.pro || '';
+        }
+    }
+
+    function saveTargets() {
+        const c = parseInt(document.getElementById('cfg-cal').value);
+        const p = parseInt(document.getElementById('cfg-pro').value);
+        targets = { cals: !isNaN(c) ? c : 0, pro: !isNaN(p) ? p : 0 };
+        localStorage.setItem('system_os_diet_targets', JSON.stringify(targets));
+        toggleConfig(false);
+        renderTimeline();
+    }
+
+    // --- Day Selection ---
+    function selectDay(dayString) {
+        currentDay = dayString;
+        const pills = document.querySelectorAll('.day-pill');
+        pills.forEach(pill => {
+            if(pill.textContent === dayString) {
+                pill.classList.add('active');
+                pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            } else {
+                pill.classList.remove('active');
+            }
+        });
+        renderTimeline();
+    }
+
+    // --- Diet Logic ---
+    function addMeal() {
+        const name = document.getElementById('meal-name').value.trim();
+        const cals = parseInt(document.getElementById('meal-cal').value);
+        const pro = parseInt(document.getElementById('meal-pro').value);
+        const cat = document.getElementById('meal-cat').value;
+
+        if (!name || isNaN(cals)) {
+            alert('Please enter a meal name and calories.');
+            return;
+        }
+
+        dietData.push({
+            id: Date.now().toString(),
+            day: currentDay,
+            name: name,
+            calories: cals,
+            protein: isNaN(pro) ? 0 : pro,
+            category: cat
+        });
+
+        localStorage.setItem('system_os_diet', JSON.stringify(dietData));
+
+        document.getElementById('meal-name').value = '';
+        document.getElementById('meal-cal').value = '';
+        document.getElementById('meal-pro').value = '';
+        renderTimeline();
+    }
+
+    function deleteMeal(id) {
+        dietData = dietData.filter(m => m.id !== id);
+        localStorage.setItem('system_os_diet', JSON.stringify(dietData));
+        renderTimeline();
+    }
+
+    function renderTimeline() {
+        const container = document.getElementById('meal-list-container');
+        container.innerHTML = '';
+
+        let dayMeals = dietData.filter(m => m.day === currentDay);
+        
+        // Define sorting order
+        const sortOrder = { 'breakfast': 1, 'lunch': 2, 'snack': 3, 'dinner': 4 };
+        dayMeals.sort((a, b) => sortOrder[a.category] - sortOrder[b.category]);
+
+        let totalCals = 0;
+        let totalPro = 0;
+
+        if (dayMeals.length === 0) {
+            container.innerHTML = `<div class="empty-state">No meals planned for ${currentDay}.</div>`;
+        } else {
+            dayMeals.forEach(m => {
+                totalCals += m.calories;
+                totalPro += m.protein;
+
+                container.innerHTML += `
+                    <div class="meal-block cat-${m.category}">
+                        <div class="accent-bar"></div>
+                        <div class="meal-info">
+                            <div class="meal-title">${m.name}</div>
+                            <div class="meal-macros">
+                                <div>Cals: <span>${m.calories}</span></div>
+                                <div>Protein: <span>${m.protein}g</span></div>
+                            </div>
+                        </div>
+                        <button class="delete-btn" onclick="deleteMeal('${m.id}')"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                `;
+            });
+        }
+
+        // Update Macro UI
+        document.getElementById('disp-cals').textContent = totalCals;
+        document.getElementById('target-cals').textContent = `/ ${targets.cals} kcal`;
+        
+        document.getElementById('disp-protein').textContent = `${totalPro}g`;
+        document.getElementById('target-protein').textContent = `/ ${targets.pro}g`;
+
+        // Progress Bars
+        const barCals = document.getElementById('bar-cals');
+        if (targets.cals > 0) {
+            let pct = (totalCals / targets.cals) * 100;
+            barCals.style.width = `${Math.min(pct, 100)}%`;
+            barCals.style.backgroundColor = pct > 100 ? 'var(--accent-red)' : 'var(--accent-yellow)';
+        } else {
+            barCals.style.width = '0%';
+        }
+
+        const barPro = document.getElementById('bar-protein');
+        if (targets.pro > 0) {
+            let pct = (totalPro / targets.pro) * 100;
+            barPro.style.width = `${Math.min(pct, 100)}%`;
+            barPro.style.backgroundColor = pct > 100 ? 'var(--accent-green)' : 'var(--accent-blue)';
+        } else {
+            barPro.style.width = '0%';
+        }
+    }
+
+    // --- App Drawer Modal ---
+    function toggleActivityModal() {
+        const overlay = document.getElementById('activity-overlay');
+        const sheet = document.getElementById('activity-sheet');
+        overlay.classList.toggle('active');
+        sheet.classList.toggle('active');
+        document.body.style.overflow = sheet.classList.contains('active') ? 'hidden' : '';
+    }
+
+    // Initialize
+    selectDay(currentDay);
+
+</script>
+</body>
+</html>

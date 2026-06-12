@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rituals Hub</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-dark: #070414;
+            --bg-card: #141125;
+            --bg-card-inner: #1e1936;
+            --text-main: #ffffff;
+            --text-muted: #9ca3af;
+            --accent-green: #69f0ae;
+            --accent-green-dim: rgba(105, 240, 174, 0.15);
+            --border-dim: #2a2444;
+            --c-morning: #fbbf24;
+            --c-afternoon: #38bdf8;
+            --c-night: #a855f7;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-dark); color: var(--text-main); display: flex; justify-content: center; min-height: 100vh; }
+        .app-container { width: 100%; max-width: 480px; padding: 20px 20px 100px 20px; position: relative; }
+
+        /* --- Header & Form --- */
+        header { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; padding-top: 10px; }
+        .icon-btn { background: none; border: none; color: var(--text-muted); font-size: 1.25rem; cursor: pointer; }
+        h1 { font-size: 1.25rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+
+        .form-card { background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 24px; padding: 20px; margin-bottom: 25px; }
+        .custom-input { background: var(--bg-card-inner); border: 1px solid transparent; color: var(--text-main); padding: 12px; border-radius: 12px; font-size: 0.9rem; margin-bottom: 8px; width: 100%; outline:none; }
+        .custom-input:focus { border-color: var(--accent-green); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .btn-add { background: var(--accent-green); color: var(--bg-dark); border: none; border-radius: 12px; padding: 12px; font-weight: 800; cursor: pointer; width: 100%; transition: 0.2s; }
+        .btn-add:hover { filter: brightness(1.1); }
+
+        /* --- Ritual Blocks --- */
+        .block-card { background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 24px; padding: 20px; margin-bottom: 20px; transition: 0.3s; }
+        .block-card.active-arc { border-color: var(--accent-green); }
+        .block-title { font-size: 1rem; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        
+        .ritual-item { background: var(--bg-card-inner); border-radius: 14px; padding: 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+        .ritual-left { display: flex; align-items: center; gap: 12px; }
+        .ritual-time { font-size: 0.75rem; font-weight: 800; color: var(--accent-green); }
+        .ritual-text { font-size: 0.9rem; font-weight: 600; }
+        .delete-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; }
+        .delete-btn:hover { color: #ef4444; }
+
+        /* --- Nav Bar & Drawer --- */
+        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 60px); max-width: 380px; background: #0d0920; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 30px; display: flex; justify-content: space-around; align-items: center; padding: 5px 10px; z-index: 100; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 30%; padding: 8px 0; color: #6b7280; text-decoration: none; font-size: 0.65rem; font-weight: 600; border-radius: 20px; transition: 0.3s; cursor: pointer; }
+        .nav-item.active { background: #6DF2B5; color: #070414; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 999; opacity: 0; visibility: hidden; transition: 0.3s; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .bottom-sheet { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%); width: 100%; max-width: 480px; max-height: 85vh; background: var(--bg-card); border-radius: 32px 32px 0 0; padding: 20px; z-index: 1000; transition: 0.4s; }
+        .bottom-sheet.active { transform: translateX(-50%) translateY(0); }
+        .sheet-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .close-btn { background: var(--bg-card-inner); border: none; color: white; padding: 5px 10px; border-radius: 8px; cursor: pointer; }
+        .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+        .app-icon-btn { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: white; font-size: 0.6rem; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <button class="icon-btn" onclick="window.location.href='index.html'"><i class="fa-solid fa-arrow-left"></i></button>
+        <h1>Rituals Hub</h1>
+    </header>
+
+    <div class="form-card">
+        <input type="text" id="r-text" class="custom-input" placeholder="Core Ritual Name...">
+        <div class="form-row">
+            <input type="time" id="r-time" class="custom-input">
+            <select id="r-block" class="custom-input">
+                <option value="morning">Morning</option>
+                <option value="afternoon">Afternoon</option>
+                <option value="night">Night</option>
+            </select>
+        </div>
+        <button class="btn-add" onclick="addRitual()">ADD RITUAL</button>
+    </div>
+
+    <div id="ritual-container"></div>
+</div>
+
+<div class="bottom-nav">
+    <a href="index.html" class="nav-item"><i class="fa-solid fa-grip"></i><span>Dashboard</span></a>
+    <div class="nav-item active" onclick="toggleActivityModal()"><i class="fa-regular fa-rectangle-list"></i><span>Activity</span></div>
+    <a href="analyzer.html" class="nav-item"><i class="fa-solid fa-chart-column"></i><span>Analytics</span></a>
+</div>
+
+<div class="modal-overlay" id="activity-overlay" onclick="toggleActivityModal()"></div>
+<div class="bottom-sheet" id="activity-sheet">
+    <div class="sheet-header"><h2>MODULES</h2><button class="close-btn" onclick="toggleActivityModal()">Close</button></div>
+    <div class="app-grid">
+        <a href="todo.html" class="app-icon-btn"><i class="fa-solid fa-square-check"></i>Tasks</a>
+        <a href="rituals.html" class="app-icon-btn"><i class="fa-regular fa-sun"></i>Rituals</a>
+        <a href="habits.html" class="app-icon-btn"><i class="fa-regular fa-calendar-check"></i>Habits</a>
+        <a href="schedule.html" class="app-icon-btn"><i class="fa-regular fa-calendar"></i>Schedule</a>
+    </div>
+</div>
+
+<script>
+    let rituals = JSON.parse(localStorage.getItem('system_os_rituals')) || [];
+
+    function addRitual() {
+        const text = document.getElementById('r-text').value;
+        const time = document.getElementById('r-time').value;
+        const block = document.getElementById('r-block').value;
+        if(!text || !time) return;
+        rituals.push({ id: Date.now().toString(), text, time, block });
+        localStorage.setItem('system_os_rituals', JSON.stringify(rituals));
+        render();
+    }
+
+    function deleteRitual(id) {
+        rituals = rituals.filter(r => r.id !== id);
+        localStorage.setItem('system_os_rituals', JSON.stringify(rituals));
+        render();
+    }
+
+    function formatTime12h(t) {
+        let [h, m] = t.split(':');
+        let ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
+        return `${h}:${m} ${ampm}`;
+    }
+
+    function toggleActivityModal() {
+        const overlay = document.getElementById('activity-overlay');
+        const sheet = document.getElementById('activity-sheet');
+        overlay.classList.toggle('active');
+        sheet.classList.toggle('active');
+    }
+
+    function render() {
+        const container = document.getElementById('ritual-container');
+        container.innerHTML = '';
+        ['morning', 'afternoon', 'night'].forEach(b => {
+            let filtered = rituals.filter(r => r.block === b).sort((a,b) => a.time.localeCompare(b.time));
+            container.innerHTML += `
+                <div class="block-card">
+                    <div class="block-title">${b.toUpperCase()} ARC</div>
+                    ${filtered.map(r => `
+                        <div class="ritual-item">
+                            <div class="ritual-left">
+                                <span class="ritual-time">${formatTime12h(r.time)}</span>
+                                <span class="ritual-text">${r.text}</span>
+                            </div>
+                            <button class="delete-btn" onclick="deleteRitual('${r.id}')"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        });
+    }
+    render();
+</script>
+</body>
+</html>

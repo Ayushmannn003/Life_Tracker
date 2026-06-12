@@ -2,392 +2,791 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>System OS | Command Center</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,600;0,700;0,900;1,400&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: { 
-                        bgDark: '#020202', accentTeal: '#66FCF1', accentBlue: '#3B82F6', 
-                        accentPurple: '#A855F7', accentRed: '#FF4C4C', accentYellow: '#FBBF24',
-                        accentGreen: '#00E676', cardBg: '#080A0E' 
-                    }
-                }
-            }
-        }
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYSTEM OS - Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* STRICT MOBILE LOCK */
-        body, html { 
-            background-color: #000; color: #C5C6C7; font-family: 'Inter', sans-serif; 
-            margin: 0; padding: 0; height: 100dvh; overflow: hidden; -webkit-font-smoothing: antialiased;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-dark: #070414;
+            --bg-card: #141125;
+            --bg-card-inner: #1e1936;
+            --text-main: #ffffff;
+            --text-muted: #9ca3af;
+            --accent-green: #69f0ae;
+            --accent-green-dim: rgba(105, 240, 174, 0.15);
+            --accent-red: #ef4444;
+            --accent-blue: #3b82f6;
+            --accent-purple: #a855f7;
+            --accent-yellow: #eab308;
+            --accent-cyan: #06b6d4;
+            --border-dim: #2a2444;
         }
-        .mobile-viewport { 
-            width: 100%; max-width: 430px; margin: 0 auto; position: relative; 
-            background-color: #020202; height: 100%; display: flex; 
-            flex-direction: column; box-shadow: 0 0 50px rgba(0,0,0,0.8);
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
-        main { padding: 1.25rem; flex: 1; overflow-y: auto; padding-bottom: 7rem; display: flex; flex-direction: column; gap: 0.75rem; }
-        ::-webkit-scrollbar { display: none; }
-        * { -ms-overflow-style: none; scrollbar-width: none; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            padding: 20px 20px 100px 20px;
+            overflow-x: hidden;
+            position: relative;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        /* --- Live Header --- */
+        .datetime-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-top: 10px;
+        }
+
+        .live-time {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .live-date {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- Cards Base --- */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .link-text {
+            color: var(--accent-green);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            padding: 15px 0;
+            font-style: italic;
+        }
+
+        /* --- 1. Quote Block --- */
+        .quote-text {
+            font-size: 0.95rem;
+            font-style: italic;
+            font-weight: 600;
+            line-height: 1.5;
+            color: var(--text-main);
+            text-align: center;
+        }
+
+        /* --- 2. Budget Block --- */
+        .budget-val {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
         
-        /* IMAGE CARDS WITH DEEP GLASS */
-        .img-card {
-            background-color: #080A0E; border-right: 1px solid rgba(255,255,255,0.05);
-            border-bottom: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem;
-            position: relative; overflow: hidden; cursor: pointer;
-            transition: transform 0.15s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            flex-shrink: 0;
+        .budget-sub {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-bottom: 12px;
         }
-        .img-card:active { transform: scale(0.97); }
 
-        .bg-layer {
-            position: absolute; inset: 0; z-index: 0; background-size: cover; 
-            background-position: center; opacity: 0.35; mix-blend-mode: luminosity;
-            filter: grayscale(80%) contrast(1.2); transition: opacity 0.3s;
+        .progress-track {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-card-inner);
+            border-radius: 10px;
+            overflow: hidden;
         }
-        .img-card:hover .bg-layer { opacity: 0.45; }
-        
-        .gradient-mask-full { position: absolute; inset: 0; z-index: 1; background: linear-gradient(to right, #080A0E 30%, rgba(8,10,14,0.1) 100%); }
-        .gradient-mask-grid { position: absolute; inset: 0; z-index: 1; background: linear-gradient(to bottom, #080A0E 20%, rgba(8,10,14,0.4) 100%); }
-        .gradient-mask-fade { position: absolute; inset: 0; z-index: 1; background: linear-gradient(to top, #080A0E 10%, rgba(8,10,14,0.7) 100%); }
 
-        .content-layer { position: relative; z-index: 10; padding: 1.25rem; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
-
-        /* ACCENT BORDERS */
-        .accent-yellow { border-top: 2px solid #FBBF24; border-left: 2px solid #FBBF24; }
-        .accent-teal { border-top: 2px solid #66FCF1; border-left: 2px solid #66FCF1; }
-        .accent-blue { border-top: 2px solid #3B82F6; border-left: 2px solid #3B82F6; }
-        .accent-purple { border-top: 2px solid #A855F7; border-left: 2px solid #A855F7; }
-        .accent-red { border-top: 2px solid #FF4C4C; border-left: 2px solid #FF4C4C; }
-        .accent-white { border-top: 2px solid #FFFFFF; border-left: 2px solid #FFFFFF; }
-        .accent-green { border-top: 2px solid #00E676; border-left: 2px solid #00E676; }
-
-        .section-divider { text-align: center; padding: 0.75rem 0 0.25rem 0; opacity: 0.6; }
-        .section-divider span { font-size: 9px; font-weight: 900; color: #4B5563; text-transform: uppercase; letter-spacing: 0.3em; }
-
-        /* INLINE LISTS (For Tasks/Rituals on Dashboard) */
-        .inline-list-container { margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.4rem; }
-        .inline-item { 
-            display: flex; justify-content: space-between; align-items: center; 
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(10px);
-            padding: 0.5rem 0.75rem; border-radius: 0.75rem; border: 1px solid rgba(255,255,255,0.05); 
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-green);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.4s ease, background-color 0.4s ease;
         }
+
+        .over-budget .progress-fill { background: var(--accent-red); }
+        .over-budget .budget-val { color: var(--accent-red); }
+
+        /* --- Interactive Lists (Rituals & To-Do) --- */
+        .list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .list-item {
+            background: var(--bg-card-inner);
+            border-radius: 14px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .check-circle {
+            width: 22px;
+            height: 22px;
+            min-width: 22px;
+            border-radius: 50%;
+            border: 2px solid var(--border-dim);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .list-item.completed .check-circle {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+            color: var(--bg-dark);
+        }
+
+        .item-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .item-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .list-item.completed .item-text {
+            color: var(--text-muted);
+            text-decoration: line-through;
+        }
+
+        .item-meta {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        /* --- Matrix, Diet & Schedule Blocks --- */
+        .time-block {
+            background: var(--bg-card-inner);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 10px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            border: 1px solid transparent;
+            overflow: hidden;
+        }
+
+        .time-block:last-child { margin-bottom: 0; }
+
+        .accent-bar {
+            position: absolute;
+            left: 0; top: 12px; bottom: 12px;
+            width: 4px;
+            border-radius: 0 4px 4px 0;
+            background: var(--text-muted);
+        }
+
+        /* Shared Accents for Matrix & Diet */
+        .cat-blue .accent-bar { background: var(--accent-blue); }
+        .cat-cyan .accent-bar { background: var(--accent-cyan); }
+        .cat-yellow .accent-bar { background: var(--accent-yellow); }
+        .cat-purple .accent-bar { background: var(--accent-purple); }
+
+        /* Schedule Priority Colors */
+        .pri-high .accent-bar { background: var(--accent-red); }
+        .pri-med .accent-bar { background: var(--accent-yellow); }
+        .pri-low .accent-bar { background: var(--accent-blue); }
+
+        .block-title { font-size: 0.95rem; font-weight: 700; padding-left: 10px;}
+        .block-time { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; padding-left: 10px; }
+
+        /* --- Shared Bottom Nav & App Drawer --- */
+        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 60px); max-width: 380px; background: #0d0920; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 30px; display: flex; justify-content: space-around; align-items: center; padding: 5px 10px; z-index: 100; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 30%; padding: 8px 0; color: #6b7280; text-decoration: none; font-size: 0.65rem; font-weight: 600; border-radius: 20px; transition: all 0.3s ease; cursor: pointer; }
+        .nav-item i { font-size: 1.1rem; }
+        .nav-item:hover:not(.active) { color: #a78bfa; }
+        .nav-item.active { background: #6DF2B5; color: #070414; box-shadow: 0 0 15px rgba(109, 242, 181, 0.2); }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .bottom-sheet { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%); width: 100%; max-width: 480px; max-height: 85vh; background: var(--bg-card); border-top: 1px solid var(--border-dim); border-radius: 32px 32px 0 0; padding: 20px 20px 0 20px; z-index: 1000; transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1); display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
+        .bottom-sheet.active { transform: translateX(-50%) translateY(0); }
+        .drag-handle { width: 40px; height: 5px; background: var(--border-dim); border-radius: 5px; margin: 0 auto 20px auto; }
+        .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .sheet-title { font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+        .close-btn { background: var(--bg-card-inner); border: 1px solid var(--border-dim); border-radius: 50%; width: 32px; height: 32px; color: var(--text-muted); cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s; }
+        .close-btn:hover { color: var(--text-main); background: #2a2444; }
+        .sheet-content { overflow-y: auto; padding-bottom: 40px; -ms-overflow-style: none; scrollbar-width: none; }
+        .sheet-content::-webkit-scrollbar { display: none; }
+        .section-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin: 15px 0 15px 5px; }
+        .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px 10px; margin-bottom: 25px; }
+        .app-icon-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; text-decoration: none; cursor: pointer; transition: transform 0.1s; }
+        .app-icon-btn:active { transform: scale(0.92); }
+        .app-icon-circle { width: 56px; height: 56px; background: var(--bg-card-inner); border: 1px solid var(--border-dim); border-radius: 18px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; transition: border-color 0.3s; }
+        .app-icon-btn:hover .app-icon-circle { border-color: rgba(255,255,255,0.2); }
+        .app-icon-label { font-size: 0.65rem; font-weight: 600; text-align: center; color: var(--text-muted); }
+
     </style>
 </head>
 <body>
 
-    <div class="mobile-viewport">
-        <header class="p-6 pb-2 flex justify-between items-center z-50 bg-[#020202]/90 backdrop-blur-xl shrink-0">
-            <div class="flex items-center gap-4">
-                <i id="menu-btn" class="ph ph-list text-2xl text-white cursor-pointer active:scale-90 transition"></i>
-                <h1 class="text-xl font-black text-white tracking-widest uppercase">System OS</h1>
-            </div>
-            <div class="text-[10px] font-black text-accentTeal uppercase tracking-widest bg-accentTeal/10 border border-accentTeal/20 px-3 py-1.5 rounded-full flex items-center gap-2">
-                <div class="w-1.5 h-1.5 rounded-full bg-accentTeal shadow-[0_0_5px_#66FCF1] animate-pulse"></div> <span id="sys-clock">--:--</span>
-            </div>
-        </header>
+<div class="app-container">
 
-        <main class="pt-2">
-
-            <div class="grid grid-cols-1 gap-3">
-                <div class="img-card accent-yellow min-h-[80px]" onclick="window.location.href='health.html'">
-                    <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=600&auto=format&fit=crop'); opacity: 0.15;"></div>
-                    <div class="gradient-mask-full"></div>
-                    <div class="content-layer justify-center">
-                        <div class="flex items-center gap-2 mb-1.5">
-                            <i class="ph-fill ph-quotes text-accentYellow text-sm"></i>
-                            <h2 class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Protocol Intention</h2>
-                        </div>
-                        <p class="text-sm font-bold text-gray-200 italic tracking-wide" id="daily-intention">Loading...</p>
-                    </div>
-                </div>
-
-                <div class="img-card accent-red min-h-[90px]" onclick="window.location.href='budget.html'">
-                    <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=600&auto=format&fit=crop');"></div>
-                    <div class="gradient-mask-full"></div>
-                    <div class="content-layer flex flex-row justify-between items-center">
-                        <div>
-                            <div class="flex items-center gap-2 mb-1.5">
-                                <i class="ph-fill ph-wallet text-accentRed text-sm"></i>
-                                <h2 class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Capital Burn</h2>
-                            </div>
-                            <h1 class="text-2xl font-black text-white" id="dash-budget-val">₹0</h1>
-                        </div>
-                        <span class="text-[9px] font-black text-accentRed bg-accentRed/10 px-2 py-1 rounded border border-accentRed/20">Live</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section-divider"><span>Active Protocols</span></div>
-
-            <div class="img-card accent-purple" onclick="window.location.href='ritual.html'">
-                <div class="bg-layer" id="ritual-bg" style="background-image: url('https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?q=80&w=600&auto=format&fit=crop');"></div>
-                <div class="gradient-mask-fade"></div>
-                <div class="content-layer">
-                    <div class="flex justify-between items-start">
-                        <div class="flex items-center gap-2">
-                            <i id="ritual-icon" class="ph-fill ph-sun-horizon text-accentPurple text-xl"></i>
-                            <h2 id="ritual-title" class="text-sm font-black text-white uppercase tracking-widest">Protocol</h2>
-                        </div>
-                        <span class="text-[9px] font-black text-accentPurple bg-accentPurple/10 px-2 py-1 rounded border border-accentPurple/20" id="ritual-badge">0 Active</span>
-                    </div>
-                    <div class="inline-list-container" id="inline-rituals"></div>
-                </div>
-            </div>
-
-            <div class="img-card accent-teal" onclick="window.location.href='todo.html'">
-                <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1555680202-c86f0e12f086?q=80&w=600&auto=format&fit=crop');"></div>
-                <div class="gradient-mask-fade"></div>
-                <div class="content-layer">
-                    <div class="flex justify-between items-start">
-                        <div class="flex items-center gap-2">
-                            <i class="ph-fill ph-crosshair text-accentTeal text-xl"></i>
-                            <h2 class="text-sm font-black text-white uppercase tracking-widest">Task Vectors</h2>
-                        </div>
-                        <span class="text-[9px] font-black text-accentTeal bg-accentTeal/10 px-2 py-1 rounded border border-accentTeal/20" id="task-badge">0 Pending</span>
-                    </div>
-                    <div class="inline-list-container" id="inline-tasks"></div>
-                </div>
-            </div>
-
-            <div class="section-divider"><span>Logistics & Focus</span></div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <div class="img-card accent-white h-32" onclick="window.location.href='schedule.html'">
-                    <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1506784951206-b91c06282869?q=80&w=400&auto=format&fit=crop');"></div>
-                    <div class="gradient-mask-grid"></div>
-                    <div class="content-layer flex flex-col justify-between">
-                        <i class="ph-bold ph-calendar-blank text-3xl text-white"></i>
-                        <h3 class="text-xs font-black text-white uppercase tracking-widest">Schedule</h3>
-                    </div>
-                </div>
-                <div class="img-card accent-blue h-32" onclick="window.location.href='weekly.html'">
-                    <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=400&auto=format&fit=crop'); opacity: 0.15"></div>
-                    <div class="gradient-mask-grid"></div>
-                    <div class="content-layer flex flex-col justify-between">
-                        <i class="ph-fill ph-squares-four text-3xl text-accentBlue"></i>
-                        <h3 class="text-xs font-black text-white uppercase tracking-widest">Matrix</h3>
-                    </div>
-                </div>
-                <div class="img-card accent-purple h-32" onclick="window.location.href='academics.html'">
-                    <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=400&auto=format&fit=crop');"></div>
-                    <div class="gradient-mask-grid"></div>
-                    <div class="content-layer flex flex-col justify-between">
-                        <i class="ph-fill ph-graduation-cap text-3xl text-accentPurple"></i>
-                        <h3 class="text-xs font-black text-white uppercase tracking-widest">Academic</h3>
-                    </div>
-                </div>
-                <div class="img-card accent-yellow h-32" onclick="window.location.href='focus.html'">
-                    <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=400&auto=format&fit=crop');"></div>
-                    <div class="gradient-mask-grid"></div>
-                    <div class="content-layer flex flex-col justify-between">
-                        <i class="ph-bold ph-target text-3xl text-accentYellow"></i>
-                        <h3 class="text-xs font-black text-white uppercase tracking-widest">Focus</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section-divider"><span>Biology & Yield</span></div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <div class="img-card accent-red h-32" onclick="window.location.href='health.html'">
-                    <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1571019614242-c5c5adee9f50?q=80&w=400&auto=format&fit=crop');"></div>
-                    <div class="gradient-mask-grid"></div>
-                    <div class="content-layer flex flex-col justify-between">
-                        <i class="ph-fill ph-heartbeat text-3xl text-accentRed"></i>
-                        <h3 class="text-xs font-black text-white uppercase tracking-widest">Health</h3>
-                    </div>
-                </div>
-                <div class="img-card accent-purple h-32" onclick="window.location.href='sleep.html'">
-                    <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=400&auto=format&fit=crop');"></div>
-                    <div class="gradient-mask-grid"></div>
-                    <div class="content-layer flex flex-col justify-between">
-                        <i class="ph-fill ph-moon-stars text-3xl text-accentPurple"></i>
-                        <h3 class="text-xs font-black text-white uppercase tracking-widest">Recovery</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section-divider"><span>Habit Tracking</span></div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <div class="img-card accent-teal h-32" onclick="window.location.href='regular_habits.html'">
-                    <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1504267448839-4458d601b08e?q=80&w=400&auto=format&fit=crop');"></div>
-                    <div class="gradient-mask-grid"></div>
-                    <div class="content-layer flex flex-col justify-between">
-                        <i class="ph-fill ph-infinity text-3xl text-accentTeal"></i>
-                        <h3 class="text-xs font-black text-white uppercase tracking-widest">Routines</h3>
-                    </div>
-                </div>
-                <div class="img-card accent-green h-32" onclick="window.location.href='habits.html'">
-                    <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?q=80&w=400&auto=format&fit=crop');"></div>
-                    <div class="gradient-mask-grid"></div>
-                    <div class="content-layer flex flex-col justify-between">
-                        <i class="ph-fill ph-trend-up text-3xl text-accentGreen"></i>
-                        <h3 class="text-xs font-black text-white uppercase tracking-widest">Forge</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section-divider"><span>Archives</span></div>
-
-            <div class="grid grid-cols-1 gap-3">
-                <div class="img-card accent-blue h-32" onclick="window.location.href='library.html'">
-                    <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=600&auto=format&fit=crop');"></div>
-                    <div class="gradient-mask-full"></div>
-                    <div class="content-layer flex flex-col justify-center">
-                        <i class="ph-fill ph-books text-3xl text-accentBlue mb-2"></i>
-                        <h3 class="text-sm font-black text-white uppercase tracking-widest">Media Library</h3>
-                    </div>
-                </div>
-
-                <div class="img-card accent-white h-32" onclick="window.location.href='analyzer.html'">
-                    <div class="bg-layer" style="background-image: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format&fit=crop');"></div>
-                    <div class="gradient-mask-full"></div>
-                    <div class="content-layer flex flex-col justify-center">
-                        <i class="ph-fill ph-chart-line-up text-3xl text-white mb-2"></i>
-                        <h3 class="text-sm font-black text-white uppercase tracking-widest">Analyzer Hub</h3>
-                    </div>
-                </div>
-            </div>
-
-        </main>
+    <div class="datetime-header">
+        <div class="live-time" id="live-time">00:00</div>
+        <div class="live-date" id="live-date">...</div>
+    </div>
+    
+    <div class="card">
+        <div class="quote-text" id="dash-quote">"Loading system quote..."</div>
     </div>
 
-    <div id="sidebar-injector"></div>
-    <script src="js/sidebar.js"></script>
-    <script src="js/bottom-nav.js"></script>
+    <div class="card" id="dash-budget-card" onclick="window.location.href='budget.html'" style="cursor: pointer;">
+        <div class="card-header">
+            <span class="card-title"><i class="fa-solid fa-wallet"></i> Monthly Burn Rate</span>
+        </div>
+        <div class="budget-val" id="dash-budget-val">₹0</div>
+        <div class="budget-sub" id="dash-budget-sub">Calculating metrics...</div>
+        <div class="progress-track">
+            <div class="progress-fill" id="dash-budget-bar"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title" id="dash-ritual-title"><i class="fa-solid fa-bolt"></i> Rituals</span>
+            <a href="rituals.html" class="link-text">Edit</a>
+        </div>
+        <div class="list-container" id="dash-ritual-list">
+            </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title"><i class="fa-solid fa-square-check"></i> Active Protocol</span>
+            <a href="todo.html" class="link-text">Open</a>
+        </div>
+        <div class="list-container" id="dash-task-list">
+            </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title" id="dash-matrix-title"><i class="fa-solid fa-border-all"></i> Today's Matrix</span>
+            <a href="weekly.html" class="link-text">View All</a>
+        </div>
+        <div id="dash-matrix-list">
+            </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title"><i class="fa-solid fa-apple-whole"></i> Today's Diet</span>
+            <a href="diet.html" class="link-text">Log</a>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <div style="flex:1;">
+                <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:var(--text-muted); font-weight:700; margin-bottom:4px;">
+                    <span>CALS</span> <span id="dash-diet-cals">0 / 0</span>
+                </div>
+                <div class="progress-track" style="height:4px;"><div class="progress-fill" id="dash-bar-cals" style="background:var(--accent-yellow);"></div></div>
+            </div>
+            <div style="flex:1;">
+                <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:var(--text-muted); font-weight:700; margin-bottom:4px;">
+                    <span>PRO</span> <span id="dash-diet-pro">0g / 0g</span>
+                </div>
+                <div class="progress-track" style="height:4px;"><div class="progress-fill" id="dash-bar-pro" style="background:var(--accent-blue);"></div></div>
+            </div>
+        </div>
+
+        <div class="list-container" id="dash-diet-list">
+            </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title"><i class="fa-regular fa-calendar"></i> Upcoming Events</span>
+            <a href="schedule.html" class="link-text">Full</a>
+        </div>
+        <div id="dash-schedule-list">
+            </div>
+    </div>
+
+</div>
+
+<div class="bottom-nav">
+    <a href="index.html" class="nav-item active">
+        <i class="fa-solid fa-grip"></i>
+        <span>Dashboard</span>
+    </a>
+    <div class="nav-item" onclick="toggleActivityModal()">
+        <i class="fa-regular fa-rectangle-list"></i>
+        <span>Activity</span>
+    </div>
+    <a href="analyzer.html" class="nav-item">
+        <i class="fa-solid fa-chart-column"></i>
+        <span>Analytics</span>
+    </a>
+</div>
+
+<div class="modal-overlay" id="activity-overlay" onclick="toggleActivityModal()"></div>
+<div class="bottom-sheet" id="activity-sheet">
+    <div class="drag-handle"></div>
+    <div class="sheet-header">
+        <h2 class="sheet-title">System Modules</h2>
+        <button class="close-btn" onclick="toggleActivityModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div class="sheet-content">
+        <div class="section-label">PROTOCOLS</div>
+        <div class="app-grid">
+            <a href="todo.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-solid fa-square-check"></i></div>
+                <span class="app-icon-label">Tasks</span>
+            </a>
+            <a href="rituals.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #eab308;"><i class="fa-regular fa-sun"></i></div>
+                <span class="app-icon-label">Rituals</span>
+            </a>
+            <a href="habits.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-regular fa-calendar-check"></i></div>
+                <span class="app-icon-label">Habits</span>
+            </a>
+        </div>
+        <div class="section-label">TIME & MACRO</div>
+        <div class="app-grid">
+            <a href="schedule.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #ffffff;"><i class="fa-regular fa-calendar"></i></div>
+                <span class="app-icon-label">Schedule</span>
+            </a>
+            <a href="weekly.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-border-all"></i></div>
+                <span class="app-icon-label">Matrix</span>
+            </a>
+        </div>
+        <div class="section-label">BIO & WEALTH</div>
+        <div class="app-grid">
+            <a href="health.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-heart-pulse"></i></div>
+                <span class="app-icon-label">Health</span>
+            </a>
+            <a href="sleep.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-moon"></i></div>
+                <span class="app-icon-label">Sleep</span>
+            </a>
+            <a href="budget.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-wallet"></i></div>
+                <span class="app-icon-label">Finance</span>
+            </a>
+            <a href="diet.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: var(--accent-green);"><i class="fa-solid fa-apple-whole"></i></div>
+                <span class="app-icon-label">Diet</span>
+            </a>
+        </div>
+        <div class="section-label">DATA & KNOWLEDGE</div>
+        <div class="app-grid">
+            <a href="academics.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-graduation-cap"></i></div>
+                <span class="app-icon-label">Academics</span>
+            </a>
+            <a href="library.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-book"></i></div>
+                <span class="app-icon-label">Library</span>
+            </a>
+            <a href="analyzer.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: var(--accent-green);"><i class="fa-solid fa-chart-line"></i></div>
+                <span class="app-icon-label">Analytics</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- Utility Functions ---
+    const formatCurrency = (amt) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amt);
     
-    <script>
-        // STRICT DATE FORMATTER
-        function getLocalYMD(d) {
-            const y = d.getFullYear();
-            const m = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            return `${y}-${m}-${day}`;
-        }
+    const formatTime12hr = (timeStr) => {
+        if(!timeStr) return "All Day";
+        let [h, m] = timeStr.split(':');
+        h = parseInt(h);
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12; 
+        return `${h}:${m} ${ampm}`;
+    };
 
-        function updateClock() {
-            const now = new Date();
-            let h = now.getHours();
-            let m = now.getMinutes();
-            const ampm = h >= 12 ? 'PM' : 'AM';
-            h = h % 12 || 12;
-            m = m < 10 ? '0' + m : m;
-            document.getElementById('sys-clock').innerText = `${h}:${m} ${ampm}`;
-            return now.getHours(); 
-        }
+    const getTodayDateStr = () => {
+        const d = new Date();
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    };
 
-        function getTagColor(tag) {
-            switch(tag) {
-                case 'Academic': return 'text-accentPurple';
-                case 'Project': return 'text-accentBlue';
-                case 'Life': return 'text-accentGreen';
-                default: return 'text-accentTeal';
+    const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    const currentDayStr = days[new Date().getDay()];
+
+    // --- Time Engine ---
+    function updateClock() {
+        const now = new Date();
+        let h = now.getHours();
+        let m = String(now.getMinutes()).padStart(2, '0');
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
+        document.getElementById('live-time').textContent = `${h}:${m} ${ampm}`;
+
+        const dateOpts = { weekday: 'long', day: 'numeric', month: 'long' };
+        document.getElementById('live-date').textContent = now.toLocaleDateString('en-US', dateOpts);
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // --- Block 1: Quote Sync ---
+    function syncQuote() {
+        const q = localStorage.getItem('system_os_quote') || '"Success is the sum of small efforts, repeated day in and day out."';
+        document.getElementById('dash-quote').textContent = q;
+    }
+
+    // --- Block 2: Budget Sync ---
+    function syncBudget() {
+        const ledger = JSON.parse(localStorage.getItem('system_os_finance_ledger')) || [];
+        const targets = JSON.parse(localStorage.getItem('system_os_finance_targets')) || { monthlyBudget: 0 };
+        
+        const now = new Date();
+        let monthlySpend = 0;
+
+        ledger.forEach(t => {
+            const d = new Date(t.date);
+            if (d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear() && t.type === 'expense') {
+                monthlySpend += t.amount;
             }
-        }
+        });
 
-        // --- MASTER SYNC ENGINE ---
-        function syncDashboard() {
-            try {
-                const todayStr = getLocalYMD(new Date());
+        document.getElementById('dash-budget-val').textContent = formatCurrency(monthlySpend);
 
-                // 1. Fetch Latest Data
-                const rawTodos = localStorage.getItem('sys_todos');
-                const rawRituals = localStorage.getItem('sys_rituals');
-                const rawExpenses = localStorage.getItem('sys_expenses');
-                const customQuote = localStorage.getItem('sys_quote');
-                
-                const todos = rawTodos ? JSON.parse(rawTodos) : [];
-                const rituals = rawRituals ? JSON.parse(rawRituals) : [];
-                const expenses = rawExpenses ? JSON.parse(rawExpenses) : [];
+        const card = document.getElementById('dash-budget-card');
+        const bar = document.getElementById('dash-budget-bar');
+        const sub = document.getElementById('dash-budget-sub');
 
-                // 2. Intention & Budget Sync
-                document.getElementById('daily-intention').innerText = customQuote || "Protocol active. Execute without friction.";
-                
-                const spentToday = expenses.filter(e => e.date === todayStr).reduce((s, e) => s + parseFloat(e.amount), 0);
-                document.getElementById('dash-budget-val').innerText = `₹${spentToday.toLocaleString()}`;
-
-                // 3. Rituals Sync (AM/PM Aware with Inline Display)
-                const currentHour = new Date().getHours();
-                const isAM = currentHour < 12;
-                const activeType = isAM ? 'morning' : 'evening';
-                const activeRituals = rituals.filter(r => r.type === activeType && !r.completed);
-                
-                document.getElementById('ritual-title').innerText = isAM ? "AM Protocol" : "PM Protocol";
-                document.getElementById('ritual-badge').innerText = `${activeRituals.length} Active`;
-                document.getElementById('ritual-icon').className = isAM ? "ph-fill ph-sun-horizon text-accentPurple text-xl" : "ph-fill ph-moon-stars text-accentPurple text-xl";
-
-                let rHTML = '';
-                if(activeRituals.length === 0) {
-                    rHTML = `<p class="text-[9px] text-center text-gray-400 py-2 uppercase tracking-widest">-- Protocol Cleared --</p>`;
-                } else {
-                    // Show up to 3 rituals directly on the dashboard
-                    activeRituals.slice(0, 3).forEach(r => {
-                        rHTML += `
-                            <div class="inline-item">
-                                <div class="flex items-center gap-2 truncate">
-                                    <div class="w-1.5 h-1.5 rounded-full bg-accentPurple shadow-[0_0_5px_#A855F7] shrink-0"></div>
-                                    <p class="text-[11px] font-semibold truncate text-gray-200">${r.text}</p>
-                                </div>
-                                ${r.time ? `<span class="text-[8px] font-black text-gray-500 uppercase shrink-0">${r.time}</span>` : ''}
-                            </div>`;
-                    });
-                    if(activeRituals.length > 3) {
-                        rHTML += `<p class="text-[8px] text-center text-accentPurple font-black mt-1 uppercase">+ ${activeRituals.length - 3} More Active</p>`;
-                    }
-                }
-                document.getElementById('inline-rituals').innerHTML = rHTML;
-
-                // 4. TASK PROTOCOL SYNC (Inline Display)
-                const activeTasks = todos.filter(t => !t.completed);
-                document.getElementById('task-badge').innerText = `${activeTasks.length} Pending`;
-                
-                let tHTML = '';
-                if(activeTasks.length === 0) {
-                    tHTML = `<p class="text-[9px] text-center text-gray-400 py-2 uppercase tracking-widest">-- All Vectors Cleared --</p>`;
-                } else {
-                    // Show up to 3 tasks directly on the dashboard
-                    activeTasks.slice(0, 3).forEach(t => {
-                        const dotColor = getTagColor(t.tag).split(' ')[0].replace('text-', 'bg-'); // Extract bg color from text class
-                        
-                        tHTML += `
-                            <div class="inline-item">
-                                <div class="flex items-center gap-2 truncate">
-                                    <div class="w-1.5 h-1.5 rounded-sm ${dotColor} shrink-0"></div>
-                                    <p class="text-[11px] font-semibold truncate text-gray-200">${t.text}</p>
-                                </div>
-                            </div>`;
-                    });
-                    if(activeTasks.length > 3) {
-                        tHTML += `<p class="text-[8px] text-center text-accentTeal font-black mt-1 uppercase">+ ${activeTasks.length - 3} More Vectors</p>`;
-                    }
-                }
-                document.getElementById('inline-tasks').innerHTML = tHTML;
-
-            } catch (e) { 
-                console.error("Sync Engine Error", e);
-            }
-        }
-
-        window.onload = () => {
-            updateClock();
-            syncDashboard();
+        if (targets.monthlyBudget > 0) {
+            let pct = (monthlySpend / targets.monthlyBudget) * 100;
+            bar.style.width = `${Math.min(pct, 100)}%`;
             
-            // Heartbeat: Sync every 2 seconds
-            setInterval(() => {
-                updateClock();
-                syncDashboard();
-            }, 2000); 
+            if (pct >= 100) {
+                card.classList.add('over-budget');
+                sub.innerHTML = `Limit: ${formatCurrency(targets.monthlyBudget)} • <span style="color:var(--accent-red);font-weight:700;">Over Budget!</span>`;
+            } else {
+                card.classList.remove('over-budget');
+                sub.textContent = `Limit: ${formatCurrency(targets.monthlyBudget)} • Safe`;
+            }
+        } else {
+            bar.style.width = '0%';
+            sub.textContent = "No monthly limit configured.";
+        }
+    }
 
-            // Storage Listener: Sync instantly when another tab changes
-            window.addEventListener('storage', syncDashboard); 
-        };
-    </script>
+    // --- Block 3: Rituals Sync ---
+    function syncRituals() {
+        const rituals = JSON.parse(localStorage.getItem('system_os_rituals')) || [];
+        const h = new Date().getHours();
+        
+        let activeBlock = 'night';
+        let blockTitle = '<i class="fa-solid fa-moon" style="color:var(--accent-purple);"></i> Night Arc';
+        
+        if (h >= 5 && h < 12) {
+            activeBlock = 'morning';
+            blockTitle = '<i class="fa-regular fa-sun" style="color:var(--accent-yellow);"></i> Morning Arc';
+        } else if (h >= 12 && h < 18) {
+            activeBlock = 'afternoon';
+            blockTitle = '<i class="fa-solid fa-bolt" style="color:var(--accent-cyan);"></i> Afternoon Arc';
+        }
+
+        document.getElementById('dash-ritual-title').innerHTML = blockTitle;
+        
+        const activeRituals = rituals.filter(r => r.block === activeBlock);
+        const container = document.getElementById('dash-ritual-list');
+        container.innerHTML = '';
+
+        if(activeRituals.length === 0) {
+            container.innerHTML = `<div class="empty-state">No rituals configured for this arc.</div>`;
+            return;
+        }
+
+        activeRituals.forEach(r => {
+            const checkIcon = r.completed ? '<i class="fa-solid fa-check" style="font-size: 0.7rem;"></i>' : '';
+            container.innerHTML += `
+                <div class="list-item ${r.completed ? 'completed' : ''}" onclick="toggleRitual('${r.id}')">
+                    <div class="check-circle">${checkIcon}</div>
+                    <div class="item-content">
+                        <span class="item-text">${r.text}</span>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    window.toggleRitual = function(id) {
+        let rits = JSON.parse(localStorage.getItem('system_os_rituals')) || [];
+        let target = rits.find(r => r.id === id);
+        if(target) {
+            target.completed = !target.completed;
+            localStorage.setItem('system_os_rituals', JSON.stringify(rits));
+            syncRituals();
+        }
+    }
+
+    // --- Block 4: To-Do Sync ---
+    function syncTasks() {
+        const tasks = JSON.parse(localStorage.getItem('system_os_tasks')) || [];
+        let activeTasks = tasks.filter(t => !t.completed);
+        const container = document.getElementById('dash-task-list');
+        container.innerHTML = '';
+
+        if(activeTasks.length === 0) {
+            container.innerHTML = `<div class="empty-state">Protocol clear. No active tasks.</div>`;
+            return;
+        }
+
+        activeTasks.sort((a, b) => {
+            if (!a.date && !b.date) return 0;
+            if (!a.date) return 1;
+            if (!b.date) return -1;
+            return new Date(`${a.date}T${a.time||'23:59'}`) - new Date(`${b.date}T${b.time||'23:59'}`);
+        });
+
+        activeTasks.slice(0, 4).forEach(t => {
+            let metaHtml = '';
+            if (t.date) {
+                const dObj = new Date(t.date);
+                metaHtml = `<div class="item-meta"><i class="fa-regular fa-calendar"></i> ${dObj.toLocaleDateString('en-US', {month:'short', day:'numeric'})}</div>`;
+            }
+
+            container.innerHTML += `
+                <div class="list-item" onclick="toggleTask('${t.id}')">
+                    <div class="check-circle"></div>
+                    <div class="item-content">
+                        <span class="item-text">${t.text}</span>
+                        ${metaHtml}
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    window.toggleTask = function(id) {
+        let tsks = JSON.parse(localStorage.getItem('system_os_tasks')) || [];
+        let target = tsks.find(t => t.id === id);
+        if(target) {
+            target.completed = true;
+            localStorage.setItem('system_os_tasks', JSON.stringify(tsks));
+            syncTasks();
+        }
+    }
+
+    // --- Block 5: Matrix Sync ---
+    function syncMatrix() {
+        const matrix = JSON.parse(localStorage.getItem('system_os_matrix')) || [];
+        document.getElementById('dash-matrix-title').innerHTML = `<i class="fa-solid fa-border-all"></i> ${currentDayStr} MATRIX`;
+
+        let todaysBlocks = matrix.filter(b => b.day === currentDayStr);
+        todaysBlocks.sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+        const container = document.getElementById('dash-matrix-list');
+        container.innerHTML = '';
+
+        if(todaysBlocks.length === 0) {
+            container.innerHTML = `<div class="empty-state">No time blocks allocated today.</div>`;
+            return;
+        }
+
+        todaysBlocks.forEach(b => {
+            const timeDisp = (b.startTime && b.endTime) ? `${formatTime12hr(b.startTime)} - ${formatTime12hr(b.endTime)}` : formatTime12hr(b.startTime);
+            container.innerHTML += `
+                <div class="time-block cat-${b.category}">
+                    <div class="accent-bar"></div>
+                    <div class="block-title">${b.title}</div>
+                    <div class="block-time">${timeDisp}</div>
+                </div>
+            `;
+        });
+    }
+
+    // --- Block 6: Diet Sync ---
+    function syncDiet() {
+        const dietData = JSON.parse(localStorage.getItem('system_os_diet')) || [];
+        const targets = JSON.parse(localStorage.getItem('system_os_diet_targets')) || { cals: 0, pro: 0 };
+        
+        let todaysMeals = dietData.filter(m => m.day === currentDayStr);
+        const sortOrder = { 'breakfast': 1, 'lunch': 2, 'snack': 3, 'dinner': 4 };
+        todaysMeals.sort((a, b) => sortOrder[a.category] - sortOrder[b.category]);
+
+        let totalCals = 0;
+        let totalPro = 0;
+        
+        const container = document.getElementById('dash-diet-list');
+        container.innerHTML = '';
+
+        if(todaysMeals.length === 0) {
+            container.innerHTML = `<div class="empty-state">No meals logged for today.</div>`;
+        } else {
+            // Display max 3 meals on dashboard
+            todaysMeals.slice(0, 3).forEach(m => {
+                const colorMap = { 'breakfast': 'yellow', 'lunch': 'blue', 'snack': 'cyan', 'dinner': 'purple' };
+                const cColor = colorMap[m.category];
+                
+                container.innerHTML += `
+                    <div class="time-block cat-${cColor}">
+                        <div class="accent-bar"></div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <div class="block-title" style="padding-left:12px;">${m.name}</div>
+                                <div class="block-time" style="text-transform: capitalize; padding-left:12px;">${m.category}</div>
+                            </div>
+                            <div style="font-size:0.75rem; font-weight:700; text-align:right; padding-right:10px;">
+                                <div>${m.calories} <span style="color:var(--text-muted);font-size:0.6rem;">kcal</span></div>
+                                <div style="color:var(--accent-blue);">${m.protein} <span style="color:var(--text-muted);font-size:0.6rem;">g</span></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Tally all meals (not just the displayed ones)
+            totalCals = todaysMeals.reduce((sum, m) => sum + m.calories, 0);
+            totalPro = todaysMeals.reduce((sum, m) => sum + m.protein, 0);
+        }
+
+        document.getElementById('dash-diet-cals').textContent = `${totalCals} / ${targets.cals}`;
+        document.getElementById('dash-diet-pro').textContent = `${totalPro}g / ${targets.pro}g`;
+
+        const barCals = document.getElementById('dash-bar-cals');
+        const barPro = document.getElementById('dash-bar-pro');
+
+        if(targets.cals > 0) barCals.style.width = `${Math.min((totalCals / targets.cals) * 100, 100)}%`;
+        else barCals.style.width = '0%';
+
+        if(targets.pro > 0) barPro.style.width = `${Math.min((totalPro / targets.pro) * 100, 100)}%`;
+        else barPro.style.width = '0%';
+    }
+
+    // --- Block 7: Schedule Sync ---
+    function syncSchedule() {
+        const sched = JSON.parse(localStorage.getItem('system_os_schedule')) || [];
+        const todayStr = getTodayDateStr();
+
+        let todaysEvents = sched.filter(s => s.date === todayStr);
+        todaysEvents.sort((a, b) => a.time.localeCompare(b.time));
+
+        const container = document.getElementById('dash-schedule-list');
+        container.innerHTML = '';
+
+        if(todaysEvents.length === 0) {
+            container.innerHTML = `<div class="empty-state">No events scheduled for today.</div>`;
+            return;
+        }
+
+        todaysEvents.slice(0, 3).forEach(e => {
+            const timeDisp = e.time === "00:00" ? "All Day" : formatTime12hr(e.time);
+            container.innerHTML += `
+                <div class="time-block pri-${e.priority}">
+                    <div class="accent-bar"></div>
+                    <div class="block-title">${e.title}</div>
+                    <div class="block-time">${timeDisp}</div>
+                </div>
+            `;
+        });
+    }
+
+    // --- App Drawer Modal ---
+    function toggleActivityModal() {
+        const overlay = document.getElementById('activity-overlay');
+        const sheet = document.getElementById('activity-sheet');
+        overlay.classList.toggle('active');
+        sheet.classList.toggle('active');
+        document.body.style.overflow = sheet.classList.contains('active') ? 'hidden' : '';
+    }
+
+    // --- System Boot ---
+    document.addEventListener('DOMContentLoaded', () => {
+        syncQuote();
+        syncBudget();
+        syncRituals();
+        syncTasks();
+        syncMatrix();
+        syncDiet();
+        syncSchedule();
+    });
+
+</script>
+
 </body>
 </html>
