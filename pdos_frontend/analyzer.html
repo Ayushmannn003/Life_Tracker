@@ -16,558 +16,206 @@
             --text-muted: #9ca3af;
             --accent-green: #69f0ae;
             --accent-green-dim: rgba(105, 240, 174, 0.15);
+            --accent-red: #ef4444;
             --accent-blue: #3b82f6;
             --accent-purple: #a855f7;
-            --accent-red: #ef4444;
+            --accent-yellow: #eab308;
+            --accent-cyan: #06b6d4;
             --border-dim: #2a2444;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-dark); color: var(--text-main); display: flex; justify-content: center; min-height: 100vh; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .app-container {
             width: 100%;
             max-width: 480px;
-            padding: 20px 20px 100px 20px; /* Space for bottom nav */
+            padding: 20px 20px 100px 20px;
             overflow-x: hidden;
             position: relative;
+            animation: fadeIn 0.4s ease-out forwards;
         }
 
         /* --- Header --- */
-        header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
-            padding-top: 10px;
-        }
-
-        .icon-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.25rem;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
+        header { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; padding-top: 10px; }
+        .icon-btn { background: none; border: none; color: var(--text-muted); font-size: 1.25rem; cursor: pointer; transition: color 0.2s; }
         .icon-btn:hover { color: var(--text-main); }
+        h1 { font-size: 1.25rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
 
-        h1 {
-            font-size: 1.25rem;
-            font-weight: 800;
-            letter-spacing: 1px;
-        }
-
-        /* --- Cell Layout System --- */
-        .analytics-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .cell {
+        /* --- Cards Base --- */
+        .card {
             background: var(--bg-card);
             border: 1px solid var(--border-dim);
-            border-radius: 30px; /* Deep pill shape */
-            padding: 22px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            display: flex;
-            flex-direction: column;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         }
 
-        .cell.full {
-            grid-column: 1 / -1;
-        }
-
-        .cell-header {
+        .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
         }
 
-        .cell-title {
+        .card-title {
             font-size: 0.85rem;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
-        }
-
-        .cell-icon {
-            color: var(--accent-green);
-            font-size: 1.1rem;
-        }
-
-        .empty-state {
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            padding: 10px 0;
-            font-style: italic;
-        }
-
-        /* --- 1. Task Progress Ring --- */
-        .progress-ring-container {
             display: flex;
             align-items: center;
-            justify-content: center;
-            padding: 10px 0;
+            gap: 8px;
+        }
+
+        .empty-state { text-align: center; color: var(--text-muted); font-size: 0.8rem; padding: 15px 0; font-style: italic; }
+
+        /* --- 1. Budget Analytics --- */
+        .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+        .metric-cell { background: var(--bg-card-inner); border-radius: 16px; padding: 15px; display: flex; flex-direction: column; gap: 4px; }
+        .m-title { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        .m-val { font-size: 1.4rem; font-weight: 800; }
+        .budget-bar-bg { width: 100%; height: 6px; background: var(--bg-card-inner); border-radius: 10px; overflow: hidden; margin-top: 5px; }
+        .budget-bar-fill { height: 100%; border-radius: 10px; transition: width 0.4s ease; }
+
+        /* --- 2. Sleep Line Graph --- */
+        .graph-container {
+            width: 100%;
+            height: 160px;
             position: relative;
+            margin-top: 20px;
+            padding-bottom: 20px;
         }
-
-        .progress-ring {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: conic-gradient(var(--accent-green) 0%, var(--bg-card-inner) 0%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.5s ease;
-        }
-
-        .progress-ring-inner {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: var(--bg-card);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .ring-score {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--text-main);
-            line-height: 1;
-        }
-        
-        .ring-label {
-            font-size: 0.6rem;
-            color: var(--text-muted);
-            font-weight: 600;
-            margin-top: 4px;
-        }
-
-        /* --- 2. Budget Analytics --- */
-        .budget-val {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--accent-red);
-            letter-spacing: -1px;
-        }
-
-        .budget-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            font-weight: 500;
-            margin-top: 5px;
-        }
-
-        .budget-bar-bg {
-            width: 100%;
-            height: 6px;
-            background: var(--bg-card-inner);
-            border-radius: 10px;
-            margin-top: 15px;
-            overflow: hidden;
-        }
-
-        .budget-bar-fill {
-            height: 100%;
-            background: var(--accent-red);
-            width: 100%;
-            border-radius: 10px;
-        }
+        svg { overflow: visible; width: 100%; height: 100%; }
+        .graph-line { fill: none; stroke: var(--accent-purple); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+        .graph-point { fill: var(--bg-card); stroke: var(--accent-purple); stroke-width: 2; transition: all 0.2s; }
+        .graph-point:hover { fill: var(--accent-purple); r: 6; }
+        .graph-label-x { fill: var(--text-muted); font-size: 10px; font-family: 'Inter', sans-serif; font-weight: 600; text-anchor: middle; }
+        .graph-label-y { fill: var(--text-main); font-size: 10px; font-family: 'Inter', sans-serif; font-weight: 800; text-anchor: middle; }
 
         /* --- 3. Habit Matrix --- */
-        .matrix-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-            margin-top: 5px;
-        }
-
+        .habit-row { margin-bottom: 15px; }
+        .habit-row:last-child { margin-bottom: 0; }
+        .habit-header { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; margin-bottom: 8px; }
+        .habit-score { color: var(--accent-green); }
+        .matrix-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; }
         .matrix-dot {
             aspect-ratio: 1;
-            border-radius: 50%;
-            background: var(--bg-card-inner);
+            border-radius: 6px;
+            background: transparent;
             border: 1px solid var(--border-dim);
-            transition: all 0.2s;
         }
-
         .matrix-dot.completed {
             background: var(--accent-green);
             border-color: var(--accent-green);
-            box-shadow: 0 0 8px rgba(105, 240, 174, 0.4);
+            box-shadow: 0 0 8px rgba(105, 240, 174, 0.2);
         }
 
-        /* --- 4. Sleep & Nap Graph --- */
-        .sleep-graph {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            height: 120px;
-            padding-top: 20px;
-            border-bottom: 1px solid var(--border-dim);
-            margin-bottom: 10px;
-        }
+        /* --- 4. Task Analytics --- */
+        .task-bars { display: flex; flex-direction: column; gap: 12px; }
+        .task-row { display: flex; align-items: center; gap: 10px; }
+        .task-label { width: 70px; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
+        .task-track { flex: 1; height: 8px; background: var(--bg-card-inner); border-radius: 10px; overflow: hidden; }
+        .task-fill { height: 100%; border-radius: 10px; transition: width 0.5s ease; }
+        .task-val { width: 30px; font-size: 0.75rem; font-weight: 700; text-align: right; }
+        .cat-course { background: var(--accent-purple); }
+        .cat-project { background: var(--accent-blue); }
+        .cat-revision { background: var(--accent-yellow); }
+        .cat-admin { background: var(--accent-cyan); }
 
-        .sleep-bar-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 12%;
-            gap: 8px;
-        }
-
-        .sleep-bar {
-            width: 100%;
-            background: var(--accent-purple);
-            border-radius: 8px 8px 0 0;
-            min-height: 4px;
-            transition: height 0.5s ease;
-        }
-
-        .sleep-day {
-            font-size: 0.6rem;
-            color: var(--text-muted);
-            font-weight: 700;
-        }
-
-        .sleep-stats {
-            display: flex;
-            justify-content: space-between;
-            padding-top: 10px;
-        }
-
-        .stat-item { display: flex; flex-direction: column; gap: 2px; }
-        .stat-val { font-size: 1.1rem; font-weight: 800; color: var(--text-main); }
-        .stat-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; }
-
-        /* --- 5. Academic Focus Breakdown --- */
-        .focus-bars {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .focus-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .focus-label {
-            width: 60px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--text-muted);
-        }
-
-        .focus-track {
-            flex: 1;
-            height: 8px;
-            background: var(--bg-card-inner);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .focus-fill {
-            height: 100%;
-            border-radius: 10px;
-            transition: width 0.5s ease;
-        }
-
-        .fill-course { background: var(--accent-purple); }
-        .fill-project { background: var(--accent-blue); }
-        .fill-revision { background: var(--accent-green); }
-
-        .focus-val {
-            width: 25px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-align: right;
-        }
-
-        /* --- Shared Nav & Modal Styles (Identical to Index) --- */
-        .bottom-nav {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: calc(100% - 60px); 
-            max-width: 380px;
-            background: #0d0920; 
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 30px; 
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 5px 10px; 
-            z-index: 100;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6); 
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            width: 30%; 
-            padding: 8px 0; 
-            color: #6b7280; 
-            text-decoration: none;
-            font-size: 0.65rem; 
-            font-weight: 600;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
+        /* --- Shared Nav & Modal Styles --- */
+        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 60px); max-width: 380px; background: #0d0920; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 30px; display: flex; justify-content: space-around; align-items: center; padding: 5px 10px; z-index: 100; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 30%; padding: 8px 0; color: #6b7280; text-decoration: none; font-size: 0.65rem; font-weight: 600; border-radius: 20px; transition: all 0.3s ease; cursor: pointer; }
         .nav-item i { font-size: 1.1rem; }
         .nav-item:hover:not(.active) { color: #a78bfa; }
-
-        .nav-item.active {
-            background: #6DF2B5; 
-            color: #070414; 
-            box-shadow: 0 0 15px rgba(109, 242, 181, 0.2); 
-        }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            z-index: 999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
+        .nav-item.active { background: #6DF2B5; color: #070414; box-shadow: 0 0 15px rgba(109, 242, 181, 0.2); }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
         .modal-overlay.active { opacity: 1; visibility: visible; }
-
-        .bottom-sheet {
-            position: fixed;
-            bottom: 0; left: 50%;
-            transform: translateX(-50%) translateY(100%);
-            width: 100%;
-            max-width: 480px;
-            max-height: 85vh;
-            background: var(--bg-card);
-            border-top: 1px solid var(--border-dim);
-            border-radius: 32px 32px 0 0;
-            padding: 20px 20px 0 20px;
-            z-index: 1000;
-            transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1);
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
-        }
-
+        .bottom-sheet { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%); width: 100%; max-width: 480px; max-height: 85vh; background: var(--bg-card); border-top: 1px solid var(--border-dim); border-radius: 32px 32px 0 0; padding: 20px 20px 0 20px; z-index: 1000; transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1); display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
         .bottom-sheet.active { transform: translateX(-50%) translateY(0); }
-
-        .drag-handle {
-            width: 40px;
-            height: 5px;
-            background: var(--border-dim);
-            border-radius: 5px;
-            margin: 0 auto 20px auto;
-        }
-
-        .sheet-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .sheet-title {
-            font-size: 1.1rem;
-            font-weight: 800;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .close-btn {
-            background: var(--bg-card-inner);
-            border: 1px solid var(--border-dim);
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            color: var(--text-muted);
-            font-size: 1rem;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.2s;
-        }
-        
+        .drag-handle { width: 40px; height: 5px; background: var(--border-dim); border-radius: 5px; margin: 0 auto 20px auto; }
+        .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .sheet-title { font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+        .close-btn { background: var(--bg-card-inner); border: 1px solid var(--border-dim); border-radius: 50%; width: 32px; height: 32px; color: var(--text-muted); cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s; }
         .close-btn:hover { color: var(--text-main); background: #2a2444; }
-
-        .sheet-content {
-            overflow-y: auto;
-            padding-bottom: 40px; 
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        
+        .sheet-content { overflow-y: auto; padding-bottom: 40px; -ms-overflow-style: none; scrollbar-width: none; }
         .sheet-content::-webkit-scrollbar { display: none; }
-
-        .section-label {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin: 15px 0 15px 5px;
-        }
-
-        .app-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px 10px;
-            margin-bottom: 25px;
-        }
-
-        .app-icon-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: transform 0.1s;
-        }
-
+        .section-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin: 15px 0 15px 5px; }
+        .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px 10px; margin-bottom: 25px; }
+        .app-icon-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; text-decoration: none; cursor: pointer; transition: transform 0.1s; }
         .app-icon-btn:active { transform: scale(0.92); }
-
-        .app-icon-circle {
-            width: 56px;
-            height: 56px;
-            background: var(--bg-card-inner);
-            border: 1px solid var(--border-dim);
-            border-radius: 18px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            transition: border-color 0.2s;
-        }
-
+        .app-icon-circle { width: 56px; height: 56px; background: var(--bg-card-inner); border: 1px solid var(--border-dim); border-radius: 18px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; transition: border-color 0.3s; }
         .app-icon-btn:hover .app-icon-circle { border-color: rgba(255,255,255,0.2); }
-        .app-icon-label { font-size: 0.65rem; font-weight: 600; text-align: center; color: var(--text-muted); line-height: 1.2; }
-
+        .app-icon-label { font-size: 0.65rem; font-weight: 600; text-align: center; color: var(--text-muted); }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    
     <header>
         <button class="icon-btn" onclick="window.location.href='index.html'"><i class="fa-solid fa-arrow-left"></i></button>
-        <h1>Core Analytics</h1>
+        <h1>Analytics Engine</h1>
     </header>
 
-    <div class="analytics-grid">
-        
-        <div class="cell">
-            <div class="cell-header">
-                <span class="cell-title">Task Velocity</span>
-                <i class="fa-solid fa-bolt cell-icon"></i>
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title"><i class="fa-solid fa-wallet" style="color: var(--accent-red);"></i> Capital Flow (Last 7 Days)</span>
+        </div>
+        <div class="metrics-grid">
+            <div class="metric-cell">
+                <span class="m-title">Weekly Spend</span>
+                <span class="m-val" style="color: var(--accent-red);" id="an-spend">₹0</span>
             </div>
-            <div class="progress-ring-container">
-                <div class="progress-ring" id="task-ring">
-                    <div class="progress-ring-inner">
-                        <span class="ring-score" id="task-score">0%</span>
-                        <span class="ring-label">Completed</span>
-                    </div>
-                </div>
+            <div class="metric-cell">
+                <span class="m-title">Weekly Save</span>
+                <span class="m-val" style="color: var(--accent-green);" id="an-save">₹0</span>
             </div>
         </div>
-
-        <div class="cell">
-            <div class="cell-header">
-                <span class="cell-title">Capital Burn</span>
-                <i class="fa-solid fa-fire cell-icon" style="color: var(--accent-red);"></i>
+        <div>
+            <div style="display:flex; justify-content:space-between; font-size:0.7rem; font-weight:700; color:var(--text-muted); margin-bottom:5px;">
+                <span>Weekly Budget Utilization</span>
+                <span id="an-budget-pct">0%</span>
             </div>
-            <div style="margin-top: 10px;">
-                <div class="budget-val" id="monthly-expense">₹0</div>
-                <div class="budget-label">Total Monthly Expense</div>
-                <div class="budget-bar-bg">
-                    <div class="budget-bar-fill"></div>
-                </div>
+            <div class="budget-bar-bg">
+                <div class="budget-bar-fill" id="an-budget-fill" style="background: var(--accent-red);"></div>
             </div>
         </div>
+    </div>
 
-        <div class="cell full">
-            <div class="cell-header">
-                <span class="cell-title">Routine Matrix (28 Days)</span>
-                <i class="fa-solid fa-calendar-check cell-icon"></i>
-            </div>
-            <div class="matrix-grid" id="habit-matrix">
-                </div>
-            <div style="font-size: 0.65rem; color: var(--text-muted); text-align: right; margin-top: 10px;">
-                Green indicates fully cleared routine.
-            </div>
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title"><i class="fa-solid fa-moon" style="color: var(--accent-purple);"></i> Rest Trajectory (7 Days)</span>
         </div>
-
-        <div class="cell full">
-            <div class="cell-header">
-                <span class="cell-title">Study Focus Distribution</span>
-                <i class="fa-solid fa-graduation-cap cell-icon" style="color: var(--accent-purple);"></i>
+        <div style="font-size: 0.75rem; color: var(--text-muted); text-align: center;">Total Hours Logged (Main Sleep + Naps)</div>
+        <div class="graph-container" id="sleep-graph-container">
             </div>
-            <div class="focus-bars" id="focus-distribution">
-                </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title"><i class="fa-solid fa-calendar-check" style="color: var(--accent-cyan);"></i> Active Habit Matrix</span>
         </div>
+        <div id="an-habit-list">
+            </div>
+    </div>
 
-        <div class="cell full">
-            <div class="cell-header">
-                <span class="cell-title">Sleep & Recovery (7 Days)</span>
-                <i class="fa-solid fa-moon cell-icon" style="color: var(--accent-purple);"></i>
-            </div>
-            
-            <div class="sleep-graph" id="sleep-graph">
-                </div>
-            
-            <div class="sleep-stats">
-                <div class="stat-item">
-                    <span class="stat-val" id="avg-sleep">0h</span>
-                    <span class="stat-label">Avg Night</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-val" id="total-naps">0h</span>
-                    <span class="stat-label">Nap Total</span>
-                </div>
-                <div class="stat-item" style="text-align: right;">
-                    <span class="stat-val" style="color: var(--accent-green);">Optimal</span>
-                    <span class="stat-label">Recovery</span>
-                </div>
-            </div>
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title"><i class="fa-solid fa-square-check" style="color: var(--accent-blue);"></i> Protocol Analytics</span>
         </div>
-
+        <div style="display: flex; align-items: flex-end; gap: 15px; margin-bottom: 20px;">
+            <div style="font-size: 2.5rem; font-weight: 800; line-height: 1; color: var(--accent-green);" id="an-task-pct">0%</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; padding-bottom: 5px;">Total Completion Rate</div>
+        </div>
+        <div class="task-bars" id="an-task-bars">
+            </div>
     </div>
 
 </div>
@@ -598,76 +246,34 @@
     <div class="sheet-content">
         <div class="section-label">PROTOCOLS</div>
         <div class="app-grid">
-            <a href="todo.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-solid fa-square-check"></i></div>
-                <span class="app-icon-label">Tasks</span>
-            </a>
-            <a href="rituals.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: #eab308;"><i class="fa-regular fa-sun"></i></div>
-                <span class="app-icon-label">Rituals</span>
-            </a>
-            <a href="habits.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-regular fa-calendar-check"></i></div>
-                <span class="app-icon-label">Habits</span>
-            </a>
-            <a href="regular_habits.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-calendar-day"></i></div>
-                <span class="app-icon-label">Routines</span>
-            </a>
+            <a href="todo.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-solid fa-square-check"></i></div><span class="app-icon-label">Tasks</span></a>
+            <a href="rituals.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #eab308;"><i class="fa-regular fa-sun"></i></div><span class="app-icon-label">Rituals</span></a>
+            <a href="habits.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-regular fa-calendar-check"></i></div><span class="app-icon-label">Habits</span></a>
         </div>
-
         <div class="section-label">TIME & MACRO</div>
         <div class="app-grid">
-            <a href="schedule.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: #ffffff;"><i class="fa-regular fa-calendar"></i></div>
-                <span class="app-icon-label">Schedule</span>
-            </a>
-            <a href="weekly.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-border-all"></i></div>
-                <span class="app-icon-label">Matrix</span>
-            </a>
-            <a href="focus.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: #eab308;"><i class="fa-solid fa-crosshairs"></i></div>
-                <span class="app-icon-label">Focus</span>
-            </a>
+            <a href="schedule.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #ffffff;"><i class="fa-regular fa-calendar"></i></div><span class="app-icon-label">Schedule</span></a>
+            <a href="weekly.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-border-all"></i></div><span class="app-icon-label">Matrix</span></a>
         </div>
-
         <div class="section-label">BIO & WEALTH</div>
         <div class="app-grid">
-            <a href="health.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-heart-pulse"></i></div>
-                <span class="app-icon-label">Health</span>
-            </a>
-            <a href="sleep.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-moon"></i></div>
-                <span class="app-icon-label">Sleep</span>
-            </a>
-            <a href="budget.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-wallet"></i></div>
-                <span class="app-icon-label">Finance</span>
-            </a>
+            <a href="health.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-heart-pulse"></i></div><span class="app-icon-label">Health</span></a>
+            <a href="sleep.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-moon"></i></div><span class="app-icon-label">Sleep</span></a>
+            <a href="budget.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-wallet"></i></div><span class="app-icon-label">Finance</span></a>
+            <a href="diet.html" class="app-icon-btn"><div class="app-icon-circle" style="color: var(--accent-green);"><i class="fa-solid fa-apple-whole"></i></div><span class="app-icon-label">Diet</span></a>
         </div>
-
         <div class="section-label">DATA & KNOWLEDGE</div>
         <div class="app-grid">
-            <a href="academics.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-graduation-cap"></i></div>
-                <span class="app-icon-label">Academics</span>
-            </a>
-            <a href="library.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-book"></i></div>
-                <span class="app-icon-label">Library</span>
-            </a>
-            <a href="analyzer.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: var(--accent-green);"><i class="fa-solid fa-chart-line"></i></div>
-                <span class="app-icon-label">Analytics</span>
-            </a>
+            <a href="academics.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-graduation-cap"></i></div><span class="app-icon-label">Academics</span></a>
+            <a href="library.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-book"></i></div><span class="app-icon-label">Library</span></a>
+            <a href="analyzer.html" class="app-icon-btn"><div class="app-icon-circle" style="color: var(--accent-green);"><i class="fa-solid fa-chart-line"></i></div><span class="app-icon-label">Analytics</span></a>
         </div>
     </div>
 </div>
 
 <script>
     // --- Utility ---
+    function formatCurrency(amt) { return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amt); }
     function toggleActivityModal() {
         const overlay = document.getElementById('activity-overlay');
         const sheet = document.getElementById('activity-sheet');
@@ -676,150 +282,189 @@
         document.body.style.overflow = sheet.classList.contains('active') ? 'hidden' : '';
     }
 
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount);
-    };
-
-    // --- 1. Sync Task Progress Ring ---
-    function syncTaskRing() {
-        const tasks = JSON.parse(localStorage.getItem('system_os_tasks')) || [];
-        const total = tasks.length;
-        const completed = tasks.filter(t => t.completed).length;
-        let percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
-
-        document.getElementById('task-score').textContent = `${percentage}%`;
+    // --- Block 1: Budget Analytics ---
+    function renderBudget() {
+        const ledger = JSON.parse(localStorage.getItem('system_os_finance_ledger')) || [];
+        const targets = JSON.parse(localStorage.getItem('system_os_finance_targets')) || { monthlyBudget: 0 };
         
-        // Update conic gradient angle
-        const angle = (percentage / 100) * 360;
-        document.getElementById('task-ring').style.background = `conic-gradient(var(--accent-green) ${angle}deg, var(--bg-card-inner) 0deg)`;
-    }
-
-    // --- 2. Sync Monthly Budget Expense ---
-    function syncBudget() {
-        const transactions = JSON.parse(localStorage.getItem('system_os_finance_ledger')) || [];
+        let weeklySpend = 0;
+        let weeklySave = 0;
+        
         const now = new Date();
-        const currentMonth = now.getMonth();
-        const currentYear = now.getFullYear();
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(now.getDate() - 7);
 
-        let monthlyExpense = 0;
-        transactions.forEach(t => {
+        ledger.forEach(t => {
             const d = new Date(t.date);
-            if (d.getMonth() === currentMonth && d.getFullYear() === currentYear && t.type === 'expense') {
-                monthlyExpense += t.amount;
+            if (d >= sevenDaysAgo && d <= now) {
+                if (t.type === 'expense') weeklySpend += t.amount;
+                if (t.type === 'saving') weeklySave += t.amount;
             }
         });
 
-        document.getElementById('monthly-expense').textContent = formatCurrency(monthlyExpense);
-    }
+        document.getElementById('an-spend').textContent = formatCurrency(weeklySpend);
+        document.getElementById('an-save').textContent = formatCurrency(weeklySave);
 
-    // --- 3. Generate Routine Matrix ---
-    function generateHabitMatrix() {
-        // Reads current rituals to determine if TODAY gets a green dot.
-        const rituals = JSON.parse(localStorage.getItem('system_os_rituals')) || [];
-        const allCompletedToday = rituals.length > 0 && rituals.every(r => r.completed);
+        // Weekly Budget Prog (Monthly / 4)
+        const wTarget = targets.monthlyBudget / 4;
+        const fill = document.getElementById('an-budget-fill');
+        const pctText = document.getElementById('an-budget-pct');
 
-        const matrix = document.getElementById('habit-matrix');
-        matrix.innerHTML = '';
-        
-        // Generate 28 dots (4 weeks)
-        for (let i = 0; i < 28; i++) {
-            const dot = document.createElement('div');
-            dot.className = 'matrix-dot';
-            
-            // Logic to simulate past data visually + lock in today's real data
-            if (i === 27) {
-                // The very last dot represents TODAY
-                if (allCompletedToday) dot.classList.add('completed');
-            } else {
-                // Mock historical data: 60% chance of completion for visual effect
-                if (Math.random() > 0.4) dot.classList.add('completed');
-            }
-            
-            matrix.appendChild(dot);
+        if (wTarget > 0) {
+            let pct = (weeklySpend / wTarget) * 100;
+            fill.style.width = `${Math.min(pct, 100)}%`;
+            pctText.textContent = `${Math.round(pct)}%`;
+            fill.style.background = pct > 100 ? 'var(--accent-red)' : 'var(--accent-green)';
+            pctText.style.color = pct > 100 ? 'var(--accent-red)' : 'var(--accent-green)';
+        } else {
+            fill.style.width = '0%';
+            pctText.textContent = "No Target";
         }
     }
 
-    // --- 4. Sync Academic Distribution ---
-    function syncStudyFocus() {
-        const tasks = JSON.parse(localStorage.getItem('system_os_tasks')) || [];
+    // --- Block 2: Sleep SVG Graph ---
+    function renderSleepGraph() {
+        const sleepData = JSON.parse(localStorage.getItem('system_os_sleep')) || {};
+        const container = document.getElementById('sleep-graph-container');
         
-        let counts = { course: 0, project: 0, revision: 0 };
-        let totalAcademic = 0;
+        // Generate Last 7 Days
+        let chartData = [];
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            const key = d.toISOString().split('T')[0];
+            const label = d.toLocaleDateString('en-US', { weekday: 'short' });
+            
+            const dayData = sleepData[key] || { mainSleep: 0, nap: 0 };
+            const totalHrs = dayData.mainSleep + dayData.nap;
+            
+            chartData.push({ label, val: totalHrs });
+        }
 
-        tasks.forEach(t => {
-            if (t.category && counts[t.category] !== undefined) {
-                counts[t.category]++;
-                totalAcademic++;
-            }
+        // SVG Construction Math
+        const width = 400;
+        const height = 120;
+        const padding = 20;
+        const maxVal = 12; // Assume 12 hours is top of chart
+        
+        let points = [];
+        let circles = '';
+        let xLabels = '';
+        let yLabels = '';
+
+        const xStep = (width - padding * 2) / (chartData.length - 1);
+
+        chartData.forEach((d, i) => {
+            const x = padding + (i * xStep);
+            // Invert Y axis (0 at top, height at bottom)
+            const y = height - padding - ((d.val / maxVal) * (height - padding * 2));
+            
+            points.push(`${x},${y}`);
+            
+            // Draw points and labels
+            circles += `<circle cx="${x}" cy="${y}" r="4" class="graph-point" />`;
+            circles += `<text x="${x}" cy="${y - 12}" class="graph-label-y">${d.val > 0 ? d.val + 'h' : ''}</text>`;
+            xLabels += `<text x="${x}" y="${height + 5}" class="graph-label-x">${d.label}</text>`;
         });
 
-        const container = document.getElementById('focus-distribution');
+        const polyline = `<polyline points="${points.join(' ')}" class="graph-line" />`;
+
+        container.innerHTML = `
+            <svg viewBox="0 0 ${width} ${height}">
+                ${polyline}
+                ${circles}
+                ${xLabels}
+            </svg>
+        `;
+    }
+
+    // --- Block 3: Habit Matrix ---
+    function renderHabits() {
+        const habits = JSON.parse(localStorage.getItem('system_os_habit_matrix')) || [];
+        const container = document.getElementById('an-habit-list');
         container.innerHTML = '';
 
-        if (totalAcademic === 0) {
-            container.innerHTML = `<div class="empty-state">No academic tasks defined.</div>`;
+        if (habits.length === 0) {
+            container.innerHTML = `<div class="empty-state">No habits tracked in the forge.</div>`;
             return;
         }
 
-        const data = [
-            { label: 'Course', key: 'course', class: 'fill-course' },
-            { label: 'Project', key: 'project', class: 'fill-project' },
-            { label: 'Revise', key: 'revision', class: 'fill-revision' }
-        ];
+        const now = new Date();
+        const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
 
-        data.forEach(item => {
-            const val = counts[item.key];
-            const percentage = Math.round((val / totalAcademic) * 100);
-            
+        habits.forEach(h => {
+            let gridHtml = '';
+            // Generate matrix dots for current month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const isCompleted = h.completedDays.includes(day);
+                gridHtml += `<div class="matrix-dot ${isCompleted ? 'completed' : ''}"></div>`;
+            }
+
             container.innerHTML += `
-                <div class="focus-row">
-                    <span class="focus-label">${item.label}</span>
-                    <div class="focus-track">
-                        <div class="focus-fill ${item.class}" style="width: ${percentage}%"></div>
+                <div class="habit-row">
+                    <div class="habit-header">
+                        <span>${h.title}</span>
+                        <span class="habit-score">${h.completedDays.length}/${daysInMonth}</span>
                     </div>
-                    <span class="focus-val">${val}</span>
+                    <div class="matrix-grid">${gridHtml}</div>
                 </div>
             `;
         });
     }
 
-    // --- 5. Generate Sleep Graph ---
-    function generateSleepGraph() {
-        // Simulates 7 days of sleep data since sleep logger isn't fully built yet
-        const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-        const sleepHours = [6.5, 7, 5.5, 8, 7.5, 6, 7.2]; // Dummy data
-        
-        const graph = document.getElementById('sleep-graph');
-        graph.innerHTML = '';
+    // --- Block 4: Task Analytics ---
+    function renderTasks() {
+        const tasks = JSON.parse(localStorage.getItem('system_os_tasks')) || [];
+        const container = document.getElementById('an-task-bars');
+        container.innerHTML = '';
 
-        let totalSleep = 0;
-        
-        sleepHours.forEach((hours, index) => {
-            totalSleep += hours;
-            const heightPercent = (hours / 10) * 100; // Assuming 10 hours is 100% height
-            
-            graph.innerHTML += `
-                <div class="sleep-bar-container">
-                    <div class="sleep-bar" style="height: ${heightPercent}%"></div>
-                    <span class="sleep-day">${days[index]}</span>
-                </div>
-            `;
+        const total = tasks.length;
+        if (total === 0) {
+            document.getElementById('an-task-pct').textContent = '0%';
+            container.innerHTML = `<div class="empty-state">No tasks to analyze.</div>`;
+            return;
+        }
+
+        const completed = tasks.filter(t => t.completed).length;
+        document.getElementById('an-task-pct').textContent = `${Math.round((completed / total) * 100)}%`;
+
+        // Breakdown by Category
+        const cats = {
+            'course': { label: 'Course', class: 'cat-course', count: 0 },
+            'project': { label: 'Project', class: 'cat-project', count: 0 },
+            'revision': { label: 'Revision', class: 'cat-revision', count: 0 },
+            'admin': { label: 'Admin', class: 'cat-admin', count: 0 },
+            'none': { label: 'General', class: 'cat-admin', count: 0 }
+        };
+
+        tasks.forEach(t => {
+            let cat = t.category || 'none';
+            if(!cats[cat]) cat = 'none'; // Fallback
+            cats[cat].count++;
         });
 
-        const avg = (totalSleep / 7).toFixed(1);
-        document.getElementById('avg-sleep').textContent = `${avg}h`;
-        document.getElementById('total-naps').textContent = `2.5h`; // Mock nap data
+        Object.values(cats).forEach(c => {
+            if (c.count > 0) {
+                const pct = (c.count / total) * 100;
+                container.innerHTML += `
+                    <div class="task-row">
+                        <span class="task-label">${c.label}</span>
+                        <div class="task-track">
+                            <div class="task-fill ${c.class}" style="width: ${pct}%"></div>
+                        </div>
+                        <span class="task-val">${c.count}</span>
+                    </div>
+                `;
+            }
+        });
     }
 
-    // --- Run on Load ---
+    // --- Boot ---
     document.addEventListener('DOMContentLoaded', () => {
-        syncTaskRing();
-        syncBudget();
-        generateHabitMatrix();
-        syncStudyFocus();
-        
-        // Delay graph slightly for smooth load animation
-        setTimeout(generateSleepGraph, 100); 
+        renderBudget();
+        renderSleepGraph();
+        renderHabits();
+        renderTasks();
     });
 
 </script>
