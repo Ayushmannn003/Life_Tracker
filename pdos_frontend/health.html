@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,7 +39,7 @@
 
         .app-container {
             width: 100%;
-            max-width: 480px;
+            max-width: 430px; /* Locked to strict mobile dimensions */
             padding: 20px 20px 100px 20px;
             overflow-x: hidden;
             position: relative;
@@ -64,9 +63,7 @@
             transition: color 0.2s;
         }
 
-        .icon-btn:hover {
-            color: var(--text-main);
-        }
+        .icon-btn:hover { color: var(--text-main); }
 
         h1 {
             font-size: 1.25rem;
@@ -82,7 +79,7 @@
             border-radius: 24px;
             padding: 20px;
             margin-bottom: 20px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         }
 
         .section-title {
@@ -102,7 +99,7 @@
             align-items: center;
             margin-bottom: 15px;
         }
-
+        
         .quote-display {
             font-size: 0.95rem;
             font-style: italic;
@@ -133,9 +130,7 @@
             transition: border-color 0.2s;
         }
 
-        .custom-input:focus {
-            border-color: var(--accent-green);
-        }
+        .custom-input:focus { border-color: var(--accent-green); }
 
         .btn-set {
             background: var(--border-dim);
@@ -148,10 +143,7 @@
             transition: all 0.2s;
         }
 
-        .btn-set:hover {
-            background: var(--text-muted);
-            color: var(--bg-dark);
-        }
+        .btn-set:hover { background: var(--text-muted); color: var(--bg-dark); }
 
         /* --- Bio-Metrics Grid (Today) --- */
         .metrics-grid {
@@ -193,7 +185,7 @@
         }
 
         .btn-quick-add {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255,255,255,0.05);
             border: 1px dashed var(--border-dim);
             color: var(--text-main);
             border-radius: 10px;
@@ -209,31 +201,13 @@
             margin-top: 5px;
         }
 
-        .btn-quick-add:active {
-            transform: scale(0.95);
-        }
-
-        .btn-quick-add:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--text-muted);
-        }
+        .btn-quick-add:active { transform: scale(0.95); }
+        .btn-quick-add:hover { background: rgba(255,255,255,0.1); border-color: var(--text-muted); }
 
         /* Colors for metrics */
-        .color-water {
-            color: var(--accent-cyan);
-        }
-
-        .color-caffeine {
-            color: var(--accent-orange);
-        }
-
-        .color-meditation {
-            color: var(--accent-green);
-        }
-
-        .color-sleep {
-            color: var(--accent-purple);
-        }
+        .color-water { color: var(--accent-cyan); }
+        .color-caffeine { color: var(--accent-orange); }
+        .color-meditation { color: var(--accent-green); }
 
         /* --- Input Rows for Manual Logs --- */
         .manual-log-row {
@@ -268,9 +242,7 @@
             outline: none;
         }
 
-        .mini-input:focus {
-            border-color: var(--accent-green);
-        }
+        .mini-input:focus { border-color: var(--accent-green); }
 
         .btn-save-mini {
             background: var(--accent-green);
@@ -330,23 +302,23 @@
             padding: 20px 0;
         }
 
-        /* --- Bottom Nav & Modal (Synced w/ Index) --- */
+        /* --- Bottom Nav & Modal (Synced) --- */
         .bottom-nav {
             position: fixed;
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            width: calc(100% - 60px);
+            width: calc(100% - 60px); 
             max-width: 380px;
-            background: #0d0920;
+            background: #0d0920; 
             border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 30px;
+            border-radius: 30px; 
             display: flex;
             justify-content: space-around;
             align-items: center;
-            padding: 5px 10px;
+            padding: 5px 10px; 
             z-index: 100;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6); 
         }
 
         .nav-item {
@@ -355,466 +327,276 @@
             align-items: center;
             justify-content: center;
             gap: 4px;
-            width: 30%;
-            padding: 8px 0;
-            color: #6b7280;
+            width: 30%; 
+            padding: 8px 0; 
+            color: #6b7280; 
             text-decoration: none;
-            font-size: 0.65rem;
+            font-size: 0.65rem; 
             font-weight: 600;
             border-radius: 20px;
             transition: all 0.3s ease;
             cursor: pointer;
         }
 
-        .nav-item i {
-            font-size: 1.1rem;
-        }
-
-        .nav-item:hover:not(.active) {
-            color: #a78bfa;
-        }
+        .nav-item i { font-size: 1.1rem; }
+        .nav-item:hover:not(.active) { color: #a78bfa; }
 
         .nav-item.active {
-            background: var(--accent-green);
-            color: var(--bg-dark);
-            box-shadow: 0 0 15px rgba(105, 240, 174, 0.2);
+            background: var(--accent-green); 
+            color: var(--bg-dark); 
+            box-shadow: 0 0 15px rgba(105, 240, 174, 0.2); 
         }
 
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            z-index: 999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .bottom-sheet { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%); width: 100%; max-width: 430px; /* Matched strict mobile dimensions */ max-height: 85vh; background: var(--bg-card); border-top: 1px solid var(--border-dim); border-radius: 32px 32px 0 0; padding: 20px 20px 0 20px; z-index: 1000; transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1); display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
+        .bottom-sheet.active { transform: translateX(-50%) translateY(0); }
+        .drag-handle { width: 40px; height: 5px; background: var(--border-dim); border-radius: 5px; margin: 0 auto 20px auto; }
+        .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .sheet-title { font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+        .close-btn { background: var(--bg-card-inner); border: 1px solid var(--border-dim); border-radius: 50%; width: 32px; height: 32px; color: var(--text-muted); cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s; }
+        .close-btn:hover { color: var(--text-main); background: #2a2444; }
+        .sheet-content { overflow-y: auto; padding-bottom: 40px; -ms-overflow-style: none; scrollbar-width: none; }
+        .sheet-content::-webkit-scrollbar { display: none; }
+        .section-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin: 15px 0 15px 5px; }
+        .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px 10px; margin-bottom: 25px; }
+        .app-icon-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; text-decoration: none; cursor: pointer; transition: transform 0.1s; }
+        .app-icon-btn:active { transform: scale(0.92); }
+        .app-icon-circle { width: 56px; height: 56px; background: var(--bg-card-inner); border: 1px solid var(--border-dim); border-radius: 18px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; transition: border-color 0.3s; }
+        .app-icon-btn:hover .app-icon-circle { border-color: rgba(255,255,255,0.2); }
+        .app-icon-label { font-size: 0.65rem; font-weight: 600; text-align: center; color: var(--text-muted); }
 
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .bottom-sheet {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%) translateY(100%);
-            width: 100%;
-            max-width: 480px;
-            max-height: 85vh;
-            background: var(--bg-card);
-            border-top: 1px solid var(--border-dim);
-            border-radius: 32px 32px 0 0;
-            padding: 20px 20px 0 20px;
-            z-index: 1000;
-            transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1);
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8);
-        }
-
-        .bottom-sheet.active {
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .drag-handle {
-            width: 40px;
-            height: 5px;
-            background: var(--border-dim);
-            border-radius: 5px;
-            margin: 0 auto 20px auto;
-        }
-
-        .sheet-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .sheet-title {
-            font-size: 1.1rem;
-            font-weight: 800;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .close-btn {
-            background: var(--bg-card-inner);
-            border: 1px solid var(--border-dim);
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            color: var(--text-muted);
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.2s;
-        }
-
-        .close-btn:hover {
-            color: var(--text-main);
-            background: #2a2444;
-        }
-
-        .sheet-content {
-            overflow-y: auto;
-            padding-bottom: 40px;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        .sheet-content::-webkit-scrollbar {
-            display: none;
-        }
-
-        .section-label {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin: 15px 0 15px 5px;
-        }
-
-        .app-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px 10px;
-            margin-bottom: 25px;
-        }
-
-        .app-icon-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: transform 0.1s;
-        }
-
-        .app-icon-btn:active {
-            transform: scale(0.92);
-        }
-
-        .app-icon-circle {
-            width: 56px;
-            height: 56px;
-            background: var(--bg-card-inner);
-            border: 1px solid var(--border-dim);
-            border-radius: 18px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5rem;
-            transition: border-color 0.3s;
-        }
-
-        .app-icon-btn:hover .app-icon-circle {
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .app-icon-label {
-            font-size: 0.65rem;
-            font-weight: 600;
-            text-align: center;
-            color: var(--text-muted);
-        }
     </style>
 </head>
-
 <body>
 
-    <div class="app-container">
+<div class="app-container">
+    
+    <header>
+        <button class="icon-btn" onclick="window.location.href='index.html'"><i class="fa-solid fa-arrow-left"></i></button>
+        <h1>Health & Bio</h1>
+    </header>
 
-        <header>
-            <button class="icon-btn" onclick="window.location.href='index.html'"><i
-                    class="fa-solid fa-arrow-left"></i></button>
-            <h1>Health & Bio</h1>
-        </header>
-
-        <div class="section-title">Dashboard Affirmation</div>
-        <div class="card">
-            <div class="quote-display" id="current-quote">"Loading system quote..."</div>
-            <div class="quote-input-group">
-                <input type="text" id="quote-input" class="custom-input" placeholder="Enter daily quote/affirmation...">
-                <button class="btn-set" onclick="updateGlobalQuote()">SYNC</button>
-            </div>
+    <div class="section-title">Dashboard Affirmation</div>
+    <div class="card">
+        <div class="quote-display" id="current-quote">"Loading system quote..."</div>
+        <div class="quote-input-group">
+            <input type="text" id="quote-input" class="custom-input" placeholder="Enter daily quote/affirmation...">
+            <button class="btn-set" onclick="updateGlobalQuote()">SYNC</button>
         </div>
+    </div>
 
-        <div class="section-title">Today's Bio-Metrics</div>
-        <div class="card" style="padding: 15px;">
-
-            <div class="metrics-grid">
-
-                <div class="metric-cell" style="border-color: rgba(6, 182, 212, 0.2);">
-                    <div class="metric-header">
-                        <span>Hydration</span>
-                        <i class="fa-solid fa-droplet color-water"></i>
-                    </div>
-                    <div>
-                        <span class="metric-val color-water" id="val-water">0</span>
-                        <span class="metric-unit">Liters</span>
-                    </div>
-                    <button class="btn-quick-add" onclick="updateMetric('water', 0.25)">
-                        <i class="fa-solid fa-plus"></i> 250ml Glass
-                    </button>
+    <div class="section-title">Today's Bio-Metrics</div>
+    <div class="card" style="padding: 15px;">
+        
+        <div class="metrics-grid">
+            
+            <div class="metric-cell" style="border-color: rgba(6, 182, 212, 0.2);">
+                <div class="metric-header">
+                    <span>Hydration</span>
+                    <i class="fa-solid fa-droplet color-water"></i>
                 </div>
-
-                <div class="metric-cell" style="border-color: rgba(249, 115, 22, 0.2);">
-                    <div class="metric-header">
-                        <span>Caffeine</span>
-                        <i class="fa-solid fa-mug-hot color-caffeine"></i>
-                    </div>
-                    <div>
-                        <span class="metric-val color-caffeine" id="val-caffeine">0</span>
-                        <span class="metric-unit">Cups</span>
-                    </div>
-                    <button class="btn-quick-add" onclick="updateMetric('caffeine', 1)">
-                        <i class="fa-solid fa-plus"></i> 1 Coffee/Tea
-                    </button>
+                <div>
+                    <span class="metric-val color-water" id="val-water">0</span>
+                    <span class="metric-unit">Liters</span>
                 </div>
-
+                <button class="btn-quick-add" onclick="updateMetric('water', 0.25)">
+                    <i class="fa-solid fa-plus"></i> 250ml Glass
+                </button>
             </div>
 
-            <div class="manual-log-row">
-                <label for="input-meditation"><i class="fa-solid fa-om color-meditation"></i> Meditation (Mins)</label>
-                <input type="number" id="input-meditation" class="mini-input" value="0">
-                <button class="btn-save-mini" onclick="saveManualInput('meditation')"><i
-                        class="fa-solid fa-check"></i></button>
-            </div>
-
-            <div class="manual-log-row">
-                <label for="input-sleep"><i class="fa-solid fa-moon color-sleep"></i> Sleep Duration (Hrs)</label>
-                <input type="number" step="0.5" id="input-sleep" class="mini-input" value="0">
-                <button class="btn-save-mini" onclick="saveManualInput('sleep')"><i
-                        class="fa-solid fa-check"></i></button>
-            </div>
-
-            <div class="manual-log-row">
-                <label for="input-energy"><i class="fa-solid fa-battery-half" style="color: #eab308;"></i> Energy Level
-                    (1-10)</label>
-                <input type="number" min="1" max="10" id="input-energy" class="mini-input" value="5">
-                <button class="btn-save-mini" onclick="saveManualInput('energy')"><i
-                        class="fa-solid fa-check"></i></button>
+            <div class="metric-cell" style="border-color: rgba(249, 115, 22, 0.2);">
+                <div class="metric-header">
+                    <span>Caffeine</span>
+                    <i class="fa-solid fa-mug-hot color-caffeine"></i>
+                </div>
+                <div>
+                    <span class="metric-val color-caffeine" id="val-caffeine">0</span>
+                    <span class="metric-unit">Cups</span>
+                </div>
+                <button class="btn-quick-add" onclick="updateMetric('caffeine', 1)">
+                    <i class="fa-solid fa-plus"></i> 1 Coffee/Tea
+                </button>
             </div>
 
         </div>
 
-        <div class="section-title">Previous Logs</div>
-        <div class="history-list" id="history-log">
+        <div class="manual-log-row">
+            <label for="input-meditation"><i class="fa-solid fa-om color-meditation"></i> Meditation (Mins)</label>
+            <input type="number" id="input-meditation" class="mini-input" value="0">
+            <button class="btn-save-mini" onclick="saveManualInput('meditation')"><i class="fa-solid fa-check"></i></button>
+        </div>
+
+        <div class="manual-log-row">
+            <label for="input-energy"><i class="fa-solid fa-battery-half" style="color: #eab308;"></i> Energy Level (1-10)</label>
+            <input type="number" min="1" max="10" id="input-energy" class="mini-input" value="5">
+            <button class="btn-save-mini" onclick="saveManualInput('energy')"><i class="fa-solid fa-check"></i></button>
         </div>
 
     </div>
 
-    <div class="bottom-nav">
-        <a href="index.html" class="nav-item">
-            <i class="fa-solid fa-grip"></i>
-            <span>Dashboard</span>
-        </a>
-        <div class="nav-item active" onclick="toggleActivityModal()">
-            <i class="fa-regular fa-rectangle-list"></i>
-            <span>Activity</span>
+    <div class="section-title">Previous Logs</div>
+    <div class="history-list" id="history-log">
         </div>
-        <a href="analyzer.html" class="nav-item">
-            <i class="fa-solid fa-chart-column"></i>
-            <span>Analytics</span>
-        </a>
+
+</div>
+
+<div class="bottom-nav">
+    <a href="index.html" class="nav-item">
+        <i class="fa-solid fa-grip"></i>
+        <span>Dashboard</span>
+    </a>
+    <div class="nav-item active" onclick="toggleActivityModal()">
+        <i class="fa-regular fa-rectangle-list"></i>
+        <span>Activity</span>
+    </div>
+    <a href="analyzer.html" class="nav-item">
+        <i class="fa-solid fa-chart-column"></i>
+        <span>Analytics</span>
+    </a>
+</div>
+
+<div class="modal-overlay" id="activity-overlay" onclick="toggleActivityModal()"></div>
+<div class="bottom-sheet" id="activity-sheet">
+    <div class="drag-handle"></div>
+    <div class="sheet-header">
+        <h2 class="sheet-title">System Modules</h2>
+        <button class="close-btn" onclick="toggleActivityModal()"><i class="fa-solid fa-xmark"></i></button>
     </div>
 
-    <div class="modal-overlay" id="activity-overlay" onclick="toggleActivityModal()"></div>
-    <div class="bottom-sheet" id="activity-sheet">
-        <div class="drag-handle"></div>
-        <div class="sheet-header">
-            <h2 class="sheet-title">System Modules</h2>
-            <button class="close-btn" onclick="toggleActivityModal()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="sheet-content">
+        <div class="section-label">PROTOCOLS</div>
+        <div class="app-grid">
+            <a href="todo.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-solid fa-square-check"></i></div><span class="app-icon-label">Tasks</span></a>
+            <a href="rituals.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #eab308;"><i class="fa-regular fa-sun"></i></div><span class="app-icon-label">Rituals</span></a>
+            <a href="habits.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-regular fa-calendar-check"></i></div><span class="app-icon-label">Habits</span></a>
         </div>
-
-        <div class="sheet-content">
-            <div class="section-label">PROTOCOLS</div>
-            <div class="app-grid">
-                <a href="todo.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-solid fa-square-check"></i></div>
-                    <span class="app-icon-label">Tasks</span>
-                </a>
-                <a href="rituals.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #eab308;"><i class="fa-regular fa-sun"></i></div>
-                    <span class="app-icon-label">Rituals</span>
-                </a>
-                <a href="habits.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-regular fa-calendar-check"></i>
-                    </div>
-                    <span class="app-icon-label">Habits</span>
-                </a>
-            </div>
-
-            <div class="section-label">TIME & MACRO</div>
-            <div class="app-grid">
-                <a href="schedule.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #ffffff;"><i class="fa-regular fa-calendar"></i></div>
-                    <span class="app-icon-label">Schedule</span>
-                </a>
-                <a href="weekly.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-border-all"></i></div>
-                    <span class="app-icon-label">Matrix</span>
-                </a>
-            </div>
-
-            <div class="section-label">BIO & WEALTH</div>
-            <div class="app-grid">
-                <a href="health.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-heart-pulse"></i></div>
-                    <span class="app-icon-label">Health</span>
-                </a>
-                <a href="sleep.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-moon"></i></div>
-                    <span class="app-icon-label">Sleep</span>
-                </a>
-                <a href="budget.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-wallet"></i></div>
-                    <span class="app-icon-label">Finance</span>
-                </a>
-                <a href="diet.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: var(--accent-green);"><i
-                            class="fa-solid fa-apple-whole"></i></div>
-                    <span class="app-icon-label">Diet</span>
-                </a>
-            </div>
-
-            <div class="section-label">DATA & KNOWLEDGE</div>
-            <div class="app-grid">
-                <a href="academics.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-graduation-cap"></i>
-                    </div>
-                    <span class="app-icon-label">Academics</span>
-                </a>
-                <a href="library.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-book"></i></div>
-                    <span class="app-icon-label">Library</span>
-                </a>
-                <a href="analyzer.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: var(--accent-green);"><i
-                            class="fa-solid fa-chart-line"></i></div>
-                    <span class="app-icon-label">Analytics</span>
-                </a>
-            </div>
+        <div class="section-label">TIME & MACRO</div>
+        <div class="app-grid">
+            <a href="schedule.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #ffffff;"><i class="fa-regular fa-calendar"></i></div><span class="app-icon-label">Schedule</span></a>
+            <a href="weekly.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-border-all"></i></div><span class="app-icon-label">Matrix</span></a>
+        </div>
+        <div class="section-label">BIO & WEALTH</div>
+        <div class="app-grid">
+            <a href="health.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-heart-pulse"></i></div><span class="app-icon-label">Health</span></a>
+            <a href="sleep.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-moon"></i></div><span class="app-icon-label">Sleep</span></a>
+            <a href="budget.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-wallet"></i></div><span class="app-icon-label">Finance</span></a>
+            <a href="diet.html" class="app-icon-btn"><div class="app-icon-circle" style="color: var(--accent-green);"><i class="fa-solid fa-apple-whole"></i></div><span class="app-icon-label">Diet</span></a>
+        </div>
+        <div class="section-label">DATA & KNOWLEDGE</div>
+        <div class="app-grid">
+            <a href="academics.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-graduation-cap"></i></div><span class="app-icon-label">Academics</span></a>
+            <a href="library.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-book"></i></div><span class="app-icon-label">Library</span></a>
+            <a href="analyzer.html" class="app-icon-btn"><div class="app-icon-circle" style="color: var(--accent-green);"><i class="fa-solid fa-chart-line"></i></div><span class="app-icon-label">Analytics</span></a>
         </div>
     </div>
+</div>
 
-    <script>
-        // --- Data Management System ---
-        const todayStr = new Date().toISOString().split('T')[0];
-        let healthData = JSON.parse(localStorage.getItem('system_os_health')) || {};
-        let globalQuote = localStorage.getItem('system_os_quote') || '"Success is the sum of small efforts, repeated day in and day out."';
+<script>
+    // --- Data Management System ---
+    const todayStr = new Date().toISOString().split('T')[0];
+    let healthData = JSON.parse(localStorage.getItem('system_os_health')) || {};
+    let globalQuote = localStorage.getItem('system_os_quote') || '"Success is the sum of small efforts, repeated day in and day out."';
 
-        // Initialize Today's Data if it doesn't exist
-        if (!healthData[todayStr]) {
-            healthData[todayStr] = { water: 0, caffeine: 0, meditation: 0, sleep: 0, energy: 5 };
-        }
+    // Initialize Today's Data if it doesn't exist
+    if (!healthData[todayStr]) {
+        healthData[todayStr] = { water: 0, caffeine: 0, meditation: 0, energy: 5 };
+    }
 
-        // --- Global Quote Logic ---
-        function initQuote() {
+    // --- Global Quote Logic ---
+    function initQuote() {
+        document.getElementById('current-quote').textContent = globalQuote;
+    }
+
+    function updateGlobalQuote() {
+        const input = document.getElementById('quote-input');
+        if (input.value.trim() !== '') {
+            globalQuote = `"${input.value.trim()}"`;
+            localStorage.setItem('system_os_quote', globalQuote);
             document.getElementById('current-quote').textContent = globalQuote;
+            input.value = '';
         }
+    }
 
-        function updateGlobalQuote() {
-            const input = document.getElementById('quote-input');
-            if (input.value.trim() !== '') {
-                globalQuote = `"${input.value.trim()}"`;
-                localStorage.setItem('system_os_quote', globalQuote);
-                document.getElementById('current-quote').textContent = globalQuote;
-                input.value = '';
-            }
-        }
+    // --- Daily Bio-Metrics Logic ---
+    function updateMetric(key, increment) {
+        healthData[todayStr][key] += increment;
+        saveAndRender();
+    }
 
-        // --- Daily Bio-Metrics Logic ---
-        function updateMetric(key, increment) {
-            healthData[todayStr][key] += increment;
+    function saveManualInput(key) {
+        const val = parseFloat(document.getElementById(`input-${key}`).value);
+        if (!isNaN(val) && val >= 0) {
+            healthData[todayStr][key] = val;
             saveAndRender();
         }
+    }
 
-        function saveManualInput(key) {
-            const val = parseFloat(document.getElementById(`input-${key}`).value);
-            if (!isNaN(val) && val >= 0) {
-                healthData[todayStr][key] = val;
-                saveAndRender();
-            }
-        }
+    function saveAndRender() {
+        localStorage.setItem('system_os_health', JSON.stringify(healthData));
+        renderToday();
+        renderHistory();
+    }
 
-        function saveAndRender() {
-            localStorage.setItem('system_os_health', JSON.stringify(healthData));
-            renderToday();
-            renderHistory();
-        }
+    function renderToday() {
+        const data = healthData[todayStr];
+        document.getElementById('val-water').textContent = data.water || 0;
+        document.getElementById('val-caffeine').textContent = data.caffeine || 0;
+        document.getElementById('input-meditation').value = data.meditation || 0;
+        document.getElementById('input-energy').value = data.energy || 5;
+    }
 
-        function renderToday() {
-            const data = healthData[todayStr];
-            document.getElementById('val-water').textContent = data.water;
-            document.getElementById('val-caffeine').textContent = data.caffeine;
-            document.getElementById('input-meditation').value = data.meditation;
-            document.getElementById('input-sleep').value = data.sleep;
-            document.getElementById('input-energy').value = data.energy;
-        }
+    function renderHistory() {
+        const historyContainer = document.getElementById('history-log');
+        historyContainer.innerHTML = '';
 
-        function renderHistory() {
-            const historyContainer = document.getElementById('history-log');
-            historyContainer.innerHTML = '';
+        const dates = Object.keys(healthData).sort((a, b) => new Date(b) - new Date(a));
+        let hasHistory = false;
 
-            const dates = Object.keys(healthData).sort((a, b) => new Date(b) - new Date(a));
-            let hasHistory = false;
+        dates.forEach(date => {
+            if (date === todayStr) return; // Skip today
+            
+            hasHistory = true;
+            const data = healthData[date];
+            const dateObj = new Date(date);
+            const dateDisplay = dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 
-            dates.forEach(date => {
-                if (date === todayStr) return; // Skip today
-
-                hasHistory = true;
-                const data = healthData[date];
-                const dateObj = new Date(date);
-                const dateDisplay = dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-
-                const card = document.createElement('div');
-                card.className = 'history-card';
-                card.innerHTML = `
+            const card = document.createElement('div');
+            card.className = 'history-card';
+            card.innerHTML = `
                 <div class="history-date">${dateDisplay}</div>
                 <div class="history-stats">
-                    <div class="h-stat"><i class="fa-solid fa-droplet color-water"></i> Water: <span>${data.water}L</span></div>
-                    <div class="h-stat"><i class="fa-solid fa-mug-hot color-caffeine"></i> Caffeine: <span>${data.caffeine} cups</span></div>
-                    <div class="h-stat"><i class="fa-solid fa-moon color-sleep"></i> Sleep: <span>${data.sleep}h</span></div>
-                    <div class="h-stat"><i class="fa-solid fa-om color-meditation"></i> Zen: <span>${data.meditation}m</span></div>
+                    <div class="h-stat"><i class="fa-solid fa-droplet color-water"></i> Water: <span>${data.water || 0}L</span></div>
+                    <div class="h-stat"><i class="fa-solid fa-mug-hot color-caffeine"></i> Caffeine: <span>${data.caffeine || 0} cups</span></div>
+                    <div class="h-stat"><i class="fa-solid fa-om color-meditation"></i> Zen: <span>${data.meditation || 0}m</span></div>
+                    <div class="h-stat"><i class="fa-solid fa-battery-half" style="color: #eab308;"></i> Energy: <span>${data.energy || 5}/10</span></div>
                 </div>
             `;
-                historyContainer.appendChild(card);
-            });
-
-            if (!hasHistory) {
-                historyContainer.innerHTML = `<div class="empty-history">No previous bio-data logged. History will generate tomorrow.</div>`;
-            }
-        }
-
-        // --- App Drawer Modal ---
-        function toggleActivityModal() {
-            const overlay = document.getElementById('activity-overlay');
-            const sheet = document.getElementById('activity-sheet');
-            overlay.classList.toggle('active');
-            sheet.classList.toggle('active');
-            document.body.style.overflow = sheet.classList.contains('active') ? 'hidden' : '';
-        }
-
-        // --- Init ---
-        document.addEventListener('DOMContentLoaded', () => {
-            initQuote();
-            renderToday();
-            renderHistory();
+            historyContainer.appendChild(card);
         });
 
-    </script>
+        if (!hasHistory) {
+            historyContainer.innerHTML = `<div class="empty-history">No previous bio-data logged. History will generate tomorrow.</div>`;
+        }
+    }
+
+    // --- App Drawer Modal ---
+    function toggleActivityModal() {
+        const overlay = document.getElementById('activity-overlay');
+        const sheet = document.getElementById('activity-sheet');
+        overlay.classList.toggle('active');
+        sheet.classList.toggle('active');
+        document.body.style.overflow = sheet.classList.contains('active') ? 'hidden' : '';
+    }
+
+    // --- Init ---
+    document.addEventListener('DOMContentLoaded', () => {
+        initQuote();
+        renderToday();
+        renderHistory();
+    });
+
+</script>
 
 </body>
-
 </html>

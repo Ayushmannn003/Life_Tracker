@@ -42,15 +42,21 @@
             min-height: 100vh;
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .app-container {
             width: 100%;
-            max-width: 480px;
+            max-width: 430px; /* Locked to strict mobile dimensions */
             min-height: 100vh;
-            padding: 20px 20px 100px 20px; /* Padding for bottom nav */
+            padding: 20px 20px 100px 20px;
             overflow-x: hidden;
             display: flex;
             flex-direction: column;
             position: relative;
+            animation: fadeIn 0.4s ease-out forwards;
         }
 
         /* --- Header --- */
@@ -310,14 +316,14 @@
         .btn-submit:active { transform: scale(0.98); }
         .btn-submit:hover { filter: brightness(1.1); }
 
-        /* --- Smaller Bottom Navigation (Synced w/ Index) --- */
+        /* --- Shared Bottom Nav & App Drawer --- */
         .bottom-nav {
             position: fixed;
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             width: calc(100% - 60px); 
-            max-width: 380px;
+            max-width: 380px; 
             background: #0d0920; 
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 30px; 
@@ -348,45 +354,11 @@
 
         .nav-item i { font-size: 1.1rem; }
         .nav-item:hover:not(.active) { color: #a78bfa; }
+        .nav-item.active { background: #6DF2B5; color: #070414; box-shadow: 0 0 15px rgba(109, 242, 181, 0.2); }
 
-        .nav-item.active {
-            background: var(--accent-green); 
-            color: var(--bg-dark); 
-            box-shadow: 0 0 15px rgba(105, 240, 174, 0.2); 
-        }
-
-        /* --- App Drawer Modal (Bottom Sheet) --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(5px);
-            z-index: 999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
         .modal-overlay.active { opacity: 1; visibility: visible; }
-
-        .bottom-sheet {
-            position: fixed;
-            bottom: 0; left: 50%;
-            transform: translateX(-50%) translateY(100%);
-            width: 100%;
-            max-width: 480px;
-            max-height: 85vh;
-            background: var(--bg-card);
-            border-top: 1px solid var(--border-dim);
-            border-radius: 32px 32px 0 0;
-            padding: 20px 20px 0 20px;
-            z-index: 1000;
-            transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1);
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
-        }
-
+        .bottom-sheet { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%); width: 100%; max-width: 430px; /* Matched strict mobile dimensions */ max-height: 85vh; background: var(--bg-card); border-top: 1px solid var(--border-dim); border-radius: 32px 32px 0 0; padding: 20px 20px 0 20px; z-index: 1000; transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1); display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
         .bottom-sheet.active { transform: translateX(-50%) translateY(0); }
         .drag-handle { width: 40px; height: 5px; background: var(--border-dim); border-radius: 5px; margin: 0 auto 20px auto; }
         .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -396,7 +368,6 @@
         .sheet-content { overflow-y: auto; padding-bottom: 40px; -ms-overflow-style: none; scrollbar-width: none; }
         .sheet-content::-webkit-scrollbar { display: none; }
         .section-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin: 15px 0 15px 5px; }
-        
         .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px 10px; margin-bottom: 25px; }
         .app-icon-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; text-decoration: none; cursor: pointer; transition: transform 0.1s; }
         .app-icon-btn:active { transform: scale(0.92); }
@@ -497,76 +468,73 @@
         <button class="close-btn" onclick="toggleActivityModal()"><i class="fa-solid fa-xmark"></i></button>
     </div>
 
-        <div class="sheet-content">
-            <div class="section-label">PROTOCOLS</div>
-            <div class="app-grid">
-                <a href="todo.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-solid fa-square-check"></i></div>
-                    <span class="app-icon-label">Tasks</span>
-                </a>
-                <a href="rituals.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #eab308;"><i class="fa-regular fa-sun"></i></div>
-                    <span class="app-icon-label">Rituals</span>
-                </a>
-                <a href="habits.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-regular fa-calendar-check"></i>
-                    </div>
-                    <span class="app-icon-label">Habits</span>
-                </a>
+    <div class="sheet-content">
+        <div class="section-label">PROTOCOLS</div>
+        <div class="app-grid">
+            <a href="todo.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-solid fa-square-check"></i></div>
+                <span class="app-icon-label">Tasks</span>
+            </a>
+            <a href="rituals.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #eab308;"><i class="fa-regular fa-sun"></i></div>
+                <span class="app-icon-label">Rituals</span>
+            </a>
+            <a href="habits.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-regular fa-calendar-check"></i></div>
+                <span class="app-icon-label">Habits</span>
+            </a>
             </div>
 
-            <div class="section-label">TIME & MACRO</div>
-            <div class="app-grid">
-                <a href="schedule.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #ffffff;"><i class="fa-regular fa-calendar"></i></div>
-                    <span class="app-icon-label">Schedule</span>
-                </a>
-                <a href="weekly.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-border-all"></i></div>
-                    <span class="app-icon-label">Matrix</span>
-                </a>
+        <div class="section-label">TIME & MACRO</div>
+        <div class="app-grid">
+            <a href="schedule.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #ffffff;"><i class="fa-regular fa-calendar"></i></div>
+                <span class="app-icon-label">Schedule</span>
+            </a>
+            <a href="weekly.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-border-all"></i></div>
+                <span class="app-icon-label">Matrix</span>
+            </a>
             </div>
 
-            <div class="section-label">BIO & WEALTH</div>
-            <div class="app-grid">
-                <a href="health.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-heart-pulse"></i></div>
-                    <span class="app-icon-label">Health</span>
-                </a>
-                <a href="sleep.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-moon"></i></div>
-                    <span class="app-icon-label">Sleep</span>
-                </a>
-                <a href="budget.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-wallet"></i></div>
-                    <span class="app-icon-label">Finance</span>
-                </a>
-                <a href="diet.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: var(--accent-green);"><i
-                            class="fa-solid fa-apple-whole"></i></div>
-                    <span class="app-icon-label">Diet</span>
-                </a>
-            </div>
+        <div class="section-label">BIO & WEALTH</div>
+        <div class="app-grid">
+            <a href="health.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-heart-pulse"></i></div>
+                <span class="app-icon-label">Health</span>
+            </a>
+            <a href="sleep.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-moon"></i></div>
+                <span class="app-icon-label">Sleep</span>
+            </a>
+            <a href="budget.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-wallet"></i></div>
+                <span class="app-icon-label">Finance</span>
+            </a>
+            <a href="diet.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: var(--accent-green);"><i class="fa-solid fa-apple-whole"></i></div>
+                <span class="app-icon-label">Diet</span>
+            </a>
+        </div>
 
-            <div class="section-label">DATA & KNOWLEDGE</div>
-            <div class="app-grid">
-                <a href="academics.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-graduation-cap"></i>
-                    </div>
-                    <span class="app-icon-label">Academics</span>
-                </a>
-                <a href="library.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-book"></i></div>
-                    <span class="app-icon-label">Library</span>
-                </a>
-                <a href="analyzer.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: var(--accent-green);"><i
-                            class="fa-solid fa-chart-line"></i></div>
-                    <span class="app-icon-label">Analytics</span>
-                </a>
-            </div>
+        <div class="section-label">DATA & KNOWLEDGE</div>
+        <div class="app-grid">
+            <a href="academics.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-graduation-cap"></i></div>
+                <span class="app-icon-label">Academics</span>
+            </a>
+            <a href="library.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-book"></i></div>
+                <span class="app-icon-label">Library</span>
+            </a>
+            <a href="analyzer.html" class="app-icon-btn">
+                <div class="app-icon-circle" style="color: var(--accent-green);"><i class="fa-solid fa-chart-line"></i></div>
+                <span class="app-icon-label">Analytics</span>
+            </a>
         </div>
     </div>
+</div>
+
 <script>
     const daysArr = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
     let currentDay = daysArr[new Date().getDay()]; // Automatically detects current day

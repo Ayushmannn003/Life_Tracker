@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Library</title>
+    <title>Knowledge Library</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -15,10 +15,9 @@
             --text-main: #ffffff;
             --text-muted: #9ca3af;
             --accent-green: #69f0ae;
-            --accent-green-dim: rgba(105, 240, 174, 0.15);
-            --accent-purple: #a855f7;
             --accent-blue: #3b82f6;
-            --accent-orange: #f59e0b;
+            --accent-purple: #a855f7;
+            --accent-yellow: #eab308;
             --accent-red: #ef4444;
             --border-dim: #2a2444;
         }
@@ -46,7 +45,7 @@
 
         .app-container {
             width: 100%;
-            max-width: 480px;
+            max-width: 430px; /* Locked to strict mobile dimensions */
             padding: 20px 20px 100px 20px;
             overflow-x: hidden;
             position: relative;
@@ -80,7 +79,7 @@
             text-transform: uppercase;
         }
 
-        /* --- UI Cards --- */
+        /* --- Global Form Inputs --- */
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border-dim);
@@ -103,224 +102,200 @@
             gap: 8px;
         }
 
-        /* --- Stats Row --- */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .stat-cell {
-            background: var(--bg-card-inner);
-            border: 1px solid var(--border-dim);
-            border-radius: 16px;
-            padding: 12px;
+        .form-group {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 4px;
+            gap: 12px;
         }
 
-        .stat-val {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: var(--text-main);
+        .form-row-2 {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 10px;
         }
 
-        .stat-label {
-            font-size: 0.65rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-        }
-
-        /* --- Form Inputs --- */
         .custom-input {
             background: var(--bg-card-inner);
             border: 1px solid transparent;
             color: var(--text-main);
-            padding: 14px;
+            padding: 14px 15px;
             border-radius: 14px;
             font-size: 0.95rem;
             outline: none;
             transition: border-color 0.2s;
             width: 100%;
-            margin-bottom: 12px;
         }
 
         .custom-input:focus { border-color: var(--accent-blue); }
 
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 5px;
-        }
-
         .btn-add {
             background: var(--accent-blue);
-            color: var(--text-main);
+            color: var(--bg-dark);
             border: none;
             border-radius: 14px;
-            padding: 14px;
+            padding: 14px 0;
             font-size: 0.95rem;
             font-weight: 800;
             cursor: pointer;
-            width: 100%;
             transition: transform 0.1s, filter 0.2s;
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 8px;
+            text-transform: uppercase;
+            width: 100%;
+            margin-top: 5px;
         }
 
         .btn-add:active { transform: scale(0.95); }
         .btn-add:hover { filter: brightness(1.1); }
 
-        /* --- Visual Bookshelf Grid --- */
-        .library-grid {
+        /* --- Filter Navigation --- */
+        .filter-nav {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            -ms-overflow-style: none;  
+            scrollbar-width: none;  
+        }
+        
+        .filter-nav::-webkit-scrollbar { display: none; }
+
+        .filter-pill {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .filter-pill.active {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: var(--bg-dark);
+        }
+
+        /* --- Visual Archive Grid --- */
+        .archive-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
             margin-bottom: 20px;
         }
 
-        .book-card {
+        .archive-card {
             background: var(--bg-card-inner);
             border: 1px solid var(--border-dim);
-            border-radius: 16px;
-            overflow: hidden;
+            border-radius: 18px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .book-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        /* Generated Cover Art Gradients */
-        .book-cover {
-            height: 90px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2rem;
-            color: rgba(255, 255, 255, 0.4);
+            justify-content: space-between;
             position: relative;
-        }
-        
-        .cover-book { background: linear-gradient(135deg, #6b21a8, #a855f7); }
-        .cover-article { background: linear-gradient(135deg, #1e3a8a, #3b82f6); }
-        .cover-video { background: linear-gradient(135deg, #9a3412, #f59e0b); }
-
-        .book-info {
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s;
+            min-height: 140px;
         }
 
-        .b-title {
-            font-size: 0.9rem;
+        .archive-card:active { transform: scale(0.97); }
+
+        /* Type specific top borders */
+        .type-book { border-top: 4px solid var(--accent-blue); }
+        .type-article { border-top: 4px solid var(--accent-yellow); }
+        .type-video { border-top: 4px solid var(--accent-purple); }
+
+        .archive-icon {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+        .type-book .archive-icon { color: var(--accent-blue); }
+        .type-article .archive-icon { color: var(--accent-yellow); }
+        .type-video .archive-icon { color: var(--accent-purple); }
+
+        .archive-title {
+            font-size: 0.95rem;
             font-weight: 700;
             color: var(--text-main);
             margin-bottom: 4px;
             line-height: 1.3;
             display: -webkit-box;
-            -webkit-line-clamp: 2;
+            -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
 
-        .b-author {
-            font-size: 0.75rem;
+        .archive-source {
+            font-size: 0.7rem;
+            font-weight: 600;
             color: var(--text-muted);
-            margin-bottom: 12px;
-            flex-grow: 1;
+            margin-bottom: 10px;
         }
 
-        .card-actions {
+        .card-bottom {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-top: auto;
         }
 
-        .status-badge {
-            padding: 4px 10px;
+        .status-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-dim);
+            color: var(--text-muted);
             border-radius: 8px;
+            padding: 4px 8px;
             font-size: 0.65rem;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
             cursor: pointer;
-            user-select: none;
             transition: all 0.2s;
         }
 
-        .status-queued { background: rgba(255, 255, 255, 0.1); color: var(--text-muted); }
-        .status-reading { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
-        .status-completed { background: var(--accent-green-dim); color: var(--accent-green); }
+        .archive-card.completed .status-btn {
+            background: var(--accent-green-dim);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
 
         .delete-btn {
             background: none;
             border: none;
             color: var(--text-muted);
+            font-size: 0.9rem;
             cursor: pointer;
             transition: color 0.2s;
-            font-size: 0.9rem;
         }
-        
+
         .delete-btn:hover { color: var(--accent-red); }
 
-        .empty-state { grid-column: 1 / -1; text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 20px 0; font-style: italic; }
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            padding: 30px 0;
+            font-style: italic;
+            border: 1px dashed var(--border-dim);
+            border-radius: 18px;
+        }
 
         /* --- Shared Bottom Nav & App Drawer --- */
-        .bottom-nav {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: calc(100% - 60px); 
-            max-width: 380px;
-            background: #0d0920; 
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 30px; 
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 5px 10px; 
-            z-index: 100;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6); 
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            width: 30%; 
-            padding: 8px 0; 
-            color: #6b7280; 
-            text-decoration: none;
-            font-size: 0.65rem; 
-            font-weight: 600;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
+        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 60px); max-width: 380px; background: #0d0920; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 30px; display: flex; justify-content: space-around; align-items: center; padding: 5px 10px; z-index: 100; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 30%; padding: 8px 0; color: #6b7280; text-decoration: none; font-size: 0.65rem; font-weight: 600; border-radius: 20px; transition: all 0.3s ease; cursor: pointer; }
         .nav-item i { font-size: 1.1rem; }
         .nav-item:hover:not(.active) { color: #a78bfa; }
         .nav-item.active { background: #6DF2B5; color: #070414; box-shadow: 0 0 15px rgba(109, 242, 181, 0.2); }
 
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
         .modal-overlay.active { opacity: 1; visibility: visible; }
-        .bottom-sheet { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%); width: 100%; max-width: 480px; max-height: 85vh; background: var(--bg-card); border-top: 1px solid var(--border-dim); border-radius: 32px 32px 0 0; padding: 20px 20px 0 20px; z-index: 1000; transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1); display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
+        .bottom-sheet { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%); width: 100%; max-width: 430px; /* Matched strict mobile dimensions */ max-height: 85vh; background: var(--bg-card); border-top: 1px solid var(--border-dim); border-radius: 32px 32px 0 0; padding: 20px 20px 0 20px; z-index: 1000; transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1); display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
         .bottom-sheet.active { transform: translateX(-50%) translateY(0); }
         .drag-handle { width: 40px; height: 5px; background: var(--border-dim); border-radius: 5px; margin: 0 auto 20px auto; }
         .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -330,6 +305,7 @@
         .sheet-content { overflow-y: auto; padding-bottom: 40px; -ms-overflow-style: none; scrollbar-width: none; }
         .sheet-content::-webkit-scrollbar { display: none; }
         .section-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin: 15px 0 15px 5px; }
+        
         .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px 10px; margin-bottom: 25px; }
         .app-icon-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; text-decoration: none; cursor: pointer; transition: transform 0.1s; }
         .app-icon-btn:active { transform: scale(0.92); }
@@ -345,46 +321,33 @@
     
     <header>
         <button class="icon-btn" onclick="window.location.href='index.html'"><i class="fa-solid fa-arrow-left"></i></button>
-        <h1>Library</h1>
+        <h1>Knowledge Library</h1>
     </header>
 
-    <div class="stats-grid">
-        <div class="stat-cell">
-            <span class="stat-val" id="stat-total" style="color: var(--accent-blue);">0</span>
-            <span class="stat-label">Total Logs</span>
-        </div>
-        <div class="stat-cell">
-            <span class="stat-val" id="stat-reading" style="color: var(--accent-purple);">0</span>
-            <span class="stat-label">In Progress</span>
-        </div>
-        <div class="stat-cell">
-            <span class="stat-val" id="stat-completed" style="color: var(--accent-green);">0</span>
-            <span class="stat-label">Completed</span>
+    <div class="section-title"><i class="fa-solid fa-layer-group" style="color: var(--accent-blue);"></i> Input Terminal</div>
+    <div class="card">
+        <div class="form-group">
+            <input type="text" id="mat-title" class="custom-input" placeholder="Title (e.g. Atomic Habits, React JS Crash Course)">
+            <div class="form-row-2">
+                <input type="text" id="mat-source" class="custom-input" placeholder="Author / Channel">
+                <select id="mat-type" class="custom-input" style="color: var(--text-muted);">
+                    <option value="book">Book</option>
+                    <option value="article">Article</option>
+                    <option value="video">Video</option>
+                </select>
+            </div>
+            <button class="btn-add" onclick="addMaterial()"><i class="fa-solid fa-plus"></i> Add to Archive</button>
         </div>
     </div>
 
-    <div class="section-title"><i class="fa-solid fa-bookmark" style="color: var(--accent-blue);"></i> Add Resource</div>
-    <div class="card" style="margin-bottom: 20px;">
-        <input type="text" id="lib-title" class="custom-input" placeholder="Title (e.g., Deep Work)">
-        <input type="text" id="lib-author" class="custom-input" placeholder="Author / Source">
-        
-        <div class="form-row">
-            <select id="lib-type" class="custom-input" style="color: var(--text-muted); margin-bottom: 0;">
-                <option value="book">📘 Book</option>
-                <option value="article">📄 Article / Paper</option>
-                <option value="video">📺 Video / Course</option>
-            </select>
-            <select id="lib-status" class="custom-input" style="color: var(--text-muted); margin-bottom: 0;">
-                <option value="queued">Queued</option>
-                <option value="reading">In Progress</option>
-                <option value="completed">Completed</option>
-            </select>
-        </div>
-        <button class="btn-add" onclick="addResource()"><i class="fa-solid fa-plus"></i> Store in Library</button>
+    <div class="filter-nav" id="filter-nav">
+        <div class="filter-pill active" onclick="setFilter('all')">ALL</div>
+        <div class="filter-pill" onclick="setFilter('book')">BOOKS</div>
+        <div class="filter-pill" onclick="setFilter('article')">ARTICLES</div>
+        <div class="filter-pill" onclick="setFilter('video')">VIDEOS</div>
     </div>
 
-    <div class="section-title"><i class="fa-solid fa-layer-group" style="color: var(--text-main);"></i> The Archives</div>
-    <div class="library-grid" id="library-grid">
+    <div class="archive-grid" id="archive-grid">
         </div>
 
 </div>
@@ -412,186 +375,151 @@
         <button class="close-btn" onclick="toggleActivityModal()"><i class="fa-solid fa-xmark"></i></button>
     </div>
 
-        <div class="sheet-content">
-            <div class="section-label">PROTOCOLS</div>
-            <div class="app-grid">
-                <a href="todo.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-solid fa-square-check"></i></div>
-                    <span class="app-icon-label">Tasks</span>
-                </a>
-                <a href="rituals.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #eab308;"><i class="fa-regular fa-sun"></i></div>
-                    <span class="app-icon-label">Rituals</span>
-                </a>
-                <a href="habits.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-regular fa-calendar-check"></i>
-                    </div>
-                    <span class="app-icon-label">Habits</span>
-                </a>
-            </div>
-
-            <div class="section-label">TIME & MACRO</div>
-            <div class="app-grid">
-                <a href="schedule.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #ffffff;"><i class="fa-regular fa-calendar"></i></div>
-                    <span class="app-icon-label">Schedule</span>
-                </a>
-                <a href="weekly.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-border-all"></i></div>
-                    <span class="app-icon-label">Matrix</span>
-                </a>
-            </div>
-
-            <div class="section-label">BIO & WEALTH</div>
-            <div class="app-grid">
-                <a href="health.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-heart-pulse"></i></div>
-                    <span class="app-icon-label">Health</span>
-                </a>
-                <a href="sleep.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-moon"></i></div>
-                    <span class="app-icon-label">Sleep</span>
-                </a>
-                <a href="budget.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-wallet"></i></div>
-                    <span class="app-icon-label">Finance</span>
-                </a>
-                <a href="diet.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: var(--accent-green);"><i
-                            class="fa-solid fa-apple-whole"></i></div>
-                    <span class="app-icon-label">Diet</span>
-                </a>
-            </div>
-
-            <div class="section-label">DATA & KNOWLEDGE</div>
-            <div class="app-grid">
-                <a href="academics.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-graduation-cap"></i>
-                    </div>
-                    <span class="app-icon-label">Academics</span>
-                </a>
-                <a href="library.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-book"></i></div>
-                    <span class="app-icon-label">Library</span>
-                </a>
-                <a href="analyzer.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: var(--accent-green);"><i
-                            class="fa-solid fa-chart-line"></i></div>
-                    <span class="app-icon-label">Analytics</span>
-                </a>
-            </div>
+    <div class="sheet-content">
+        <div class="section-label">PROTOCOLS</div>
+        <div class="app-grid">
+            <a href="todo.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-solid fa-square-check"></i></div><span class="app-icon-label">Tasks</span></a>
+            <a href="rituals.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #eab308;"><i class="fa-regular fa-sun"></i></div><span class="app-icon-label">Rituals</span></a>
+            <a href="habits.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-regular fa-calendar-check"></i></div><span class="app-icon-label">Habits</span></a>
+        </div>
+        <div class="section-label">TIME & MACRO</div>
+        <div class="app-grid">
+            <a href="schedule.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #ffffff;"><i class="fa-regular fa-calendar"></i></div><span class="app-icon-label">Schedule</span></a>
+            <a href="weekly.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-border-all"></i></div><span class="app-icon-label">Matrix</span></a>
+        </div>
+        <div class="section-label">BIO & WEALTH</div>
+        <div class="app-grid">
+            <a href="health.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-heart-pulse"></i></div><span class="app-icon-label">Health</span></a>
+            <a href="sleep.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-moon"></i></div><span class="app-icon-label">Sleep</span></a>
+            <a href="budget.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-wallet"></i></div><span class="app-icon-label">Finance</span></a>
+            <a href="diet.html" class="app-icon-btn"><div class="app-icon-circle" style="color: var(--accent-green);"><i class="fa-solid fa-apple-whole"></i></div><span class="app-icon-label">Diet</span></a>
+        </div>
+        <div class="section-label">DATA & KNOWLEDGE</div>
+        <div class="app-grid">
+            <a href="academics.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-graduation-cap"></i></div><span class="app-icon-label">Academics</span></a>
+            <a href="library.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-book"></i></div><span class="app-icon-label">Library</span></a>
+            <a href="analyzer.html" class="app-icon-btn"><div class="app-icon-circle" style="color: var(--accent-green);"><i class="fa-solid fa-chart-line"></i></div><span class="app-icon-label">Analytics</span></a>
         </div>
     </div>
-<script>
-    // --- State Management ---
-    let library = JSON.parse(localStorage.getItem('system_os_library')) || [];
+</div>
 
-    // Select color fixes
-    ['lib-type', 'lib-status'].forEach(id => {
-        document.getElementById(id).addEventListener('change', function() {
-            this.style.color = 'var(--text-main)';
-        });
+<script>
+    // --- Data Management System ---
+    let libraryData = JSON.parse(localStorage.getItem('system_os_library_v2')) || [];
+    let currentFilter = 'all';
+
+    // Change select color on interaction
+    document.getElementById('mat-type').addEventListener('change', function() {
+        this.style.color = 'var(--text-main)';
     });
 
-    const statusLabels = {
-        'queued': 'Queue',
-        'reading': 'In Progress',
-        'completed': 'Completed'
-    };
-
+    // Icons mapping
     const typeIcons = {
         'book': 'fa-book',
         'article': 'fa-file-lines',
         'video': 'fa-circle-play'
     };
 
-    // --- Library Logic ---
-    function addResource() {
-        const title = document.getElementById('lib-title').value.trim();
-        const author = document.getElementById('lib-author').value.trim();
-        const type = document.getElementById('lib-type').value;
-        const status = document.getElementById('lib-status').value;
+    function addMaterial() {
+        const title = document.getElementById('mat-title').value.trim();
+        const source = document.getElementById('mat-source').value.trim() || 'Unknown';
+        const type = document.getElementById('mat-type').value;
 
-        if (!title) return;
-
-        library.push({
-            id: Date.now().toString(),
-            title,
-            author: author || "Unknown",
-            type,
-            status,
-            createdAt: new Date().toISOString()
-        });
-
-        localStorage.setItem('system_os_library', JSON.stringify(library));
-        
-        document.getElementById('lib-title').value = '';
-        document.getElementById('lib-author').value = '';
-        renderLibrary();
-    }
-
-    function deleteResource(id) {
-        library = library.filter(r => r.id !== id);
-        localStorage.setItem('system_os_library', JSON.stringify(library));
-        renderLibrary();
-    }
-
-    // Tap status pill to cycle states
-    window.cycleStatus = function(id) {
-        const res = library.find(r => r.id === id);
-        if (res) {
-            if (res.status === 'queued') res.status = 'reading';
-            else if (res.status === 'reading') res.status = 'completed';
-            else res.status = 'queued';
-            
-            localStorage.setItem('system_os_library', JSON.stringify(library));
-            renderLibrary();
-        }
-    }
-
-    function renderLibrary() {
-        const grid = document.getElementById('library-grid');
-        grid.innerHTML = '';
-
-        // Stats Calculation
-        let total = library.length;
-        let reading = library.filter(r => r.status === 'reading').length;
-        let completed = library.filter(r => r.status === 'completed').length;
-
-        document.getElementById('stat-total').textContent = total;
-        document.getElementById('stat-reading').textContent = reading;
-        document.getElementById('stat-completed').textContent = completed;
-
-        if (total === 0) {
-            grid.innerHTML = `<div class="empty-state">Knowledge base is currently empty.</div>`;
+        if (!title) {
+            alert("Please enter a title.");
             return;
         }
 
-        // Sort: Reading first, then Queued, then Completed
-        library.sort((a, b) => {
-            const priority = { 'reading': 1, 'queued': 2, 'completed': 3 };
-            return priority[a.status] - priority[b.status];
+        libraryData.push({
+            id: Date.now().toString(),
+            title: title,
+            source: source,
+            type: type,
+            status: 'active', // 'active' or 'completed'
+            addedOn: new Date().toISOString()
         });
 
-        library.forEach(item => {
-            const coverClass = `cover-${item.type}`;
-            const iconClass = typeIcons[item.type];
+        localStorage.setItem('system_os_library_v2', JSON.stringify(libraryData));
+
+        // Reset fields
+        document.getElementById('mat-title').value = '';
+        document.getElementById('mat-source').value = '';
+        
+        renderGrid();
+    }
+
+    function deleteMaterial(id) {
+        libraryData = libraryData.filter(m => m.id !== id);
+        localStorage.setItem('system_os_library_v2', JSON.stringify(libraryData));
+        renderGrid();
+    }
+
+    function toggleStatus(id) {
+        const item = libraryData.find(m => m.id === id);
+        if (item) {
+            item.status = item.status === 'active' ? 'completed' : 'active';
+            localStorage.setItem('system_os_library_v2', JSON.stringify(libraryData));
+            renderGrid();
+        }
+    }
+
+    function setFilter(type) {
+        currentFilter = type;
+        
+        // Update Pills
+        const pills = document.querySelectorAll('.filter-pill');
+        pills.forEach(pill => {
+            if(pill.textContent.toLowerCase().includes(type.substring(0, 3))) {
+                pill.classList.add('active');
+            } else {
+                pill.classList.remove('active');
+            }
+        });
+
+        renderGrid();
+    }
+
+    function renderGrid() {
+        const grid = document.getElementById('archive-grid');
+        grid.innerHTML = '';
+
+        let filteredData = libraryData;
+        if (currentFilter !== 'all') {
+            filteredData = libraryData.filter(m => m.type === currentFilter);
+        }
+
+        if (filteredData.length === 0) {
+            grid.innerHTML = `<div class="empty-state">No materials found in this sector.</div>`;
+            return;
+        }
+
+        // Sort: Active first, Completed last, then by date added
+        filteredData.sort((a, b) => {
+            if (a.status === 'active' && b.status === 'completed') return -1;
+            if (a.status === 'completed' && b.status === 'active') return 1;
+            return new Date(b.addedOn) - new Date(a.addedOn);
+        });
+
+        filteredData.forEach(mat => {
+            const isCompleted = mat.status === 'completed';
             
             grid.innerHTML += `
-                <div class="book-card">
-                    <div class="book-cover ${coverClass}">
-                        <i class="fa-solid ${iconClass}"></i>
-                    </div>
-                    <div class="book-info">
-                        <div class="b-title" title="${item.title}">${item.title}</div>
-                        <div class="b-author">${item.author}</div>
-                        
-                        <div class="card-actions">
-                            <div class="status-badge status-${item.status}" onclick="cycleStatus('${item.id}')">
-                                ${statusLabels[item.status]}
-                            </div>
-                            <button class="delete-btn" onclick="deleteResource('${item.id}')"><i class="fa-solid fa-trash-can"></i></button>
+                <div class="archive-card type-${mat.type} ${isCompleted ? 'completed' : ''}">
+                    <div>
+                        <div class="archive-icon">
+                            <i class="fa-solid ${typeIcons[mat.type]}"></i>
                         </div>
+                        <div class="archive-title">${mat.title}</div>
+                        <div class="archive-source">${mat.source}</div>
+                    </div>
+                    
+                    <div class="card-bottom">
+                        <button class="status-btn" onclick="toggleStatus('${mat.id}')">
+                            ${isCompleted ? '<i class="fa-solid fa-check"></i> DONE' : 'ACTIVE'}
+                        </button>
+                        <button class="delete-btn" onclick="deleteMaterial('${mat.id}')">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
                     </div>
                 </div>
             `;
@@ -608,7 +536,7 @@
     }
 
     // Init
-    document.addEventListener('DOMContentLoaded', renderLibrary);
+    document.addEventListener('DOMContentLoaded', renderGrid);
 
 </script>
 </body>

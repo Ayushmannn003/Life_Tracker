@@ -34,7 +34,7 @@
 
         .app-container {
             width: 100%;
-            max-width: 480px;
+            max-width: 430px; /* Locked to strict mobile dimensions */
             padding: 20px 20px 100px 20px;
             overflow-x: hidden;
             position: relative;
@@ -85,22 +85,22 @@
         .budget-bar-bg { width: 100%; height: 6px; background: var(--bg-card-inner); border-radius: 10px; overflow: hidden; margin-top: 5px; }
         .budget-bar-fill { height: 100%; border-radius: 10px; transition: width 0.4s ease; }
 
-        /* --- 2. Sleep Line Graph --- */
+        /* --- 2 & 3. Sleep & Nap Line Graphs --- */
         .graph-container {
             width: 100%;
             height: 160px;
             position: relative;
-            margin-top: 20px;
+            margin-top: 15px;
             padding-bottom: 20px;
         }
         svg { overflow: visible; width: 100%; height: 100%; }
-        .graph-line { fill: none; stroke: var(--accent-purple); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-        .graph-point { fill: var(--bg-card); stroke: var(--accent-purple); stroke-width: 2; transition: all 0.2s; }
-        .graph-point:hover { fill: var(--accent-purple); r: 6; }
+        .graph-line { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+        .graph-point { fill: var(--bg-card); stroke-width: 2; transition: all 0.2s; }
+        .graph-point:hover { filter: brightness(1.2); r: 6; cursor: pointer; }
         .graph-label-x { fill: var(--text-muted); font-size: 10px; font-family: 'Inter', sans-serif; font-weight: 600; text-anchor: middle; }
         .graph-label-y { fill: var(--text-main); font-size: 10px; font-family: 'Inter', sans-serif; font-weight: 800; text-anchor: middle; }
 
-        /* --- 3. Habit Matrix --- */
+        /* --- 4. Habit Matrix --- */
         .habit-row { margin-bottom: 15px; }
         .habit-row:last-child { margin-bottom: 0; }
         .habit-header { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; margin-bottom: 8px; }
@@ -118,7 +118,7 @@
             box-shadow: 0 0 8px rgba(105, 240, 174, 0.2);
         }
 
-        /* --- 4. Task Analytics --- */
+        /* --- 5. Task Analytics --- */
         .task-bars { display: flex; flex-direction: column; gap: 12px; }
         .task-row { display: flex; align-items: center; gap: 10px; }
         .task-label { width: 70px; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
@@ -138,7 +138,7 @@
         .nav-item.active { background: #6DF2B5; color: #070414; box-shadow: 0 0 15px rgba(109, 242, 181, 0.2); }
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
         .modal-overlay.active { opacity: 1; visibility: visible; }
-        .bottom-sheet { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%); width: 100%; max-width: 480px; max-height: 85vh; background: var(--bg-card); border-top: 1px solid var(--border-dim); border-radius: 32px 32px 0 0; padding: 20px 20px 0 20px; z-index: 1000; transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1); display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
+        .bottom-sheet { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%); width: 100%; max-width: 430px; /* Matched strict mobile dimensions */ max-height: 85vh; background: var(--bg-card); border-top: 1px solid var(--border-dim); border-radius: 32px 32px 0 0; padding: 20px 20px 0 20px; z-index: 1000; transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1); display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
         .bottom-sheet.active { transform: translateX(-50%) translateY(0); }
         .drag-handle { width: 40px; height: 5px; background: var(--border-dim); border-radius: 5px; margin: 0 auto 20px auto; }
         .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -191,16 +191,23 @@
 
     <div class="card">
         <div class="card-header">
-            <span class="card-title"><i class="fa-solid fa-moon" style="color: var(--accent-purple);"></i> Rest Trajectory (7 Days)</span>
+            <span class="card-title"><i class="fa-solid fa-moon" style="color: var(--accent-purple);"></i> Night Sleep Trajectory</span>
         </div>
-        <div style="font-size: 0.75rem; color: var(--text-muted); text-align: center;">Total Hours Logged (Main Sleep + Naps)</div>
         <div class="graph-container" id="sleep-graph-container">
             </div>
     </div>
 
     <div class="card">
         <div class="card-header">
-            <span class="card-title"><i class="fa-solid fa-calendar-check" style="color: var(--accent-cyan);"></i> Active Habit Matrix</span>
+            <span class="card-title"><i class="fa-solid fa-bed" style="color: var(--accent-cyan);"></i> Power Nap Trajectory</span>
+        </div>
+        <div class="graph-container" id="nap-graph-container">
+            </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title"><i class="fa-solid fa-calendar-check" style="color: var(--accent-green);"></i> Active Habit Matrix</span>
         </div>
         <div id="an-habit-list">
             </div>
@@ -322,39 +329,24 @@
         }
     }
 
-    // --- Block 2: Sleep SVG Graph ---
-    function renderSleepGraph() {
-        const sleepData = JSON.parse(localStorage.getItem('system_os_sleep')) || {};
-        const container = document.getElementById('sleep-graph-container');
-        
-        // Generate Last 7 Days
-        let chartData = [];
-        for (let i = 6; i >= 0; i--) {
-            const d = new Date();
-            d.setDate(d.getDate() - i);
-            const key = d.toISOString().split('T')[0];
-            const label = d.toLocaleDateString('en-US', { weekday: 'short' });
-            
-            const dayData = sleepData[key] || { mainSleep: 0, nap: 0 };
-            const totalHrs = dayData.mainSleep + dayData.nap;
-            
-            chartData.push({ label, val: totalHrs });
-        }
-
-        // SVG Construction Math
+    // --- Blocks 2 & 3: SVG Line Graph Generator ---
+    function renderSVGGraph(containerId, dataArr, colorVar, minMaxScale) {
+        const container = document.getElementById(containerId);
         const width = 400;
         const height = 120;
         const padding = 20;
-        const maxVal = 12; // Assume 12 hours is top of chart
-        
+
+        // Dynamic scaling: If they slept 14 hours, chart scales up. Default to minMaxScale.
+        const highestVal = Math.max(...dataArr.map(d => d.val));
+        const maxVal = Math.max(highestVal, minMaxScale);
+
         let points = [];
         let circles = '';
         let xLabels = '';
-        let yLabels = '';
 
-        const xStep = (width - padding * 2) / (chartData.length - 1);
+        const xStep = (width - padding * 2) / (dataArr.length - 1);
 
-        chartData.forEach((d, i) => {
+        dataArr.forEach((d, i) => {
             const x = padding + (i * xStep);
             // Invert Y axis (0 at top, height at bottom)
             const y = height - padding - ((d.val / maxVal) * (height - padding * 2));
@@ -362,12 +354,12 @@
             points.push(`${x},${y}`);
             
             // Draw points and labels
-            circles += `<circle cx="${x}" cy="${y}" r="4" class="graph-point" />`;
+            circles += `<circle cx="${x}" cy="${y}" r="4" class="graph-point" style="stroke: var(${colorVar});" />`;
             circles += `<text x="${x}" cy="${y - 12}" class="graph-label-y">${d.val > 0 ? d.val + 'h' : ''}</text>`;
             xLabels += `<text x="${x}" y="${height + 5}" class="graph-label-x">${d.label}</text>`;
         });
 
-        const polyline = `<polyline points="${points.join(' ')}" class="graph-line" />`;
+        const polyline = `<polyline points="${points.join(' ')}" class="graph-line" style="stroke: var(${colorVar});" />`;
 
         container.innerHTML = `
             <svg viewBox="0 0 ${width} ${height}">
@@ -378,7 +370,32 @@
         `;
     }
 
-    // --- Block 3: Habit Matrix ---
+    function renderRestGraphs() {
+        const sleepData = JSON.parse(localStorage.getItem('system_os_sleep')) || {};
+        
+        let sleepArr = [];
+        let napArr = [];
+
+        // Generate Last 7 Days
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            const key = d.toISOString().split('T')[0];
+            const label = d.toLocaleDateString('en-US', { weekday: 'short' });
+            
+            const dayData = sleepData[key] || { mainSleep: 0, nap: 0 };
+            
+            sleepArr.push({ label, val: dayData.mainSleep });
+            napArr.push({ label, val: dayData.nap });
+        }
+
+        // Render Main Sleep (Purple, default max 10 hrs)
+        renderSVGGraph('sleep-graph-container', sleepArr, '--accent-purple', 10);
+        // Render Naps (Cyan, default max 3 hrs)
+        renderSVGGraph('nap-graph-container', napArr, '--accent-cyan', 3);
+    }
+
+    // --- Block 4: Habit Matrix ---
     function renderHabits() {
         const habits = JSON.parse(localStorage.getItem('system_os_habit_matrix')) || [];
         const container = document.getElementById('an-habit-list');
@@ -394,7 +411,6 @@
 
         habits.forEach(h => {
             let gridHtml = '';
-            // Generate matrix dots for current month
             for (let day = 1; day <= daysInMonth; day++) {
                 const isCompleted = h.completedDays.includes(day);
                 gridHtml += `<div class="matrix-dot ${isCompleted ? 'completed' : ''}"></div>`;
@@ -412,7 +428,7 @@
         });
     }
 
-    // --- Block 4: Task Analytics ---
+    // --- Block 5: Task Analytics ---
     function renderTasks() {
         const tasks = JSON.parse(localStorage.getItem('system_os_tasks')) || [];
         const container = document.getElementById('an-task-bars');
@@ -428,7 +444,6 @@
         const completed = tasks.filter(t => t.completed).length;
         document.getElementById('an-task-pct').textContent = `${Math.round((completed / total) * 100)}%`;
 
-        // Breakdown by Category
         const cats = {
             'course': { label: 'Course', class: 'cat-course', count: 0 },
             'project': { label: 'Project', class: 'cat-project', count: 0 },
@@ -462,7 +477,7 @@
     // --- Boot ---
     document.addEventListener('DOMContentLoaded', () => {
         renderBudget();
-        renderSleepGraph();
+        renderRestGraphs();
         renderHabits();
         renderTasks();
     });

@@ -18,10 +18,10 @@
             --accent-green-dim: rgba(105, 240, 174, 0.15);
             --border-dim: #2a2444;
             
-            /* Priority Colors tuned for Dark Theme */
-            --priority-high: #f87171; /* Soft Red */
-            --priority-med: #fbbf24;  /* Soft Yellow */
-            --priority-low: #38bdf8;  /* Soft Blue */
+            /* Priority Colors */
+            --priority-high: #f87171; 
+            --priority-med: #fbbf24;  
+            --priority-low: #38bdf8;  
         }
 
         * {
@@ -63,11 +63,10 @@
 
         .app-container {
             width: 100%;
-            max-width: 480px;
-            padding: 20px 20px 100px 20px; /* Space for bottom nav */
+            max-width: 430px; /* Locked to strict mobile dimensions */
+            padding: 20px 20px 100px 20px; 
             overflow-x: hidden;
             position: relative;
-            /* Animation moved here so it doesn't break the fixed nav bar */
             animation: fadeIn 0.4s ease-out forwards; 
         }
 
@@ -213,17 +212,8 @@
             gap: 8px;
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
+        .form-group { display: flex; flex-direction: column; gap: 12px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
         .custom-input {
             background: var(--bg-card-inner);
@@ -237,9 +227,7 @@
             width: 100%;
         }
 
-        .custom-input:focus {
-            border-color: var(--accent-green);
-        }
+        .custom-input:focus { border-color: var(--accent-green); }
 
         .btn-add {
             background: var(--accent-green);
@@ -304,18 +292,9 @@
         .priority-med { background: var(--priority-med); }
         .priority-low { background: var(--priority-low); }
 
-        .task-info {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            padding-left: 10px;
-        }
+        .task-info { display: flex; flex-direction: column; gap: 6px; padding-left: 10px; }
+        .task-title { font-size: 1.05rem; font-weight: 600; }
         
-        .task-title {
-            font-size: 1.05rem;
-            font-weight: 600;
-        }
-
         .task-time {
             font-size: 0.8rem;
             color: var(--text-muted);
@@ -337,189 +316,33 @@
 
         .delete-btn:hover { color: #ef4444; }
 
-        .empty-state {
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            padding: 20px 0;
-            font-style: italic;
-        }
+        .empty-state { text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 20px 0; font-style: italic; }
 
-        /* --- Smaller Bottom Navigation (Synced w/ Index) --- */
-        .bottom-nav {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: calc(100% - 60px); 
-            max-width: 380px;
-            background: #0d0920; 
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 30px; 
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 5px 10px; 
-            z-index: 100;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6); 
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            width: 30%; 
-            padding: 8px 0; 
-            color: #6b7280; 
-            text-decoration: none;
-            font-size: 0.65rem; 
-            font-weight: 600;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
+        /* --- Shared Bottom Nav & App Drawer --- */
+        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 60px); max-width: 380px; background: #0d0920; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 30px; display: flex; justify-content: space-around; align-items: center; padding: 5px 10px; z-index: 100; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 30%; padding: 8px 0; color: #6b7280; text-decoration: none; font-size: 0.65rem; font-weight: 600; border-radius: 20px; transition: all 0.3s ease; cursor: pointer; }
         .nav-item i { font-size: 1.1rem; }
         .nav-item:hover:not(.active) { color: #a78bfa; }
+        .nav-item.active { background: #6DF2B5; color: #070414; box-shadow: 0 0 15px rgba(109, 242, 181, 0.2); }
 
-        .nav-item.active {
-            background: var(--accent-green); 
-            color: var(--bg-dark); 
-            box-shadow: 0 0 15px rgba(105, 240, 174, 0.2); 
-        }
-
-        /* --- App Drawer Modal (Bottom Sheet) --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            z-index: 999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .bottom-sheet {
-            position: fixed;
-            bottom: 0; left: 50%;
-            transform: translateX(-50%) translateY(100%);
-            width: 100%;
-            max-width: 480px;
-            max-height: 85vh;
-            background: var(--bg-card);
-            border-top: 1px solid var(--border-dim);
-            border-radius: 32px 32px 0 0;
-            padding: 20px 20px 0 20px;
-            z-index: 1000;
-            transition: transform 0.4s cubic-bezier(0.33, 1, 0.68, 1);
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
-        }
-
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .bottom-sheet { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%); width: 100%; max-width: 430px; /* Matched strict mobile dimensions */ max-height: 85vh; background: var(--bg-card); border-top: 1px solid var(--border-dim); border-radius: 32px 32px 0 0; padding: 20px 20px 0 20px; z-index: 1000; transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1); display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
         .bottom-sheet.active { transform: translateX(-50%) translateY(0); }
-
-        .drag-handle {
-            width: 40px;
-            height: 5px;
-            background: var(--border-dim);
-            border-radius: 5px;
-            margin: 0 auto 20px auto;
-        }
-
-        .sheet-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .sheet-title {
-            font-size: 1.1rem;
-            font-weight: 800;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .close-btn {
-            background: var(--bg-card-inner);
-            border: 1px solid var(--border-dim);
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            color: var(--text-muted);
-            font-size: 1rem;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.2s;
-        }
-        
+        .drag-handle { width: 40px; height: 5px; background: var(--border-dim); border-radius: 5px; margin: 0 auto 20px auto; }
+        .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .sheet-title { font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+        .close-btn { background: var(--bg-card-inner); border: 1px solid var(--border-dim); border-radius: 50%; width: 32px; height: 32px; color: var(--text-muted); cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s; }
         .close-btn:hover { color: var(--text-main); background: #2a2444; }
-
-        .sheet-content {
-            overflow-y: auto;
-            padding-bottom: 40px; 
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        
+        .sheet-content { overflow-y: auto; padding-bottom: 40px; -ms-overflow-style: none; scrollbar-width: none; }
         .sheet-content::-webkit-scrollbar { display: none; }
-
-        .section-label {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin: 15px 0 15px 5px;
-        }
-
-        .app-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px 10px;
-            margin-bottom: 25px;
-        }
-
-        .app-icon-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: transform 0.2s cubic-bezier(0.33, 1, 0.68, 1);
-        }
-
-        .app-icon-btn:active { transform: scale(0.9); }
-
-        .app-icon-circle {
-            width: 56px;
-            height: 56px;
-            background: var(--bg-card-inner);
-            border: 1px solid var(--border-dim);
-            border-radius: 18px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            transition: border-color 0.3s;
-        }
-
+        .section-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin: 15px 0 15px 5px; }
+        .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px 10px; margin-bottom: 25px; }
+        .app-icon-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; text-decoration: none; cursor: pointer; transition: transform 0.1s; }
+        .app-icon-btn:active { transform: scale(0.92); }
+        .app-icon-circle { width: 56px; height: 56px; background: var(--bg-card-inner); border: 1px solid var(--border-dim); border-radius: 18px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; transition: border-color 0.3s; }
         .app-icon-btn:hover .app-icon-circle { border-color: rgba(255,255,255,0.2); }
-        .app-icon-label { font-size: 0.65rem; font-weight: 600; text-align: center; color: var(--text-muted); line-height: 1.2; }
+        .app-icon-label { font-size: 0.65rem; font-weight: 600; text-align: center; color: var(--text-muted); }
 
     </style>
 </head>
@@ -537,7 +360,7 @@
     <div class="calendar-card">
         <div class="cal-header">
             <button class="cal-nav-btn" onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-            <div class="month-year" id="month-display">APRIL 2026</div>
+            <div class="month-year" id="month-display">...</div>
             <button class="cal-nav-btn" onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
         <div class="days-grid">
@@ -578,7 +401,7 @@
         <i class="fa-solid fa-grip"></i>
         <span>Dashboard</span>
     </a>
-    <div class="nav-item" onclick="toggleActivityModal()">
+    <div class="nav-item active" onclick="toggleActivityModal()">
         <i class="fa-regular fa-rectangle-list"></i>
         <span>Activity</span>
     </div>
@@ -596,76 +419,34 @@
         <button class="close-btn" onclick="toggleActivityModal()"><i class="fa-solid fa-xmark"></i></button>
     </div>
 
-        <div class="sheet-content">
-            <div class="section-label">PROTOCOLS</div>
-            <div class="app-grid">
-                <a href="todo.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-solid fa-square-check"></i></div>
-                    <span class="app-icon-label">Tasks</span>
-                </a>
-                <a href="rituals.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #eab308;"><i class="fa-regular fa-sun"></i></div>
-                    <span class="app-icon-label">Rituals</span>
-                </a>
-                <a href="habits.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-regular fa-calendar-check"></i>
-                    </div>
-                    <span class="app-icon-label">Habits</span>
-                </a>
-            </div>
-
-            <div class="section-label">TIME & MACRO</div>
-            <div class="app-grid">
-                <a href="schedule.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #ffffff;"><i class="fa-regular fa-calendar"></i></div>
-                    <span class="app-icon-label">Schedule</span>
-                </a>
-                <a href="weekly.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-border-all"></i></div>
-                    <span class="app-icon-label">Matrix</span>
-                </a>
-            </div>
-
-            <div class="section-label">BIO & WEALTH</div>
-            <div class="app-grid">
-                <a href="health.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-heart-pulse"></i></div>
-                    <span class="app-icon-label">Health</span>
-                </a>
-                <a href="sleep.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-moon"></i></div>
-                    <span class="app-icon-label">Sleep</span>
-                </a>
-                <a href="budget.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-wallet"></i></div>
-                    <span class="app-icon-label">Finance</span>
-                </a>
-                <a href="diet.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: var(--accent-green);"><i
-                            class="fa-solid fa-apple-whole"></i></div>
-                    <span class="app-icon-label">Diet</span>
-                </a>
-            </div>
-
-            <div class="section-label">DATA & KNOWLEDGE</div>
-            <div class="app-grid">
-                <a href="academics.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-graduation-cap"></i>
-                    </div>
-                    <span class="app-icon-label">Academics</span>
-                </a>
-                <a href="library.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-book"></i></div>
-                    <span class="app-icon-label">Library</span>
-                </a>
-                <a href="analyzer.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: var(--accent-green);"><i
-                            class="fa-solid fa-chart-line"></i></div>
-                    <span class="app-icon-label">Analytics</span>
-                </a>
-            </div>
+    <div class="sheet-content">
+        <div class="section-label">PROTOCOLS</div>
+        <div class="app-grid">
+            <a href="todo.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-solid fa-square-check"></i></div><span class="app-icon-label">Tasks</span></a>
+            <a href="rituals.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #eab308;"><i class="fa-regular fa-sun"></i></div><span class="app-icon-label">Rituals</span></a>
+            <a href="habits.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-regular fa-calendar-check"></i></div><span class="app-icon-label">Habits</span></a>
+        </div>
+        <div class="section-label">TIME & MACRO</div>
+        <div class="app-grid">
+            <a href="schedule.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #ffffff;"><i class="fa-regular fa-calendar"></i></div><span class="app-icon-label">Schedule</span></a>
+            <a href="weekly.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-border-all"></i></div><span class="app-icon-label">Matrix</span></a>
+        </div>
+        <div class="section-label">BIO & WEALTH</div>
+        <div class="app-grid">
+            <a href="health.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-heart-pulse"></i></div><span class="app-icon-label">Health</span></a>
+            <a href="sleep.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-moon"></i></div><span class="app-icon-label">Sleep</span></a>
+            <a href="budget.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-wallet"></i></div><span class="app-icon-label">Finance</span></a>
+            <a href="diet.html" class="app-icon-btn"><div class="app-icon-circle" style="color: var(--accent-green);"><i class="fa-solid fa-apple-whole"></i></div><span class="app-icon-label">Diet</span></a>
+        </div>
+        <div class="section-label">DATA & KNOWLEDGE</div>
+        <div class="app-grid">
+            <a href="academics.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-graduation-cap"></i></div><span class="app-icon-label">Academics</span></a>
+            <a href="library.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-book"></i></div><span class="app-icon-label">Library</span></a>
+            <a href="analyzer.html" class="app-icon-btn"><div class="app-icon-circle" style="color: var(--accent-green);"><i class="fa-solid fa-chart-line"></i></div><span class="app-icon-label">Analytics</span></a>
         </div>
     </div>
+</div>
+
 <script>
     // --- State Variables ---
     let currentDate = new Date(); 

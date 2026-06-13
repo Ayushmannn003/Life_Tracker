@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,20 +39,13 @@
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .app-container {
             width: 100%;
-            max-width: 480px;
+            max-width: 430px; /* Locked to strict mobile dimensions */
             padding: 20px 20px 100px 20px;
             overflow-x: hidden;
             position: relative;
@@ -78,9 +70,7 @@
             transition: color 0.2s;
         }
 
-        .icon-btn:hover {
-            color: var(--text-main);
-        }
+        .icon-btn:hover { color: var(--text-main); }
 
         h1 {
             font-size: 1.25rem;
@@ -94,7 +84,7 @@
             background: var(--bg-card-inner);
             border: 1px solid transparent;
             color: var(--text-main);
-            padding: 12px 15px;
+            padding: 12px 14px;
             border-radius: 14px;
             font-size: 0.9rem;
             outline: none;
@@ -102,12 +92,19 @@
             width: 100%;
         }
 
-        .custom-input:focus {
-            border-color: var(--accent-purple);
-        }
+        .custom-input:focus { border-color: var(--accent-purple); }
 
-        .form-row {
-            display: flex;
+        /* Responsive Grid Rows for Mobile */
+        .form-row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        
+        .form-row-3 {
+            display: grid;
+            grid-template-columns: 2fr 1fr auto;
             gap: 10px;
             margin-top: 12px;
         }
@@ -117,20 +114,18 @@
             color: var(--text-main);
             border: none;
             border-radius: 14px;
-            padding: 0 18px;
+            padding: 0 16px;
             font-size: 1rem;
             font-weight: 800;
             cursor: pointer;
             transition: transform 0.1s, filter 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .btn-add:active {
-            transform: scale(0.95);
-        }
-
-        .btn-add:hover {
-            filter: brightness(1.1);
-        }
+        .btn-add:active { transform: scale(0.95); }
+        .btn-add:hover { filter: brightness(1.1); }
 
         /* --- UI Cards --- */
         .card {
@@ -139,7 +134,7 @@
             border-radius: 24px;
             padding: 20px;
             margin-bottom: 25px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         }
 
         .section-title {
@@ -267,33 +262,22 @@
         }
 
         .status-badge {
-            padding: 5px 12px;
+            padding: 5px 10px;
             border-radius: 10px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1px;
             cursor: pointer;
-            /* Clickable to change status */
             transition: all 0.2s;
             user-select: none;
+            white-space: nowrap;
         }
 
         /* Status Colors */
-        .status-not-completed {
-            background: rgba(239, 68, 68, 0.15);
-            color: var(--accent-red);
-        }
-
-        .status-ongoing {
-            background: rgba(59, 130, 246, 0.15);
-            color: var(--accent-blue);
-        }
-
-        .status-completed {
-            background: var(--accent-green-dim);
-            color: var(--accent-green);
-        }
+        .status-not-completed { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+        .status-ongoing { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
+        .status-completed { background: var(--accent-green-dim); color: var(--accent-green); }
 
         .delete-btn {
             background: none;
@@ -303,484 +287,258 @@
             cursor: pointer;
             transition: color 0.2s;
         }
+        .delete-btn:hover { color: var(--accent-red); }
 
-        .delete-btn:hover {
-            color: var(--accent-red);
-        }
-
-        .empty-state {
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            padding: 15px 0;
-            font-style: italic;
-        }
+        .empty-state { text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 15px 0; font-style: italic; }
 
         /* --- Shared Bottom Nav & App Drawer --- */
-        .bottom-nav {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: calc(100% - 60px);
-            max-width: 380px;
-            background: #0d0920;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 30px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 5px 10px;
-            z-index: 100;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-        }
+        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 60px); max-width: 380px; background: #0d0920; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 30px; display: flex; justify-content: space-around; align-items: center; padding: 5px 10px; z-index: 100; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 30%; padding: 8px 0; color: #6b7280; text-decoration: none; font-size: 0.65rem; font-weight: 600; border-radius: 20px; transition: all 0.3s ease; cursor: pointer; }
+        .nav-item i { font-size: 1.1rem; }
+        .nav-item:hover:not(.active) { color: #a78bfa; }
+        .nav-item.active { background: #6DF2B5; color: #070414; box-shadow: 0 0 15px rgba(109, 242, 181, 0.2); }
 
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            width: 30%;
-            padding: 8px 0;
-            color: #6b7280;
-            text-decoration: none;
-            font-size: 0.65rem;
-            font-weight: 600;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .bottom-sheet { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%); width: 100%; max-width: 430px; /* Matched strict mobile dimensions */ max-height: 85vh; background: var(--bg-card); border-top: 1px solid var(--border-dim); border-radius: 32px 32px 0 0; padding: 20px 20px 0 20px; z-index: 1000; transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1); display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
+        .bottom-sheet.active { transform: translateX(-50%) translateY(0); }
+        .drag-handle { width: 40px; height: 5px; background: var(--border-dim); border-radius: 5px; margin: 0 auto 20px auto; }
+        .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .sheet-title { font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+        .close-btn { background: var(--bg-card-inner); border: 1px solid var(--border-dim); border-radius: 50%; width: 32px; height: 32px; color: var(--text-muted); cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s; }
+        .close-btn:hover { color: var(--text-main); background: #2a2444; }
+        .sheet-content { overflow-y: auto; padding-bottom: 40px; -ms-overflow-style: none; scrollbar-width: none; }
+        .sheet-content::-webkit-scrollbar { display: none; }
+        .section-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin: 15px 0 15px 5px; }
+        
+        .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px 10px; margin-bottom: 25px; }
+        .app-icon-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; text-decoration: none; cursor: pointer; transition: transform 0.1s; }
+        .app-icon-btn:active { transform: scale(0.92); }
+        .app-icon-circle { width: 56px; height: 56px; background: var(--bg-card-inner); border: 1px solid var(--border-dim); border-radius: 18px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; transition: border-color 0.3s; }
+        .app-icon-btn:hover .app-icon-circle { border-color: rgba(255,255,255,0.2); }
+        .app-icon-label { font-size: 0.65rem; font-weight: 600; text-align: center; color: var(--text-muted); }
 
-        .nav-item i {
-            font-size: 1.1rem;
-        }
-
-        .nav-item:hover:not(.active) {
-            color: #a78bfa;
-        }
-
-        .nav-item.active {
-            background: #6DF2B5;
-            color: #070414;
-            box-shadow: 0 0 15px rgba(109, 242, 181, 0.2);
-        }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            z-index: 999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .bottom-sheet {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%) translateY(100%);
-            width: 100%;
-            max-width: 480px;
-            max-height: 85vh;
-            background: var(--bg-card);
-            border-top: 1px solid var(--border-dim);
-            border-radius: 32px 32px 0 0;
-            padding: 20px 20px 0 20px;
-            z-index: 1000;
-            transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1);
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8);
-        }
-
-        .bottom-sheet.active {
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .drag-handle {
-            width: 40px;
-            height: 5px;
-            background: var(--border-dim);
-            border-radius: 5px;
-            margin: 0 auto 20px auto;
-        }
-
-        .sheet-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .sheet-title {
-            font-size: 1.1rem;
-            font-weight: 800;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .close-btn {
-            background: var(--bg-card-inner);
-            border: 1px solid var(--border-dim);
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            color: var(--text-muted);
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.2s;
-        }
-
-        .close-btn:hover {
-            color: var(--text-main);
-            background: #2a2444;
-        }
-
-        .sheet-content {
-            overflow-y: auto;
-            padding-bottom: 40px;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        .sheet-content::-webkit-scrollbar {
-            display: none;
-        }
-
-        .section-label {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin: 15px 0 15px 5px;
-        }
-
-        .app-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px 10px;
-            margin-bottom: 25px;
-        }
-
-        .app-icon-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: transform 0.1s;
-        }
-
-        .app-icon-btn:active {
-            transform: scale(0.92);
-        }
-
-        .app-icon-circle {
-            width: 56px;
-            height: 56px;
-            background: var(--bg-card-inner);
-            border: 1px solid var(--border-dim);
-            border-radius: 18px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5rem;
-            transition: border-color 0.3s;
-        }
-
-        .app-icon-btn:hover .app-icon-circle {
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .app-icon-label {
-            font-size: 0.65rem;
-            font-weight: 600;
-            text-align: center;
-            color: var(--text-muted);
-        }
     </style>
 </head>
-
 <body>
 
-    <div class="app-container">
+<div class="app-container">
+    
+    <header>
+        <button class="icon-btn" onclick="window.location.href='index.html'"><i class="fa-solid fa-arrow-left"></i></button>
+        <h1>Academics Hub</h1>
+    </header>
 
-        <header>
-            <button class="icon-btn" onclick="window.location.href='index.html'"><i
-                    class="fa-solid fa-arrow-left"></i></button>
-            <h1>Academics Hub</h1>
-        </header>
-
-        <div class="section-title"><i class="fa-solid fa-hourglass-half" style="color: var(--accent-purple);"></i>
-            Semester Timeline</div>
-        <div class="card">
-            <div class="timeline-header">
-                <div>
-                    <div class="days-left" id="disp-days-left">--</div>
-                    <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">Days Remaining</div>
-                </div>
-                <div class="timeline-dates" id="disp-dates">
-                    Start: -- <br> End: --
-                </div>
+    <div class="section-title"><i class="fa-solid fa-hourglass-half" style="color: var(--accent-purple);"></i> Semester Timeline</div>
+    <div class="card">
+        <div class="timeline-header">
+            <div>
+                <div class="days-left" id="disp-days-left">--</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">Days Remaining</div>
             </div>
-            <div class="progress-track">
-                <div class="progress-fill" id="timeline-bar"></div>
-            </div>
-
-            <div class="form-row">
-                <input type="date" id="tl-start" class="custom-input" style="color: var(--text-muted);">
-                <input type="date" id="tl-end" class="custom-input" style="color: var(--text-muted);">
-                <button class="btn-add" onclick="saveTimeline()"><i class="fa-solid fa-check"></i></button>
+            <div class="timeline-dates" id="disp-dates">
+                Start: -- <br> End: --
             </div>
         </div>
-
-        <div class="section-title"><i class="fa-solid fa-book" style="color: var(--accent-blue);"></i> Course
-            Architecture</div>
-        <div class="card">
-            <div class="subject-list" id="subject-list">
-            </div>
-
-            <div class="form-row" style="margin-top: 5px;">
-                <input type="text" id="subj-name" class="custom-input" placeholder="Subject Name">
-                <input type="number" id="subj-modules" class="custom-input" placeholder="Modules" style="width: 100px;">
-                <button class="btn-add" style="background: var(--accent-blue);" onclick="addSubject()"><i
-                        class="fa-solid fa-plus"></i></button>
-            </div>
+        <div class="progress-track">
+            <div class="progress-fill" id="timeline-bar"></div>
         </div>
-
-        <div class="section-title"><i class="fa-solid fa-file-signature" style="color: var(--accent-green);"></i>
-            Assignment Matrix</div>
-        <div class="card">
-            <div class="assignment-list" id="assignment-list">
-            </div>
-
-            <div
-                style="font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-bottom: 15px; font-style: italic;">
-                Tip: Tap a status badge above to change its progress.
-            </div>
-
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-                <input type="text" id="ass-title" class="custom-input" placeholder="Assignment / Project Name">
-                <div class="form-row" style="margin-top: 0;">
-                    <input type="date" id="ass-date" class="custom-input" style="color: var(--text-muted);">
-                    <select id="ass-status" class="custom-input" style="color: var(--text-muted);">
-                        <option value="not-completed">Not Started</option>
-                        <option value="ongoing">Ongoing</option>
-                        <option value="completed">Completed</option>
-                    </select>
-                    <button class="btn-add" style="background: var(--accent-green); color: var(--bg-dark);"
-                        onclick="addAssignment()"><i class="fa-solid fa-plus"></i></button>
-                </div>
-            </div>
+        
+        <div class="form-row-2">
+            <input type="date" id="tl-start" class="custom-input" style="color: var(--text-muted);">
+            <input type="date" id="tl-end" class="custom-input" style="color: var(--text-muted);">
+            <button class="btn-add" onclick="saveTimeline()"><i class="fa-solid fa-check"></i></button>
         </div>
-
     </div>
 
-    <div class="bottom-nav">
-        <a href="index.html" class="nav-item">
-            <i class="fa-solid fa-grip"></i>
-            <span>Dashboard</span>
-        </a>
-        <div class="nav-item active" onclick="toggleActivityModal()">
-            <i class="fa-regular fa-rectangle-list"></i>
-            <span>Activity</span>
+    <div class="section-title"><i class="fa-solid fa-book" style="color: var(--accent-blue);"></i> Course Architecture</div>
+    <div class="card">
+        <div class="subject-list" id="subject-list">
+            </div>
+        
+        <div class="form-row-3">
+            <input type="text" id="subj-name" class="custom-input" placeholder="Subject Name">
+            <input type="number" id="subj-modules" class="custom-input" placeholder="Mods">
+            <button class="btn-add" style="background: var(--accent-blue);" onclick="addSubject()"><i class="fa-solid fa-plus"></i></button>
         </div>
-        <a href="analyzer.html" class="nav-item">
-            <i class="fa-solid fa-chart-column"></i>
-            <span>Analytics</span>
-        </a>
     </div>
 
-    <div class="modal-overlay" id="activity-overlay" onclick="toggleActivityModal()"></div>
-    <div class="bottom-sheet" id="activity-sheet">
-        <div class="drag-handle"></div>
-        <div class="sheet-header">
-            <h2 class="sheet-title">System Modules</h2>
-            <button class="close-btn" onclick="toggleActivityModal()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="section-title"><i class="fa-solid fa-file-signature" style="color: var(--accent-green);"></i> Assignment Matrix</div>
+    <div class="card">
+        <div class="assignment-list" id="assignment-list">
+            </div>
+
+        <div style="font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-bottom: 15px; font-style: italic;">
+            Tip: Tap a status badge above to change its progress.
         </div>
 
-        <div class="sheet-content">
-            <div class="section-label">PROTOCOLS</div>
-            <div class="app-grid">
-                <a href="todo.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-solid fa-square-check"></i></div>
-                    <span class="app-icon-label">Tasks</span>
-                </a>
-                <a href="rituals.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #eab308;"><i class="fa-regular fa-sun"></i></div>
-                    <span class="app-icon-label">Rituals</span>
-                </a>
-                <a href="habits.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-regular fa-calendar-check"></i>
-                    </div>
-                    <span class="app-icon-label">Habits</span>
-                </a>
-            </div>
-            <div class="section-label">TIME & MACRO</div>
-            <div class="app-grid">
-                <a href="schedule.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #ffffff;"><i class="fa-regular fa-calendar"></i></div>
-                    <span class="app-icon-label">Schedule</span>
-                </a>
-                <a href="weekly.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-border-all"></i></div>
-                    <span class="app-icon-label">Matrix</span>
-                </a>
-            </div>
-            <div class="section-label">BIO & WEALTH</div>
-            <div class="app-grid">
-                <a href="health.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-heart-pulse"></i></div>
-                    <span class="app-icon-label">Health</span>
-                </a>
-                <a href="sleep.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-moon"></i></div>
-                    <span class="app-icon-label">Sleep</span>
-                </a>
-                <a href="budget.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-wallet"></i></div>
-                    <span class="app-icon-label">Finance</span>
-                </a>
-                <a href="diet.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: var(--accent-green);"><i
-                            class="fa-solid fa-apple-whole"></i></div>
-                    <span class="app-icon-label">Diet</span>
-                </a>
-            </div>
-            <div class="section-label">DATA & KNOWLEDGE</div>
-            <div class="app-grid">
-                <a href="academics.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-graduation-cap"></i>
-                    </div>
-                    <span class="app-icon-label">Academics</span>
-                </a>
-                <a href="library.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-book"></i></div>
-                    <span class="app-icon-label">Library</span>
-                </a>
-                <a href="analyzer.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: var(--accent-green);"><i
-                            class="fa-solid fa-chart-line"></i></div>
-                    <span class="app-icon-label">Analytics</span>
-                </a>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <input type="text" id="ass-title" class="custom-input" placeholder="Assignment / Project Name">
+            
+            <div class="form-row-2" style="margin-top: 0;">
+                <input type="date" id="ass-date" class="custom-input" style="color: var(--text-muted);">
+                <select id="ass-status" class="custom-input" style="color: var(--text-muted);">
+                    <option value="not-completed">Not Started</option>
+                    <option value="ongoing">Ongoing</option>
+                    <option value="completed">Completed</option>
+                </select>
+                <button class="btn-add" style="background: var(--accent-green); color: var(--bg-dark);" onclick="addAssignment()"><i class="fa-solid fa-plus"></i></button>
             </div>
         </div>
     </div>
 
-    <script>
-        // --- Fix Input Colors ---
-        ['tl-start', 'tl-end', 'ass-date', 'ass-status'].forEach(id => {
-            document.getElementById(id).addEventListener('change', function () {
-                this.style.color = 'var(--text-main)';
-            });
+</div>
+
+<div class="bottom-nav">
+    <a href="index.html" class="nav-item">
+        <i class="fa-solid fa-grip"></i>
+        <span>Dashboard</span>
+    </a>
+    <div class="nav-item active" onclick="toggleActivityModal()">
+        <i class="fa-regular fa-rectangle-list"></i>
+        <span>Activity</span>
+    </div>
+    <a href="analyzer.html" class="nav-item">
+        <i class="fa-solid fa-chart-column"></i>
+        <span>Analytics</span>
+    </a>
+</div>
+
+<div class="modal-overlay" id="activity-overlay" onclick="toggleActivityModal()"></div>
+<div class="bottom-sheet" id="activity-sheet">
+    <div class="drag-handle"></div>
+    <div class="sheet-header">
+        <h2 class="sheet-title">System Modules</h2>
+        <button class="close-btn" onclick="toggleActivityModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div class="sheet-content">
+        <div class="section-label">PROTOCOLS</div>
+        <div class="app-grid">
+            <a href="todo.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-solid fa-square-check"></i></div><span class="app-icon-label">Tasks</span></a>
+            <a href="rituals.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #eab308;"><i class="fa-regular fa-sun"></i></div><span class="app-icon-label">Rituals</span></a>
+            <a href="habits.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-regular fa-calendar-check"></i></div><span class="app-icon-label">Habits</span></a>
+        </div>
+        <div class="section-label">TIME & MACRO</div>
+        <div class="app-grid">
+            <a href="schedule.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #ffffff;"><i class="fa-regular fa-calendar"></i></div><span class="app-icon-label">Schedule</span></a>
+            <a href="weekly.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-border-all"></i></div><span class="app-icon-label">Matrix</span></a>
+        </div>
+        <div class="section-label">BIO & WEALTH</div>
+        <div class="app-grid">
+            <a href="health.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-heart-pulse"></i></div><span class="app-icon-label">Health</span></a>
+            <a href="sleep.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-moon"></i></div><span class="app-icon-label">Sleep</span></a>
+            <a href="budget.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-wallet"></i></div><span class="app-icon-label">Finance</span></a>
+            <a href="diet.html" class="app-icon-btn"><div class="app-icon-circle" style="color: var(--accent-green);"><i class="fa-solid fa-apple-whole"></i></div><span class="app-icon-label">Diet</span></a>
+        </div>
+        <div class="section-label">DATA & KNOWLEDGE</div>
+        <div class="app-grid">
+            <a href="academics.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-graduation-cap"></i></div><span class="app-icon-label">Academics</span></a>
+            <a href="library.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-book"></i></div><span class="app-icon-label">Library</span></a>
+            <a href="analyzer.html" class="app-icon-btn"><div class="app-icon-circle" style="color: var(--accent-green);"><i class="fa-solid fa-chart-line"></i></div><span class="app-icon-label">Analytics</span></a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- Fix Input Colors ---
+    ['tl-start', 'tl-end', 'ass-date', 'ass-status'].forEach(id => {
+        document.getElementById(id).addEventListener('change', function() {
+            this.style.color = 'var(--text-main)';
         });
+    });
 
-        // --- State Management ---
-        let timeline = JSON.parse(localStorage.getItem('system_os_acad_time')) || { start: '', end: '' };
-        let subjects = JSON.parse(localStorage.getItem('system_os_acad_subj')) || [];
-        let assignments = JSON.parse(localStorage.getItem('system_os_acad_ass')) || [];
+    // --- State Management ---
+    let timeline = JSON.parse(localStorage.getItem('system_os_acad_time')) || { start: '', end: '' };
+    let subjects = JSON.parse(localStorage.getItem('system_os_acad_subj')) || [];
+    let assignments = JSON.parse(localStorage.getItem('system_os_acad_ass')) || [];
 
-        // --- 1. Timeline Logic ---
-        function saveTimeline() {
-            const start = document.getElementById('tl-start').value;
-            const end = document.getElementById('tl-end').value;
-
-            if (start && end) {
-                if (new Date(end) <= new Date(start)) {
-                    alert("End date must be after start date.");
-                    return;
-                }
-                timeline = { start, end };
-                localStorage.setItem('system_os_acad_time', JSON.stringify(timeline));
-                renderTimeline();
-            }
-        }
-
-        function renderTimeline() {
-            if (timeline.start) document.getElementById('tl-start').value = timeline.start;
-            if (timeline.end) document.getElementById('tl-end').value = timeline.end;
-
-            const dispLeft = document.getElementById('disp-days-left');
-            const dispDates = document.getElementById('disp-dates');
-            const bar = document.getElementById('timeline-bar');
-
-            if (!timeline.start || !timeline.end) return;
-
-            const sDate = new Date(timeline.start);
-            const eDate = new Date(timeline.end);
-            const today = new Date();
-
-            const formatDate = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-            dispDates.innerHTML = `Start: ${formatDate(sDate)} <br> End: ${formatDate(eDate)}`;
-
-            const totalDiff = eDate.getTime() - sDate.getTime();
-            const totalDays = Math.ceil(totalDiff / (1000 * 3600 * 24));
-
-            const passedDiff = today.getTime() - sDate.getTime();
-            const passedDays = Math.max(0, Math.ceil(passedDiff / (1000 * 3600 * 24)));
-
-            let daysLeft = totalDays - passedDays;
-
-            if (today < sDate) {
-                dispLeft.textContent = totalDays;
-                bar.style.width = '0%';
-            } else if (today > eDate) {
-                dispLeft.textContent = "0";
-                bar.style.width = '100%';
-            } else {
-                dispLeft.textContent = daysLeft;
-                const pct = (passedDays / totalDays) * 100;
-                bar.style.width = `${pct}%`;
-            }
-        }
-
-        // --- 2. Subjects Logic ---
-        function addSubject() {
-            const name = document.getElementById('subj-name').value.trim();
-            const mods = document.getElementById('subj-modules').value;
-
-            if (!name || !mods) return;
-
-            subjects.push({ id: Date.now().toString(), name, modules: mods });
-            localStorage.setItem('system_os_acad_subj', JSON.stringify(subjects));
-
-            document.getElementById('subj-name').value = '';
-            document.getElementById('subj-modules').value = '';
-            renderSubjects();
-        }
-
-        function deleteSubject(id) {
-            subjects = subjects.filter(s => s.id !== id);
-            localStorage.setItem('system_os_acad_subj', JSON.stringify(subjects));
-            renderSubjects();
-        }
-
-        function renderSubjects() {
-            const list = document.getElementById('subject-list');
-            list.innerHTML = '';
-
-            if (subjects.length === 0) {
-                list.innerHTML = `<div class="empty-state">No subjects loaded into architecture.</div>`;
+    // --- 1. Timeline Logic ---
+    function saveTimeline() {
+        const start = document.getElementById('tl-start').value;
+        const end = document.getElementById('tl-end').value;
+        
+        if (start && end) {
+            if (new Date(end) <= new Date(start)) {
+                alert("End date must be after start date.");
                 return;
             }
+            timeline = { start, end };
+            localStorage.setItem('system_os_acad_time', JSON.stringify(timeline));
+            renderTimeline();
+        }
+    }
 
-            subjects.forEach(s => {
-                list.innerHTML += `
+    function renderTimeline() {
+        if (timeline.start) document.getElementById('tl-start').value = timeline.start;
+        if (timeline.end) document.getElementById('tl-end').value = timeline.end;
+
+        const dispLeft = document.getElementById('disp-days-left');
+        const dispDates = document.getElementById('disp-dates');
+        const bar = document.getElementById('timeline-bar');
+
+        if (!timeline.start || !timeline.end) return;
+
+        const sDate = new Date(timeline.start);
+        const eDate = new Date(timeline.end);
+        const today = new Date();
+
+        const formatDate = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        dispDates.innerHTML = `Start: ${formatDate(sDate)} <br> End: ${formatDate(eDate)}`;
+
+        const totalDiff = eDate.getTime() - sDate.getTime();
+        const totalDays = Math.ceil(totalDiff / (1000 * 3600 * 24));
+        
+        const passedDiff = today.getTime() - sDate.getTime();
+        const passedDays = Math.max(0, Math.ceil(passedDiff / (1000 * 3600 * 24)));
+
+        let daysLeft = totalDays - passedDays;
+        
+        if (today < sDate) {
+            dispLeft.textContent = totalDays;
+            bar.style.width = '0%';
+        } else if (today > eDate) {
+            dispLeft.textContent = "0";
+            bar.style.width = '100%';
+        } else {
+            dispLeft.textContent = daysLeft;
+            const pct = (passedDays / totalDays) * 100;
+            bar.style.width = `${pct}%`;
+        }
+    }
+
+    // --- 2. Subjects Logic ---
+    function addSubject() {
+        const name = document.getElementById('subj-name').value.trim();
+        const mods = document.getElementById('subj-modules').value;
+
+        if (!name || !mods) return;
+
+        subjects.push({ id: Date.now().toString(), name, modules: mods });
+        localStorage.setItem('system_os_acad_subj', JSON.stringify(subjects));
+        
+        document.getElementById('subj-name').value = '';
+        document.getElementById('subj-modules').value = '';
+        renderSubjects();
+    }
+
+    function deleteSubject(id) {
+        subjects = subjects.filter(s => s.id !== id);
+        localStorage.setItem('system_os_acad_subj', JSON.stringify(subjects));
+        renderSubjects();
+    }
+
+    function renderSubjects() {
+        const list = document.getElementById('subject-list');
+        list.innerHTML = '';
+
+        if (subjects.length === 0) {
+            list.innerHTML = `<div class="empty-state">No subjects loaded into architecture.</div>`;
+            return;
+        }
+
+        subjects.forEach(s => {
+            list.innerHTML += `
                 <div class="subject-item">
                     <div>
                         <div class="subj-title">${s.name}</div>
@@ -789,73 +547,73 @@
                     <button class="delete-btn" onclick="deleteSubject('${s.id}')"><i class="fa-solid fa-xmark"></i></button>
                 </div>
             `;
-            });
-        }
+        });
+    }
 
-        // --- 3. Assignments Logic ---
-        function addAssignment() {
-            const title = document.getElementById('ass-title').value.trim();
-            const date = document.getElementById('ass-date').value;
-            const status = document.getElementById('ass-status').value;
+    // --- 3. Assignments Logic ---
+    function addAssignment() {
+        const title = document.getElementById('ass-title').value.trim();
+        const date = document.getElementById('ass-date').value;
+        const status = document.getElementById('ass-status').value;
 
-            if (!title || !date) return;
+        if (!title || !date) return;
 
-            assignments.push({ id: Date.now().toString(), title, date, status });
+        assignments.push({ id: Date.now().toString(), title, date, status });
+        localStorage.setItem('system_os_acad_ass', JSON.stringify(assignments));
+
+        document.getElementById('ass-title').value = '';
+        document.getElementById('ass-date').value = '';
+        document.getElementById('ass-date').style.color = 'var(--text-muted)';
+        
+        renderAssignments();
+    }
+
+    function deleteAssignment(id) {
+        assignments = assignments.filter(a => a.id !== id);
+        localStorage.setItem('system_os_acad_ass', JSON.stringify(assignments));
+        renderAssignments();
+    }
+
+    // Click badge to cycle through states
+    window.cycleStatus = function(id) {
+        const ass = assignments.find(a => a.id === id);
+        if (ass) {
+            if (ass.status === 'not-completed') ass.status = 'ongoing';
+            else if (ass.status === 'ongoing') ass.status = 'completed';
+            else ass.status = 'not-completed';
+            
             localStorage.setItem('system_os_acad_ass', JSON.stringify(assignments));
-
-            document.getElementById('ass-title').value = '';
-            document.getElementById('ass-date').value = '';
-            document.getElementById('ass-date').style.color = 'var(--text-muted)';
-
             renderAssignments();
         }
+    }
 
-        function deleteAssignment(id) {
-            assignments = assignments.filter(a => a.id !== id);
-            localStorage.setItem('system_os_acad_ass', JSON.stringify(assignments));
-            renderAssignments();
+    function renderAssignments() {
+        const list = document.getElementById('assignment-list');
+        list.innerHTML = '';
+
+        if (assignments.length === 0) {
+            list.innerHTML = `<div class="empty-state">No assignments currently deployed.</div>`;
+            return;
         }
 
-        // Click badge to cycle through states
-        window.cycleStatus = function (id) {
-            const ass = assignments.find(a => a.id === id);
-            if (ass) {
-                if (ass.status === 'not-completed') ass.status = 'ongoing';
-                else if (ass.status === 'ongoing') ass.status = 'completed';
-                else ass.status = 'not-completed';
+        // Sort by Date
+        assignments.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-                localStorage.setItem('system_os_acad_ass', JSON.stringify(assignments));
-                renderAssignments();
-            }
-        }
+        const statusLabels = {
+            'not-completed': 'Not Started',
+            'ongoing': 'Ongoing',
+            'completed': 'Completed'
+        };
 
-        function renderAssignments() {
-            const list = document.getElementById('assignment-list');
-            list.innerHTML = '';
+        assignments.forEach(a => {
+            const d = new Date(a.date);
+            const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            
+            // Add red border if past due and not completed
+            const isPastDue = new Date() > d && a.status !== 'completed';
+            const borderStyle = isPastDue ? 'border-color: var(--accent-red);' : '';
 
-            if (assignments.length === 0) {
-                list.innerHTML = `<div class="empty-state">No assignments currently deployed.</div>`;
-                return;
-            }
-
-            // Sort by Date
-            assignments.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-            const statusLabels = {
-                'not-completed': 'Not Started',
-                'ongoing': 'Ongoing',
-                'completed': 'Completed'
-            };
-
-            assignments.forEach(a => {
-                const d = new Date(a.date);
-                const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-
-                // Add red border if past due and not completed
-                const isPastDue = new Date() > d && a.status !== 'completed';
-                const borderStyle = isPastDue ? 'border-color: var(--accent-red);' : '';
-
-                list.innerHTML += `
+            list.innerHTML += `
                 <div class="assignment-item" style="${borderStyle}">
                     <div class="assign-top">
                         <div style="flex: 1; padding-right:10px;">
@@ -874,26 +632,25 @@
                     </div>
                 </div>
             `;
-            });
-        }
-
-        // --- App Drawer Modal ---
-        function toggleActivityModal() {
-            const overlay = document.getElementById('activity-overlay');
-            const sheet = document.getElementById('activity-sheet');
-            overlay.classList.toggle('active');
-            sheet.classList.toggle('active');
-            document.body.style.overflow = sheet.classList.contains('active') ? 'hidden' : '';
-        }
-
-        // Init
-        document.addEventListener('DOMContentLoaded', () => {
-            renderTimeline();
-            renderSubjects();
-            renderAssignments();
         });
+    }
 
-    </script>
+    // --- App Drawer Modal ---
+    function toggleActivityModal() {
+        const overlay = document.getElementById('activity-overlay');
+        const sheet = document.getElementById('activity-sheet');
+        overlay.classList.toggle('active');
+        sheet.classList.toggle('active');
+        document.body.style.overflow = sheet.classList.contains('active') ? 'hidden' : '';
+    }
+
+    // Init
+    document.addEventListener('DOMContentLoaded', () => {
+        renderTimeline();
+        renderSubjects();
+        renderAssignments();
+    });
+
+</script>
 </body>
-
 </html>

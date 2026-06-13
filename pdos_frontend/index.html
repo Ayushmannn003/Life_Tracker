@@ -47,7 +47,7 @@
 
         .app-container {
             width: 100%;
-            max-width: 480px;
+            max-width: 430px; /* Locked to strict mobile dimensions */
             padding: 20px 20px 100px 20px;
             overflow-x: hidden;
             position: relative;
@@ -231,6 +231,15 @@
             align-items: center;
         }
 
+        .ritual-time-badge {
+            background: var(--accent-green-dim);
+            color: var(--accent-green);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 800;
+        }
+
         /* --- Matrix, Diet & Schedule Blocks --- */
         .time-block {
             background: var(--bg-card-inner);
@@ -278,7 +287,7 @@
 
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
         .modal-overlay.active { opacity: 1; visibility: visible; }
-        .bottom-sheet { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%); width: 100%; max-width: 480px; max-height: 85vh; background: var(--bg-card); border-top: 1px solid var(--border-dim); border-radius: 32px 32px 0 0; padding: 20px 20px 0 20px; z-index: 1000; transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1); display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
+        .bottom-sheet { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%); width: 100%; max-width: 430px; /* Matched strict mobile dimensions */ max-height: 85vh; background: var(--bg-card); border-top: 1px solid var(--border-dim); border-radius: 32px 32px 0 0; padding: 20px 20px 0 20px; z-index: 1000; transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1); display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
         .bottom-sheet.active { transform: translateX(-50%) translateY(0); }
         .drag-handle { width: 40px; height: 5px; background: var(--border-dim); border-radius: 5px; margin: 0 auto 20px auto; }
         .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -410,63 +419,27 @@
     <div class="sheet-content">
         <div class="section-label">PROTOCOLS</div>
         <div class="app-grid">
-            <a href="todo.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-solid fa-square-check"></i></div>
-                <span class="app-icon-label">Tasks</span>
-            </a>
-            <a href="rituals.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: #eab308;"><i class="fa-regular fa-sun"></i></div>
-                <span class="app-icon-label">Rituals</span>
-            </a>
-            <a href="habits.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-regular fa-calendar-check"></i></div>
-                <span class="app-icon-label">Habits</span>
-            </a>
+            <a href="todo.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-solid fa-square-check"></i></div><span class="app-icon-label">Tasks</span></a>
+            <a href="rituals.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #eab308;"><i class="fa-regular fa-sun"></i></div><span class="app-icon-label">Rituals</span></a>
+            <a href="habits.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-regular fa-calendar-check"></i></div><span class="app-icon-label">Habits</span></a>
         </div>
         <div class="section-label">TIME & MACRO</div>
         <div class="app-grid">
-            <a href="schedule.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: #ffffff;"><i class="fa-regular fa-calendar"></i></div>
-                <span class="app-icon-label">Schedule</span>
-            </a>
-            <a href="weekly.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-border-all"></i></div>
-                <span class="app-icon-label">Matrix</span>
-            </a>
+            <a href="schedule.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #ffffff;"><i class="fa-regular fa-calendar"></i></div><span class="app-icon-label">Schedule</span></a>
+            <a href="weekly.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-border-all"></i></div><span class="app-icon-label">Matrix</span></a>
         </div>
         <div class="section-label">BIO & WEALTH</div>
         <div class="app-grid">
-            <a href="health.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-heart-pulse"></i></div>
-                <span class="app-icon-label">Health</span>
-            </a>
-            <a href="sleep.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-moon"></i></div>
-                <span class="app-icon-label">Sleep</span>
-            </a>
-            <a href="budget.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-wallet"></i></div>
-                <span class="app-icon-label">Finance</span>
-            </a>
-            <a href="diet.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: var(--accent-green);"><i class="fa-solid fa-apple-whole"></i></div>
-                <span class="app-icon-label">Diet</span>
-            </a>
+            <a href="health.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-heart-pulse"></i></div><span class="app-icon-label">Health</span></a>
+            <a href="sleep.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-moon"></i></div><span class="app-icon-label">Sleep</span></a>
+            <a href="budget.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-wallet"></i></div><span class="app-icon-label">Finance</span></a>
+            <a href="diet.html" class="app-icon-btn"><div class="app-icon-circle" style="color: var(--accent-green);"><i class="fa-solid fa-apple-whole"></i></div><span class="app-icon-label">Diet</span></a>
         </div>
         <div class="section-label">DATA & KNOWLEDGE</div>
         <div class="app-grid">
-            <a href="academics.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-graduation-cap"></i></div>
-                <span class="app-icon-label">Academics</span>
-            </a>
-            <a href="library.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-book"></i></div>
-                <span class="app-icon-label">Library</span>
-            </a>
-            <a href="analyzer.html" class="app-icon-btn">
-                <div class="app-icon-circle" style="color: var(--accent-green);"><i class="fa-solid fa-chart-line"></i></div>
-                <span class="app-icon-label">Analytics</span>
-            </a>
+            <a href="academics.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-graduation-cap"></i></div><span class="app-icon-label">Academics</span></a>
+            <a href="library.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-book"></i></div><span class="app-icon-label">Library</span></a>
+            <a href="analyzer.html" class="app-icon-btn"><div class="app-icon-circle" style="color: var(--accent-green);"><i class="fa-solid fa-chart-line"></i></div><span class="app-icon-label">Analytics</span></a>
         </div>
     </div>
 </div>
@@ -554,7 +527,7 @@
         }
     }
 
-    // --- Block 3: Rituals Sync ---
+    // --- Block 3: Rituals Sync (Time Anchors) ---
     function syncRituals() {
         const rituals = JSON.parse(localStorage.getItem('system_os_rituals')) || [];
         const h = new Date().getHours();
@@ -573,35 +546,28 @@
         document.getElementById('dash-ritual-title').innerHTML = blockTitle;
         
         const activeRituals = rituals.filter(r => r.block === activeBlock);
+        
+        // Sort chronologically
+        activeRituals.sort((a,b) => a.time.localeCompare(b.time));
+        
         const container = document.getElementById('dash-ritual-list');
         container.innerHTML = '';
 
         if(activeRituals.length === 0) {
-            container.innerHTML = `<div class="empty-state">No rituals configured for this arc.</div>`;
+            container.innerHTML = `<div class="empty-state">No rituals anchored for this arc.</div>`;
             return;
         }
 
         activeRituals.forEach(r => {
-            const checkIcon = r.completed ? '<i class="fa-solid fa-check" style="font-size: 0.7rem;"></i>' : '';
             container.innerHTML += `
-                <div class="list-item ${r.completed ? 'completed' : ''}" onclick="toggleRitual('${r.id}')">
-                    <div class="check-circle">${checkIcon}</div>
+                <div class="list-item" style="cursor: default; padding: 12px 14px;">
+                    <div class="ritual-time-badge">${formatTime12hr(r.time)}</div>
                     <div class="item-content">
                         <span class="item-text">${r.text}</span>
                     </div>
                 </div>
             `;
         });
-    }
-
-    window.toggleRitual = function(id) {
-        let rits = JSON.parse(localStorage.getItem('system_os_rituals')) || [];
-        let target = rits.find(r => r.id === id);
-        if(target) {
-            target.completed = !target.completed;
-            localStorage.setItem('system_os_rituals', JSON.stringify(rits));
-            syncRituals();
-        }
     }
 
     // --- Block 4: To-Do Sync ---
@@ -698,7 +664,6 @@
         if(todaysMeals.length === 0) {
             container.innerHTML = `<div class="empty-state">No meals logged for today.</div>`;
         } else {
-            // Display max 3 meals on dashboard
             todaysMeals.slice(0, 3).forEach(m => {
                 const colorMap = { 'breakfast': 'yellow', 'lunch': 'blue', 'snack': 'cyan', 'dinner': 'purple' };
                 const cColor = colorMap[m.category];
@@ -720,7 +685,6 @@
                 `;
             });
 
-            // Tally all meals (not just the displayed ones)
             totalCals = todaysMeals.reduce((sum, m) => sum + m.calories, 0);
             totalPro = todaysMeals.reduce((sum, m) => sum + m.protein, 0);
         }
