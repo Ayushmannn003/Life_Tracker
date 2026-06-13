@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,7 +40,7 @@
 
         .app-container {
             width: 100%;
-            max-width: 480px;
+            max-width: 430px; /* Locked to strict mobile dimensions (iPhone Pro Max width) */
             padding: 20px 20px 100px 20px;
             overflow-x: hidden;
             position: relative;
@@ -65,9 +64,7 @@
             transition: color 0.2s;
         }
 
-        .icon-btn:hover {
-            color: var(--text-main);
-        }
+        .icon-btn:hover { color: var(--text-main); }
 
         h1 {
             font-size: 1.25rem;
@@ -93,7 +90,7 @@
             border-radius: 24px;
             padding: 20px;
             margin-bottom: 20px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         }
 
         /* --- Configuration Blocks --- */
@@ -114,11 +111,10 @@
             text-align: left;
             outline: none;
             transition: border-color 0.2s;
+            width: 100%;
         }
 
-        .config-input:focus {
-            border-color: var(--accent-green);
-        }
+        .config-input:focus { border-color: var(--accent-green); }
 
         .btn-set {
             background: var(--border-dim);
@@ -131,10 +127,7 @@
             transition: all 0.2s;
         }
 
-        .btn-set:hover {
-            background: var(--text-muted);
-            color: var(--bg-dark);
-        }
+        .btn-set:hover { background: var(--text-muted); color: var(--bg-dark); }
 
         /* --- Top Metric Overview --- */
         .budget-header {
@@ -176,13 +169,8 @@
             transition: width 0.4s ease, background-color 0.4s ease;
         }
 
-        .over-budget .progress-fill {
-            background: var(--accent-red);
-        }
-
-        .over-budget .budget-val {
-            color: var(--accent-red);
-        }
+        .over-budget .progress-fill { background: var(--accent-red); }
+        .over-budget .budget-val { color: var(--accent-red); }
 
         /* --- Metric Grid --- */
         .metrics-grid {
@@ -201,22 +189,9 @@
             gap: 6px;
         }
 
-        .m-title {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-        }
-
-        .m-val {
-            font-size: 1.4rem;
-            font-weight: 800;
-        }
-
-        .m-sub {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-        }
+        .m-title { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        .m-val { font-size: 1.4rem; font-weight: 800; }
+        .m-sub { font-size: 0.7rem; color: var(--text-muted); }
 
         /* --- Weekly Report Block --- */
         .report-card {
@@ -226,9 +201,8 @@
             padding: 15px;
             margin-bottom: 20px;
             display: none;
-            /* Hidden unless excess */
         }
-
+        
         .report-card.safe {
             background: var(--accent-green-dim);
             border: 1px dashed var(--accent-green);
@@ -242,14 +216,14 @@
             gap: 8px;
             margin-bottom: 8px;
         }
-
+        
         .report-text {
             font-size: 0.8rem;
             color: var(--text-muted);
             line-height: 1.4;
         }
 
-        /* --- Manual Registration Form --- */
+        /* --- Forms & Lists --- */
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -276,11 +250,8 @@
             transition: all 0.2s;
         }
 
-        .btn-add:active {
-            transform: scale(0.95);
-        }
+        .btn-add:active { transform: scale(0.95); }
 
-        /* --- Ledger History --- */
         .ledger-list {
             list-style: none;
             display: flex;
@@ -297,40 +268,15 @@
             align-items: center;
         }
 
-        .l-left {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
+        .l-left { display: flex; flex-direction: column; gap: 4px; }
+        .l-title { font-size: 0.95rem; font-weight: 600; }
+        .l-date { font-size: 0.75rem; color: var(--text-muted); }
 
-        .l-title {
-            font-size: 0.95rem;
-            font-weight: 600;
-        }
-
-        .l-date {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .l-right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .l-amount {
-            font-size: 1.1rem;
-            font-weight: 700;
-        }
-
-        .type-expense {
-            color: var(--accent-red);
-        }
-
-        .type-saving {
-            color: var(--accent-green);
-        }
+        .l-right { display: flex; align-items: center; gap: 15px; }
+        .l-amount { font-size: 1.1rem; font-weight: 700; }
+        
+        .type-expense { color: var(--accent-red); }
+        .type-saving { color: var(--accent-green); }
 
         .delete-btn {
             background: none;
@@ -341,497 +287,342 @@
             transition: color 0.2s;
         }
 
-        .delete-btn:hover {
-            color: var(--accent-red);
-        }
+        .delete-btn:hover { color: var(--accent-red); }
 
-        .empty-state {
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            padding: 20px 0;
-            font-style: italic;
-        }
+        .empty-state { text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 20px 0; font-style: italic; }
 
         /* --- Shared Bottom Nav & App Drawer --- */
-        .bottom-nav {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: calc(100% - 60px);
-            max-width: 380px;
-            background: #0d0920;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 30px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 5px 10px;
-            z-index: 100;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-        }
+        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 60px); max-width: 380px; background: #0d0920; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 30px; display: flex; justify-content: space-around; align-items: center; padding: 5px 10px; z-index: 100; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 30%; padding: 8px 0; color: #6b7280; text-decoration: none; font-size: 0.65rem; font-weight: 600; border-radius: 20px; transition: all 0.3s ease; cursor: pointer; }
+        .nav-item i { font-size: 1.1rem; }
+        .nav-item:hover:not(.active) { color: #a78bfa; }
+        .nav-item.active { background: #6DF2B5; color: #070414; box-shadow: 0 0 15px rgba(109, 242, 181, 0.2); }
 
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            width: 30%;
-            padding: 8px 0;
-            color: #6b7280;
-            text-decoration: none;
-            font-size: 0.65rem;
-            font-weight: 600;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .bottom-sheet { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%); width: 100%; max-width: 480px; max-height: 85vh; background: var(--bg-card); border-top: 1px solid var(--border-dim); border-radius: 32px 32px 0 0; padding: 20px 20px 0 20px; z-index: 1000; transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1); display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
+        .bottom-sheet.active { transform: translateX(-50%) translateY(0); }
+        .drag-handle { width: 40px; height: 5px; background: var(--border-dim); border-radius: 5px; margin: 0 auto 20px auto; }
+        .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .sheet-title { font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+        .close-btn { background: var(--bg-card-inner); border: 1px solid var(--border-dim); border-radius: 50%; width: 32px; height: 32px; color: var(--text-muted); cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s; }
+        .close-btn:hover { color: var(--text-main); background: #2a2444; }
+        .sheet-content { overflow-y: auto; padding-bottom: 40px; -ms-overflow-style: none; scrollbar-width: none; }
+        .sheet-content::-webkit-scrollbar { display: none; }
+        .section-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin: 15px 0 15px 5px; }
+        .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px 10px; margin-bottom: 25px; }
+        .app-icon-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; text-decoration: none; cursor: pointer; transition: transform 0.1s; }
+        .app-icon-btn:active { transform: scale(0.92); }
+        .app-icon-circle { width: 56px; height: 56px; background: var(--bg-card-inner); border: 1px solid var(--border-dim); border-radius: 18px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; transition: border-color 0.3s; }
+        .app-icon-btn:hover .app-icon-circle { border-color: rgba(255,255,255,0.2); }
+        .app-icon-label { font-size: 0.65rem; font-weight: 600; text-align: center; color: var(--text-muted); }
 
-        .nav-item i {
-            font-size: 1.1rem;
-        }
-
-        .nav-item:hover:not(.active) {
-            color: #a78bfa;
-        }
-
-        .nav-item.active {
-            background: #6DF2B5;
-            color: #070414;
-            box-shadow: 0 0 15px rgba(109, 242, 181, 0.2);
-        }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            z-index: 999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .bottom-sheet {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%) translateY(100%);
-            width: 100%;
-            max-width: 480px;
-            max-height: 85vh;
-            background: var(--bg-card);
-            border-top: 1px solid var(--border-dim);
-            border-radius: 32px 32px 0 0;
-            padding: 20px 20px 0 20px;
-            z-index: 1000;
-            transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1);
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8);
-        }
-
-        .bottom-sheet.active {
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .drag-handle {
-            width: 40px;
-            height: 5px;
-            background: var(--border-dim);
-            border-radius: 5px;
-            margin: 0 auto 20px auto;
-        }
-
-        .sheet-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .sheet-title {
-            font-size: 1.1rem;
-            font-weight: 800;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .close-btn {
-            background: var(--bg-card-inner);
-            border: 1px solid var(--border-dim);
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            color: var(--text-muted);
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.2s;
-        }
-
-        .close-btn:hover {
-            color: var(--text-main);
-            background: #2a2444;
-        }
-
-        .sheet-content {
-            overflow-y: auto;
-            padding-bottom: 40px;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        .sheet-content::-webkit-scrollbar {
-            display: none;
-        }
-
-        .section-label {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin: 15px 0 15px 5px;
-        }
-
-        .app-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px 10px;
-            margin-bottom: 25px;
-        }
-
-        .app-icon-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: transform 0.1s;
-        }
-
-        .app-icon-btn:active {
-            transform: scale(0.92);
-        }
-
-        .app-icon-circle {
-            width: 56px;
-            height: 56px;
-            background: var(--bg-card-inner);
-            border: 1px solid var(--border-dim);
-            border-radius: 18px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5rem;
-            transition: border-color 0.3s;
-        }
-
-        .app-icon-btn:hover .app-icon-circle {
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .app-icon-label {
-            font-size: 0.65rem;
-            font-weight: 600;
-            text-align: center;
-            color: var(--text-muted);
-        }
     </style>
 </head>
-
 <body>
 
-    <div class="app-container">
+<div class="app-container">
+    
+    <header>
+        <button class="icon-btn" onclick="window.location.href='index.html'"><i class="fa-solid fa-arrow-left"></i></button>
+        <h1>Capital Control</h1>
+    </header>
 
-        <header>
-            <button class="icon-btn" onclick="window.location.href='index.html'"><i
-                    class="fa-solid fa-arrow-left"></i></button>
-            <h1>Capital Control</h1>
-        </header>
-
-        <div class="section-title">Matrix Parameters</div>
-        <div class="card" style="padding: 15px;">
-            <div class="config-row">
-                <input type="number" id="cfg-budget" class="config-input" placeholder="Monthly Spend Limit (₹)">
-            </div>
-            <div class="config-row" style="margin-bottom: 0;">
-                <input type="number" id="cfg-save" class="config-input" placeholder="Daily Save Target (₹)">
-                <button class="btn-set" onclick="saveTargets()">LOCK IN</button>
-            </div>
+    <div class="section-title">Matrix Parameters</div>
+    <div class="card" style="padding: 15px;">
+        <div class="config-row">
+            <input type="number" id="cfg-budget" class="config-input" placeholder="Monthly Spend Limit (₹)">
         </div>
-
-        <div class="section-title">Monthly Burn Rate</div>
-        <div class="card" id="budget-card">
-            <div class="budget-header">
-                <div class="budget-val" id="disp-monthly-spend">₹0</div>
-                <div class="budget-limit" id="disp-budget-limit">/ ₹0 Limit</div>
-            </div>
-            <div class="progress-track">
-                <div class="progress-fill" id="budget-bar"></div>
-            </div>
-            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 5px;" id="budget-status">
-                Calculating...
-            </div>
+        <div class="config-row" style="margin-bottom: 0;">
+            <input type="number" id="cfg-save" class="config-input" placeholder="Daily Save Target (₹)">
+            <button class="btn-set" onclick="saveTargets()">LOCK IN</button>
         </div>
+    </div>
 
-        <div class="metrics-grid" style="margin-bottom: 20px;">
-            <div class="metric-cell" style="border-color: rgba(105, 240, 174, 0.2);">
-                <span class="m-title">Today's Save</span>
-                <span class="m-val color-saving" style="color: var(--accent-green);" id="disp-today-save">₹0</span>
-                <span class="m-sub" id="disp-daily-target">Target: ₹0</span>
-            </div>
-            <div class="metric-cell" style="border-color: rgba(59, 130, 246, 0.2);">
-                <span class="m-title">Proj. Monthly Save</span>
-                <span class="m-val" style="color: var(--accent-blue);" id="disp-proj-save">₹0</span>
-                <span class="m-sub" id="disp-monthly-target">Target: ₹0</span>
-            </div>
+    <div class="section-title">Monthly Burn Rate</div>
+    <div class="card" id="budget-card">
+        <div class="budget-header">
+            <div class="budget-val" id="disp-monthly-spend">₹0</div>
+            <div class="budget-limit" id="disp-budget-limit">/ ₹0 Limit</div>
         </div>
-
-        <div class="report-card" id="weekly-report">
-            <div class="report-title" id="report-title">
-                <i class="fa-solid fa-triangle-exclamation"></i> Excess Spend Detected
-            </div>
-            <div class="report-text" id="report-desc">
-                You have spent ₹5,000 in the last 7 days. Your rolling weekly limit is ₹2,500. Recommend initiating deep
-                freeze protocols.
-            </div>
+        <div class="progress-track">
+            <div class="progress-fill" id="budget-bar"></div>
         </div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 5px;" id="budget-status">
+            Calculating...
+        </div>
+    </div>
 
-        <div class="section-title">Log Transaction</div>
-        <div class="card">
-            <input type="text" id="t-title" class="config-input" placeholder="What was it? (e.g. Coffee, SIP)">
-            <div class="form-row">
-                <input type="number" id="t-amount" class="config-input" placeholder="Amount (₹)">
-                <select id="t-type" class="config-input" style="color: var(--text-muted);">
-                    <option value="expense">Outflow (Expense)</option>
-                    <option value="saving">Inflow (Save/Invest)</option>
-                </select>
-            </div>
-            <button class="btn-add" onclick="addTransaction()">
-                <i class="fa-solid fa-plus"></i> Add to Ledger
+    <div class="metrics-grid" style="margin-bottom: 20px;">
+        <div class="metric-cell" style="border-color: rgba(105, 240, 174, 0.2);">
+            <span class="m-title">Today's Save</span>
+            <span class="m-val color-saving" style="color: var(--accent-green);" id="disp-today-save">₹0</span>
+            <span class="m-sub" id="disp-daily-target">Target: ₹0</span>
+        </div>
+        <div class="metric-cell" style="border-color: rgba(59, 130, 246, 0.2);">
+            <span class="m-title">Proj. Monthly Save</span>
+            <span class="m-val" style="color: var(--accent-blue);" id="disp-proj-save">₹0</span>
+            <span class="m-sub" id="disp-monthly-target">Target: ₹0</span>
+        </div>
+    </div>
+
+    <div class="report-card" id="weekly-report">
+        <div class="report-title" id="report-title">
+            <i class="fa-solid fa-triangle-exclamation"></i> Excess Spend Detected
+        </div>
+        <div class="report-text" id="report-desc">
+            Calculating recent expenditures...
+        </div>
+    </div>
+
+    <div class="section-title">Active Subscriptions</div>
+    <div class="card" style="padding: 15px;">
+        <div class="form-row" style="margin-top: 0;">
+            <input type="text" id="sub-title" class="config-input" placeholder="Service (e.g. Netflix)">
+            <input type="number" id="sub-amount" class="config-input" placeholder="₹/mo">
+        </div>
+        <div class="form-row">
+            <input type="number" id="sub-date" class="config-input" placeholder="Billing Date (1-31)" min="1" max="31">
+            <button class="btn-add" style="margin-top: 0; padding: 12px;" onclick="addSubscription()">
+                <i class="fa-solid fa-plus"></i>
             </button>
         </div>
+        <ul class="ledger-list" id="sub-list" style="margin-top: 15px;">
+            </ul>
+    </div>
 
-        <div class="section-title">Current Month Ledger</div>
-        <ul class="ledger-list" id="ledger-list">
+    <div class="section-title">Log Transaction</div>
+    <div class="card">
+        <input type="text" id="t-title" class="config-input" placeholder="What was it? (e.g. Coffee, SIP)">
+        <div class="form-row">
+            <input type="number" id="t-amount" class="config-input" placeholder="Amount (₹)">
+            <select id="t-type" class="config-input" style="color: var(--text-muted);">
+                <option value="expense">Outflow (Expense)</option>
+                <option value="saving">Inflow (Save/Invest)</option>
+            </select>
+        </div>
+        <button class="btn-add" onclick="addTransaction()">
+            <i class="fa-solid fa-plus"></i> Add to Ledger
+        </button>
+    </div>
+
+    <div class="section-title">Current Month Ledger</div>
+    <ul class="ledger-list" id="ledger-list">
         </ul>
 
+</div>
+
+<div class="bottom-nav">
+    <a href="index.html" class="nav-item">
+        <i class="fa-solid fa-grip"></i>
+        <span>Dashboard</span>
+    </a>
+    <div class="nav-item active" onclick="toggleActivityModal()">
+        <i class="fa-regular fa-rectangle-list"></i>
+        <span>Activity</span>
+    </div>
+    <a href="analyzer.html" class="nav-item">
+        <i class="fa-solid fa-chart-column"></i>
+        <span>Analytics</span>
+    </a>
+</div>
+
+<div class="modal-overlay" id="activity-overlay" onclick="toggleActivityModal()"></div>
+<div class="bottom-sheet" id="activity-sheet">
+    <div class="drag-handle"></div>
+    <div class="sheet-header">
+        <h2 class="sheet-title">System Modules</h2>
+        <button class="close-btn" onclick="toggleActivityModal()"><i class="fa-solid fa-xmark"></i></button>
     </div>
 
-    <div class="bottom-nav">
-        <a href="index.html" class="nav-item">
-            <i class="fa-solid fa-grip"></i>
-            <span>Dashboard</span>
-        </a>
-        <div class="nav-item active" onclick="toggleActivityModal()">
-            <i class="fa-regular fa-rectangle-list"></i>
-            <span>Activity</span>
+    <div class="sheet-content">
+        <div class="section-label">PROTOCOLS</div>
+        <div class="app-grid">
+            <a href="todo.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-solid fa-square-check"></i></div><span class="app-icon-label">Tasks</span></a>
+            <a href="rituals.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #eab308;"><i class="fa-regular fa-sun"></i></div><span class="app-icon-label">Rituals</span></a>
+            <a href="habits.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-regular fa-calendar-check"></i></div><span class="app-icon-label">Habits</span></a>
         </div>
-        <a href="analyzer.html" class="nav-item">
-            <i class="fa-solid fa-chart-column"></i>
-            <span>Analytics</span>
-        </a>
-    </div>
-
-    <div class="modal-overlay" id="activity-overlay" onclick="toggleActivityModal()"></div>
-    <div class="bottom-sheet" id="activity-sheet">
-        <div class="drag-handle"></div>
-        <div class="sheet-header">
-            <h2 class="sheet-title">System Modules</h2>
-            <button class="close-btn" onclick="toggleActivityModal()"><i class="fa-solid fa-xmark"></i></button>
+        <div class="section-label">TIME & MACRO</div>
+        <div class="app-grid">
+            <a href="schedule.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #ffffff;"><i class="fa-regular fa-calendar"></i></div><span class="app-icon-label">Schedule</span></a>
+            <a href="weekly.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-border-all"></i></div><span class="app-icon-label">Matrix</span></a>
         </div>
-
-        <div class="sheet-content">
-            <div class="section-label">PROTOCOLS</div>
-            <div class="app-grid">
-                <a href="todo.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-solid fa-square-check"></i></div>
-                    <span class="app-icon-label">Tasks</span>
-                </a>
-                <a href="rituals.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #eab308;"><i class="fa-regular fa-sun"></i></div>
-                    <span class="app-icon-label">Rituals</span>
-                </a>
-                <a href="habits.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #06b6d4;"><i class="fa-regular fa-calendar-check"></i>
-                    </div>
-                    <span class="app-icon-label">Habits</span>
-                </a>
-            </div>
-            <div class="section-label">TIME & MACRO</div>
-            <div class="app-grid">
-                <a href="schedule.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #ffffff;"><i class="fa-regular fa-calendar"></i></div>
-                    <span class="app-icon-label">Schedule</span>
-                </a>
-                <a href="weekly.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-border-all"></i></div>
-                    <span class="app-icon-label">Matrix</span>
-                </a>
-            </div>
-            <div class="section-label">BIO & WEALTH</div>
-            <div class="app-grid">
-                <a href="health.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-heart-pulse"></i></div>
-                    <span class="app-icon-label">Health</span>
-                </a>
-                <a href="sleep.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-moon"></i></div>
-                    <span class="app-icon-label">Sleep</span>
-                </a>
-                <a href="budget.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-wallet"></i></div>
-                    <span class="app-icon-label">Finance</span>
-                </a>
-                <a href="diet.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: var(--accent-green);"><i
-                            class="fa-solid fa-apple-whole"></i></div>
-                    <span class="app-icon-label">Diet</span>
-                </a>
-            </div>
-            <div class="section-label">DATA & KNOWLEDGE</div>
-            <div class="app-grid">
-                <a href="academics.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-graduation-cap"></i>
-                    </div>
-                    <span class="app-icon-label">Academics</span>
-                </a>
-                <a href="library.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-book"></i></div>
-                    <span class="app-icon-label">Library</span>
-                </a>
-                <a href="analyzer.html" class="app-icon-btn">
-                    <div class="app-icon-circle" style="color: var(--accent-green);"><i
-                            class="fa-solid fa-chart-line"></i></div>
-                    <span class="app-icon-label">Analytics</span>
-                </a>
-            </div>
+        <div class="section-label">BIO & WEALTH</div>
+        <div class="app-grid">
+            <a href="health.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-heart-pulse"></i></div><span class="app-icon-label">Health</span></a>
+            <a href="sleep.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-moon"></i></div><span class="app-icon-label">Sleep</span></a>
+            <a href="budget.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #ef4444;"><i class="fa-solid fa-wallet"></i></div><span class="app-icon-label">Finance</span></a>
+            <a href="diet.html" class="app-icon-btn"><div class="app-icon-circle" style="color: var(--accent-green);"><i class="fa-solid fa-apple-whole"></i></div><span class="app-icon-label">Diet</span></a>
+        </div>
+        <div class="section-label">DATA & KNOWLEDGE</div>
+        <div class="app-grid">
+            <a href="academics.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #a855f7;"><i class="fa-solid fa-graduation-cap"></i></div><span class="app-icon-label">Academics</span></a>
+            <a href="library.html" class="app-icon-btn"><div class="app-icon-circle" style="color: #3b82f6;"><i class="fa-solid fa-book"></i></div><span class="app-icon-label">Library</span></a>
+            <a href="analyzer.html" class="app-icon-btn"><div class="app-icon-circle" style="color: var(--accent-green);"><i class="fa-solid fa-chart-line"></i></div><span class="app-icon-label">Analytics</span></a>
         </div>
     </div>
+</div>
 
-    <script>
-        // --- Data Management System ---
-        let transactions = JSON.parse(localStorage.getItem('system_os_finance_ledger')) || [];
-        let targets = JSON.parse(localStorage.getItem('system_os_finance_targets')) || { monthlyBudget: 0, dailySave: 0 };
+<script>
+    // --- Data Management System ---
+    let transactions = JSON.parse(localStorage.getItem('system_os_finance_ledger')) || [];
+    let targets = JSON.parse(localStorage.getItem('system_os_finance_targets')) || { monthlyBudget: 0, dailySave: 0 };
+    let subscriptions = JSON.parse(localStorage.getItem('system_os_finance_subs')) || [];
 
-        // Select input coloring
-        document.getElementById('t-type').addEventListener('change', function () {
-            this.style.color = 'var(--text-main)';
+    document.getElementById('t-type').addEventListener('change', function() { this.style.color = 'var(--text-main)'; });
+
+    const formatCurrency = (amount) => {
+        return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount);
+    };
+
+    if(targets.monthlyBudget > 0) document.getElementById('cfg-budget').value = targets.monthlyBudget;
+    if(targets.dailySave > 0) document.getElementById('cfg-save').value = targets.dailySave;
+
+    function saveTargets() {
+        const budget = parseFloat(document.getElementById('cfg-budget').value);
+        const save = parseFloat(document.getElementById('cfg-save').value);
+        targets = { monthlyBudget: !isNaN(budget) ? budget : 0, dailySave: !isNaN(save) ? save : 0 };
+        localStorage.setItem('system_os_finance_targets', JSON.stringify(targets));
+        calculateMetrics();
+    }
+
+    // --- Subscriptions Logic ---
+    function addSubscription() {
+        const title = document.getElementById('sub-title').value.trim();
+        const amount = parseFloat(document.getElementById('sub-amount').value);
+        const date = parseInt(document.getElementById('sub-date').value);
+
+        if (!title || isNaN(amount) || amount <= 0 || isNaN(date) || date < 1 || date > 31) {
+            alert("Please enter valid subscription details.");
+            return;
+        }
+
+        subscriptions.push({ id: Date.now().toString(), title, amount, date });
+        localStorage.setItem('system_os_finance_subs', JSON.stringify(subscriptions));
+        
+        document.getElementById('sub-title').value = '';
+        document.getElementById('sub-amount').value = '';
+        document.getElementById('sub-date').value = '';
+        renderSubscriptions();
+    }
+
+    function deleteSubscription(id) {
+        subscriptions = subscriptions.filter(s => s.id !== id);
+        localStorage.setItem('system_os_finance_subs', JSON.stringify(subscriptions));
+        renderSubscriptions();
+    }
+
+    function renderSubscriptions() {
+        const list = document.getElementById('sub-list');
+        list.innerHTML = '';
+        
+        if(subscriptions.length === 0) {
+            list.innerHTML = `<div class="empty-state" style="padding: 10px 0;">No active subscriptions.</div>`;
+            return;
+        }
+
+        const today = new Date().getDate();
+
+        let sortedSubs = [...subscriptions].sort((a, b) => {
+            let dA = a.date >= today ? a.date - today : (31 - today) + a.date;
+            let dB = b.date >= today ? b.date - today : (31 - today) + b.date;
+            return dA - dB;
         });
 
-        // Formatting
-        const formatCurrency = (amount) => {
-            return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount);
-        };
-
-        // Initialize Targets
-        if (targets.monthlyBudget > 0) document.getElementById('cfg-budget').value = targets.monthlyBudget;
-        if (targets.dailySave > 0) document.getElementById('cfg-save').value = targets.dailySave;
-
-        function saveTargets() {
-            const budget = parseFloat(document.getElementById('cfg-budget').value);
-            const save = parseFloat(document.getElementById('cfg-save').value);
-
-            targets = {
-                monthlyBudget: !isNaN(budget) ? budget : 0,
-                dailySave: !isNaN(save) ? save : 0
-            };
-
-            localStorage.setItem('system_os_finance_targets', JSON.stringify(targets));
-            calculateMetrics();
-        }
-
-        function addTransaction() {
-            const title = document.getElementById('t-title').value.trim();
-            const amount = parseFloat(document.getElementById('t-amount').value);
-            const type = document.getElementById('t-type').value;
-
-            if (!title || isNaN(amount) || amount <= 0) return;
-
-            transactions.push({
-                id: Date.now().toString(),
-                date: new Date().toISOString(),
-                title: title,
-                amount: amount,
-                type: type
-            });
-
-            localStorage.setItem('system_os_finance_ledger', JSON.stringify(transactions));
-
-            document.getElementById('t-title').value = '';
-            document.getElementById('t-amount').value = '';
-            calculateMetrics();
-        }
-
-        function deleteTransaction(id) {
-            transactions = transactions.filter(t => t.id !== id);
-            localStorage.setItem('system_os_finance_ledger', JSON.stringify(transactions));
-            calculateMetrics();
-        }
-
-        function calculateMetrics() {
-            const now = new Date();
-            const currentMonth = now.getMonth();
-            const currentYear = now.getFullYear();
-            const todayStr = now.toDateString();
-
-            // 7 Days ago calculation
-            const sevenDaysAgo = new Date();
-            sevenDaysAgo.setDate(now.getDate() - 7);
-
-            let monthlySpend = 0;
-            let todaySave = 0;
-            let weeklySpend = 0; // Last 7 rolling days
-
-            const ledgerList = document.getElementById('ledger-list');
-            ledgerList.innerHTML = '';
-
-            // Filter and calculate
-            const monthTransactions = transactions.filter(t => {
-                const d = new Date(t.date);
-                return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
-            });
-
-            monthTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            if (monthTransactions.length === 0) {
-                ledgerList.innerHTML = `<div class="empty-state">No transactions logged this month.</div>`;
+        sortedSubs.forEach(s => {
+            let statusText = '';
+            let statusColor = '';
+            
+            if (s.date === today) {
+                statusText = 'Due Today';
+                statusColor = 'var(--accent-red)';
+            } else if (s.date > today) {
+                statusText = `Due in ${s.date - today} days`;
+                statusColor = 'var(--accent-blue)';
+            } else {
+                statusText = `Due on ${s.date}`;
+                statusColor = 'var(--text-muted)';
             }
 
-            monthTransactions.forEach(t => {
-                const transDate = new Date(t.date);
+            list.innerHTML += `
+                <li class="ledger-item" style="padding: 12px; margin-bottom: 8px;">
+                    <div class="l-left">
+                        <span class="l-title">${s.title}</span>
+                        <span class="l-date" style="color: ${statusColor}; font-weight: 600;">
+                            <i class="fa-regular fa-calendar"></i> ${statusText}
+                        </span>
+                    </div>
+                    <div class="l-right">
+                        <span class="l-amount type-expense">${formatCurrency(s.amount)}</span>
+                        <button class="delete-btn" onclick="deleteSubscription('${s.id}')"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                </li>
+            `;
+        });
+    }
 
-                if (t.type === 'expense') monthlySpend += t.amount;
+    // --- Ledger Logic ---
+    function addTransaction() {
+        const title = document.getElementById('t-title').value.trim();
+        const amount = parseFloat(document.getElementById('t-amount').value);
+        const type = document.getElementById('t-type').value;
 
-                if (transDate.toDateString() === todayStr && t.type === 'saving') {
-                    todaySave += t.amount;
-                }
+        if (!title || isNaN(amount) || amount <= 0) return;
 
-                if (t.type === 'expense' && transDate >= sevenDaysAgo) {
-                    weeklySpend += t.amount;
-                }
+        transactions.push({ id: Date.now().toString(), date: new Date().toISOString(), title, amount, type });
+        localStorage.setItem('system_os_finance_ledger', JSON.stringify(transactions));
+        
+        document.getElementById('t-title').value = '';
+        document.getElementById('t-amount').value = '';
+        calculateMetrics();
+    }
 
-                // Render DOM list
-                const li = document.createElement('li');
-                li.className = 'ledger-item';
-                const dateStr = transDate.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' });
-                const isExp = t.type === 'expense';
+    function deleteTransaction(id) {
+        transactions = transactions.filter(t => t.id !== id);
+        localStorage.setItem('system_os_finance_ledger', JSON.stringify(transactions));
+        calculateMetrics();
+    }
 
-                li.innerHTML = `
+    function calculateMetrics() {
+        const now = new Date();
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
+        const todayStr = now.toDateString();
+        
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(now.getDate() - 7);
+
+        let monthlySpend = 0;
+        let todaySave = 0;
+        let weeklySpend = 0; 
+
+        const ledgerList = document.getElementById('ledger-list');
+        ledgerList.innerHTML = '';
+
+        const monthTransactions = transactions.filter(t => {
+            const d = new Date(t.date);
+            return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+        });
+
+        monthTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        if (monthTransactions.length === 0) {
+            ledgerList.innerHTML = `<div class="empty-state">No transactions logged this month.</div>`;
+        }
+
+        monthTransactions.forEach(t => {
+            const transDate = new Date(t.date);
+            
+            if (t.type === 'expense') monthlySpend += t.amount;
+            if (transDate.toDateString() === todayStr && t.type === 'saving') todaySave += t.amount;
+            if (t.type === 'expense' && transDate >= sevenDaysAgo) weeklySpend += t.amount;
+
+            const li = document.createElement('li');
+            li.className = 'ledger-item';
+            const dateStr = transDate.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' });
+            const isExp = t.type === 'expense';
+
+            li.innerHTML = `
                 <div class="l-left">
                     <span class="l-title">${t.title}</span>
                     <span class="l-date">${dateStr}</span>
@@ -843,77 +634,78 @@
                     <button class="delete-btn" onclick="deleteTransaction('${t.id}')"><i class="fa-solid fa-xmark"></i></button>
                 </div>
             `;
-                ledgerList.appendChild(li);
-            });
+            ledgerList.appendChild(li);
+        });
 
-            // --- 1. Monthly Budget Block ---
-            const budgetCard = document.getElementById('budget-card');
-            const budgetBar = document.getElementById('budget-bar');
+        // 1. Monthly Budget Block
+        const budgetCard = document.getElementById('budget-card');
+        const budgetBar = document.getElementById('budget-bar');
+        
+        document.getElementById('disp-monthly-spend').textContent = formatCurrency(monthlySpend);
+        document.getElementById('disp-budget-limit').textContent = targets.monthlyBudget > 0 ? `/ ${formatCurrency(targets.monthlyBudget)} Limit` : 'No Limit Set';
 
-            document.getElementById('disp-monthly-spend').textContent = formatCurrency(monthlySpend);
-            document.getElementById('disp-budget-limit').textContent = targets.monthlyBudget > 0 ? `/ ${formatCurrency(targets.monthlyBudget)} Limit` : 'No Limit Set';
-
-            if (targets.monthlyBudget > 0) {
-                let pct = (monthlySpend / targets.monthlyBudget) * 100;
-                budgetBar.style.width = `${Math.min(pct, 100)}%`;
-
-                if (pct >= 100) {
-                    budgetCard.classList.add('over-budget');
-                    document.getElementById('budget-status').innerHTML = `<span style="color: var(--accent-red); font-weight:700;">Over Budget!</span> Protocol breach.`;
-                } else {
-                    budgetCard.classList.remove('over-budget');
-                    document.getElementById('budget-status').textContent = `Remaining: ${formatCurrency(targets.monthlyBudget - monthlySpend)}`;
-                }
+        if (targets.monthlyBudget > 0) {
+            let pct = (monthlySpend / targets.monthlyBudget) * 100;
+            budgetBar.style.width = `${Math.min(pct, 100)}%`;
+            
+            if (pct >= 100) {
+                budgetCard.classList.add('over-budget');
+                document.getElementById('budget-status').innerHTML = `<span style="color: var(--accent-red); font-weight:700;">Over Budget!</span> Protocol breach.`;
             } else {
-                budgetBar.style.width = '0%';
                 budgetCard.classList.remove('over-budget');
-                document.getElementById('budget-status').textContent = "Set a budget limit to track burn rate.";
+                document.getElementById('budget-status').textContent = `Remaining: ${formatCurrency(targets.monthlyBudget - monthlySpend)}`;
             }
+        } else {
+            budgetBar.style.width = '0%';
+            budgetCard.classList.remove('over-budget');
+            document.getElementById('budget-status').textContent = "Set a budget limit to track burn rate.";
+        }
 
-            // --- 2. Saving Targets Projections ---
-            document.getElementById('disp-today-save').textContent = formatCurrency(todaySave);
-            document.getElementById('disp-daily-target').textContent = `Target: ${formatCurrency(targets.dailySave)}`;
+        // 2. Saving Targets Projections
+        document.getElementById('disp-today-save').textContent = formatCurrency(todaySave);
+        document.getElementById('disp-daily-target').textContent = `Target: ${formatCurrency(targets.dailySave)}`;
+        
+        const projMonth = targets.dailySave * 30;
+        document.getElementById('disp-proj-save').textContent = formatCurrency(projMonth);
+        document.getElementById('disp-monthly-target').textContent = `Monthly Projection`;
 
-            const projMonth = targets.dailySave * 30; // Basic projection
-            document.getElementById('disp-proj-save').textContent = formatCurrency(projMonth);
-            document.getElementById('disp-monthly-target').textContent = `Monthly Projection`;
+        // 3. Weekly Report Engine
+        const reportCard = document.getElementById('weekly-report');
+        if (targets.monthlyBudget > 0) {
+            const weeklyAllowed = targets.monthlyBudget / 4; 
+            reportCard.style.display = 'block';
 
-            // --- 3. Weekly Report Engine ---
-            const reportCard = document.getElementById('weekly-report');
-            if (targets.monthlyBudget > 0) {
-                const weeklyAllowed = targets.monthlyBudget / 4; // Approx weekly limit
-                reportCard.style.display = 'block';
-
-                if (weeklySpend > weeklyAllowed) {
-                    reportCard.classList.remove('safe');
-                    document.getElementById('report-title').innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Excess Spend Detected`;
-                    document.getElementById('report-title').style.color = "var(--accent-red)";
-                    document.getElementById('report-desc').innerHTML = `You spent <b>${formatCurrency(weeklySpend)}</b> in the last 7 days. Your rolling limit is <b>${formatCurrency(weeklyAllowed)}</b>. Recommend initiating freeze protocols.`;
-                } else {
-                    reportCard.classList.add('safe');
-                    document.getElementById('report-title').innerHTML = `<i class="fa-solid fa-shield-check"></i> Capital Flow Optimal`;
-                    document.getElementById('report-title').style.color = "var(--accent-green)";
-                    document.getElementById('report-desc').innerHTML = `You spent <b>${formatCurrency(weeklySpend)}</b> in the last 7 days, remaining well under your <b>${formatCurrency(weeklyAllowed)}</b> rolling limit.`;
-                }
+            if (weeklySpend > weeklyAllowed) {
+                reportCard.classList.remove('safe');
+                document.getElementById('report-title').innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Excess Spend Detected`;
+                document.getElementById('report-title').style.color = "var(--accent-red)";
+                document.getElementById('report-desc').innerHTML = `You spent <b>${formatCurrency(weeklySpend)}</b> in the last 7 days. Your rolling limit is <b>${formatCurrency(weeklyAllowed)}</b>. Recommend initiating freeze protocols.`;
             } else {
-                reportCard.style.display = 'none';
+                reportCard.classList.add('safe');
+                document.getElementById('report-title').innerHTML = `<i class="fa-solid fa-shield-check"></i> Capital Flow Optimal`;
+                document.getElementById('report-title').style.color = "var(--accent-green)";
+                document.getElementById('report-desc').innerHTML = `You spent <b>${formatCurrency(weeklySpend)}</b> in the last 7 days, remaining well under your <b>${formatCurrency(weeklyAllowed)}</b> rolling limit.`;
             }
+        } else {
+            reportCard.style.display = 'none';
         }
+    }
 
-        // App Drawer Modal
-        function toggleActivityModal() {
-            const overlay = document.getElementById('activity-overlay');
-            const sheet = document.getElementById('activity-sheet');
-            overlay.classList.toggle('active');
-            sheet.classList.toggle('active');
-            document.body.style.overflow = sheet.classList.contains('active') ? 'hidden' : '';
-        }
+    // App Drawer Modal
+    function toggleActivityModal() {
+        const overlay = document.getElementById('activity-overlay');
+        const sheet = document.getElementById('activity-sheet');
+        overlay.classList.toggle('active');
+        sheet.classList.toggle('active');
+        document.body.style.overflow = sheet.classList.contains('active') ? 'hidden' : '';
+    }
 
-        // Init
-        document.addEventListener('DOMContentLoaded', calculateMetrics);
+    // Init
+    document.addEventListener('DOMContentLoaded', () => {
+        renderSubscriptions();
+        calculateMetrics();
+    });
 
-    </script>
-
+</script>
 </body>
-
 </html>
